@@ -11,7 +11,7 @@ setup(
     # Version (follow Semantic Versioning: https://semver.org/)
     version="0.1.0",
     # Author details
-    author="Umidjon",
+    author="Umidjon-Kh",
     author_email="iexistedonlyforyou@gmail.com",
     # Short description (one line)
     description="Sort files into folders based on their extensions",

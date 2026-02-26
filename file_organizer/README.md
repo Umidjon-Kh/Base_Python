@@ -42,6 +42,7 @@ Option	Description
 --log-file PATH	Write logs to a file
 --stream-level, -sl LEVEL	Console log level: debug, info, warning, error, critical (default: info, but debug when --dry-run is used)
 --write-level, -wl LEVEL	File log level (only used if --log-file is given, default: debug)
+--version	Show program version and exit
 --help	Show this help message and exit
 Examples
 bash
@@ -70,9 +71,11 @@ organizer ~/Downloads --log-file app.log --stream-level debug
 organizer ~/Downloads --log-file app.log --stream-level warning --write-level debug
 Rule Files
 Rules are mappings from file extensions to folder names.
-The built‑in defaults are loaded from config/default_rules.json (if present) or fall back to a hard‑coded set.
+The built‑in defaults are loaded from organizer/config/default_rules.json (if present) or fall back to a hard‑coded set.
 
 JSON format
+Create a JSON file like my_rules.json:
+
 json
 {
     ".jpg": "Images",
@@ -97,5 +100,6 @@ All log messages are also sent to the root logger, so you can easily integrate t
 License
 This project is licensed under the MIT License – see the LICENSE file for details.
 
-Author: Your Name
-Repository: https://github.com/Umidjon-kh/Base_Python.git/file_organizer
+Author
+Umidjon-Kh
+Repository: https://github.com/Umidjon-kh/Base_Python/tree/main/file_organizer

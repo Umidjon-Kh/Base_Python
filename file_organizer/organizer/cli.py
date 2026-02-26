@@ -4,6 +4,7 @@ from ast import literal_eval
 from pathlib import Path
 
 # project modules
+from . import __version__
 from .logger import setup_logger
 from .rules import RuleManager
 from .core import Organizer
@@ -15,6 +16,7 @@ def create_parser():
         description='File organizer — sorts files into folders based on their extensions.',
         epilog='''
 Examples:
+  %(prog)s --version    # shows version of organizer
   %(prog)s ~/Downloads                     # sort files in-place, console level: INFO (default)
   %(prog)s ~/Downloads --dest ~/Sorted     # move files to ~/Sorted
   %(prog)s ~/Downloads --recursive         # process subfolders recursively
@@ -59,6 +61,7 @@ Examples:
         choices=['debug', 'info', 'warning', 'error', 'critical'],
         help='Log level for file output (default: debug; only used if --log-file is given)',
     )
+    parser.add_argument('--version', '-V', action='version', version=f'%(prog)s {__version__}')
 
     return parser
 
@@ -90,7 +93,7 @@ def main() -> None:
                 # Using literal_eval from ast to safety converting string to dict
                 rules_dict = literal_eval(args.rules)
                 if not isinstance(rules_dict, dict):
-                    logger.error('Argument --rules must be dict object, example "{\'.txt\': \'Docs\'}"')
+                    logger.error('Argument --rules must be dict object, example: "{\'.txt\': \'Docs\'}"')
                     sys.exit(1)
 
             except (SyntaxError, ValueError) as exc:

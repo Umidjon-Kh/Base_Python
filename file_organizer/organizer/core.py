@@ -96,7 +96,7 @@ class Organizer:
                 suffix = target_path.suffix
                 counter = 1
                 while target_path.exists():
-                    new_name = f'{base}({counter}){suffix}'
+                    new_name = f'{base}_({counter}){suffix}'
                     target_path = target_dir / new_name
                     counter += 1
 
