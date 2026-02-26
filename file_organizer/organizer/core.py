@@ -24,7 +24,7 @@ class Organizer:
         dest_root: Optional[Path] = None,
         recursive: bool = False,
         dry_run: bool = False,
-        clean_source: bool = False
+        clean_source: bool = False,
     ) -> None:
         """
         :param  rule_manager: Manager of rules
@@ -71,7 +71,7 @@ class Organizer:
 
         # Removeing empty dirs in source if not dry run
         self._remove_empty_dirs(source)
-        
+
         # Logging stats
         mv = 'moved' if not self.dry_run else 'moves'
         rm = 'removed' if not self.dry_run else 'removes'
@@ -146,5 +146,3 @@ class Organizer:
                         logger.info(f'Removed empty directory:\n\t\t\t└──>{path}')
                 except PermissionError:
                     pass
-
-
