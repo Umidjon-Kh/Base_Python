@@ -100,8 +100,8 @@ class RuleManager:
     def get_folder(self, extension: str) -> str:
         """Returns ext folder name in dict of rules"""
         ext = extension.lower()
-        if not ext.startswith('.'):
-            ext = '.' + ext
+        # if not ext.startswith('.'):
+        #     ext = '.' + ext
         return self.__rules.get(ext, 'Others')
 
     # Turn ext to right format
