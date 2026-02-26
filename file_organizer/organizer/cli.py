@@ -37,7 +37,7 @@ Examples:
     parser.add_argument('source', help='Source folder to organize')
 
     # Optional arguments
-    parser.add_argument('--clean-source', '-CS', action='store_true', help='Cleans all empty dirs in source')
+    parser.add_argument('--clean-source', '-C', action='store_true', help='Cleans all empty dirs in source')
     parser.add_argument('--dest', '-d', help='Destination root folder (default: source folder)')
     parser.add_argument('--rules', '-r', help='Custom User rules')
     parser.add_argument('--rule-file', help='JSON file with custom rules')

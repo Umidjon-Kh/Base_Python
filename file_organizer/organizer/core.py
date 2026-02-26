@@ -76,10 +76,11 @@ class Organizer:
         mv = 'moved' if not self.dry_run else 'moves'
         rm = 'removed' if not self.dry_run else 'removes'
         logger.info(
-            f'Final stats — Moved: {self.stats[mv]},'
-            f' Skipped: {self.stats['skipped']},'
-            f' Skipped: {self.stats[rm]},'
-            f' Errors: {self.stats['errors']}'
+            'Final stats:'
+            f'\t{mv.title()} - {self.stats[mv]},'
+            f'\t{rm.title()} - {self.stats[rm]},'
+            f'\tSkipped - {self.stats['skipped']},'
+            f' Errors - {self.stats['errors']}'
         )
 
     # processing files
@@ -141,7 +142,7 @@ class Organizer:
                         if self.dry_run:
                             logger.debug(f'[DRY RUN] Removes empty directory:\n\t\t\t└──>{path}')
                             self.stats['removes'] += 1
-                            return
+                            continue
                         path.rmdir()
                         logger.info(f'Removed empty directory:\n\t\t\t└──>{path}')
                         self.stats['removed'] += 1
