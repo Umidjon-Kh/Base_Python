@@ -37,7 +37,7 @@ class Organizer:
         self.dest_root = dest_root
         self.recursive = recursive
         self.dry_run = dry_run
-        self.stats = {'moved': 0, 'skipped': 0, 'errors': 0}
+        self.stats = {'moved': 0, 'skipped': 0, 'errors': 0, 'planned': 0}
 
     # Organizer core method
     def organize(self, source: Path) -> None:
@@ -68,7 +68,7 @@ class Organizer:
 
         # Logging stats
         logger.info(
-            f'Final stats — Moved: {self.stats['moved']},'
+            f'Final stats — Moved: {self.stats['moved' if not self.dry_run else 'planned']},'
             f' Skipped: {self.stats['skipped']},'
             f' Errors: {self.stats['errors']}'
         )
@@ -90,21 +90,20 @@ class Organizer:
                 self.stats['skipped'] += 1
                 return
 
-            # If file with same name is exits,
-            # adding suffix counter of dublicate
+            # handling name collisions
             if target_path.exists():
                 base = target_path.stem
                 suffix = target_path.suffix
                 counter = 1
                 while target_path.exists():
-                    new_name = f'{base}({counter}).{suffix}'
+                    new_name = f'{base}({counter}){suffix}'
                     target_path = target_dir / new_name
                     counter += 1
 
             # 2.Scenario: If dry_run is True
             if self.dry_run:
                 logger.info(f'[DRY RUN] Moves:\nFile: {file_path}\n\t\t\t└──> {target_path}')
-                self.stats['moved'] += 1
+                self.stats['planned'] += 1
                 return
 
             # Creating destination path
