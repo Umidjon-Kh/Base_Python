@@ -30,7 +30,11 @@ class RuleManager:
             self.load_from_file(rules_file)
         # 3.Action: Adding user rules to attr
         if rules:
-            self.__rules.update(rules)
+            # Iterating rules to add in right format
+            for ext, folder in rules.items():
+                ext = self._ext_formatter(ext)
+                self.__rules[ext] = folder
+
         # 4.Action: Setting default rules
         if not self.__rules:
             self.load_defaults()
@@ -55,9 +59,7 @@ class RuleManager:
                 normalized = {}
                 for ext, folder in data.items():
                     # Updatig to lower case format
-                    ext = ext.lower()
-                    if not ext.startswith('.'):
-                        ext = '.' + ext
+                    ext = self._ext_formatter(ext)
                     normalized[ext] = folder
                 self.__rules.update(normalized)
         except (IOError, json.JSONDecodeError) as exc:
@@ -101,3 +103,11 @@ class RuleManager:
         if not ext.startswith('.'):
             ext = '.' + ext
         return self.__rules.get(ext, 'Others')
+
+    # Turn ext to right format
+    @staticmethod
+    def _ext_formatter(ext: str) -> str:
+        """Returns extension in right format"""
+        if not ext.startswith('.'):
+            ext = '.' + ext
+        return ext.lower()
