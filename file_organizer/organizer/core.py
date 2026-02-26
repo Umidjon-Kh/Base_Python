@@ -127,13 +127,13 @@ class Organizer:
             logger.error(f'Error while processing:\nFile:{file_path}\nError:{exc}')
             self.stats['errors'] += 1
 
-    def _remove_empty_dirs(self, start_path: Path) -> None:
+    def _remove_empty_dirs(self, source: Path) -> None:
         """
         Recursively removes empty directories.
         Works only if not in DRY RUN mode
         """
         # Getting all pathes and sorting from down to up
-        for path in sorted(start_path.rglob('*'), key=lambda p: len(p.parts), reverse=True):
+        for path in sorted(source.rglob('*'), key=lambda p: len(p.parts), reverse=True):
             if path.is_dir():
                 # Only remove dir if its empty
                 try:
@@ -144,5 +144,6 @@ class Organizer:
                             return
                         path.rmdir()
                         logger.info(f'Removed empty directory:\n\t\t\t└──>{path}')
+                        self.stats['removed'] += 1
                 except PermissionError:
                     pass
