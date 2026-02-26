@@ -4,7 +4,6 @@ from typing import Optional
 
 
 def setup_logger(
-    verbose: bool = False,
     stream_level: str = 'debug',
     log_file: Optional[str] = None,
     write_level: str = 'debug',
@@ -13,7 +12,6 @@ def setup_logger(
     Customize logger: output to xonsole and optianal to file
     Can set level for output or write to file
 
-    :param verbose: Shows logs
     :param stream_level: Level to output (default=Debug)
     :param log_file: Writes logs to file
     :param write_level: Level to write into file (default=Debug)
@@ -21,7 +19,7 @@ def setup_logger(
 
     # Getting logger of object
     logger = logging.getLogger('file_organizer')
-    logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    logger.setLevel(logging.INFO)
 
     # Format of logs
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
