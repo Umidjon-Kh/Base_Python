@@ -13,10 +13,10 @@ def setup_logger(
     Customize logger: output to xonsole and optianal to file
     Can set level for output or write to file
 
-    param: verbose: Shows logs
-    param: stream_level: Level to output (default=Debug)
-    param: log_file: Writes logs to file
-    param: write_level: Level to write into file (default=Debug)
+    :param verbose: Shows logs
+    :param stream_level: Level to output (default=Debug)
+    :param log_file: Writes logs to file
+    :param write_level: Level to write into file (default=Debug)
     """
 
     # Getting logger of object
