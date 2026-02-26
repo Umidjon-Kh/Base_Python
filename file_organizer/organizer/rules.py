@@ -30,11 +30,9 @@ class RuleManager:
             self.load_from_file(rules_file)
         # 3.Action: Adding user rules to attr
         if rules:
-            # Iterating rules to add in right format
-            for ext, folder in rules.items():
-                ext = self._ext_formatter(ext)
-                self.__rules[ext] = folder
-
+            # Normalizing rules
+            normalized = self.normalize_dict(rules)
+            self.__rules.update(normalized)
         # 4.Action: Setting default rules
         if not self.__rules:
             self.load_defaults()
@@ -45,7 +43,19 @@ class RuleManager:
         """Retruns copy of rules"""
         return self.__rules.copy()
 
-    # To loaf rules from file
+    # Normalizing rules in dict
+    @staticmethod
+    def normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
+        """Returns fight format of dict of rules"""
+        normalized = {}
+        for ext, folder in data.items():
+            ext = ext.lower()
+            if not ext.startswith('.'):
+                ext = '.' + ext
+            normalized[ext] = folder
+        return normalized
+
+    # To load rules from file
     def load_from_file(self, file_path: Path) -> None:
         """Loading rules from JSON-file"""
         try:
@@ -56,11 +66,7 @@ class RuleManager:
                 if not isinstance(data, dict):
                     raise RuleError('File of rules must contain dict')
                 # normalizing extentions in dict
-                normalized = {}
-                for ext, folder in data.items():
-                    # Updatig to lower case format
-                    ext = self._ext_formatter(ext)
-                    normalized[ext] = folder
+                normalized = self.normalize_dict(data)
                 self.__rules.update(normalized)
         except (IOError, json.JSONDecodeError) as exc:
             raise RuleError(f'Error while loading rules from:\nFile: {file_path}\nError: {exc}')
@@ -100,14 +106,4 @@ class RuleManager:
     def get_folder(self, extension: str) -> str:
         """Returns ext folder name in dict of rules"""
         ext = extension.lower()
-        # if not ext.startswith('.'):
-        #     ext = '.' + ext
         return self.__rules.get(ext, 'Others')
-
-    # Turn ext to right format
-    @staticmethod
-    def _ext_formatter(ext: str) -> str:
-        """Returns extension in right format"""
-        if not ext.startswith('.'):
-            ext = '.' + ext
-        return ext.lower()

@@ -19,7 +19,7 @@ def setup_logger(
 
     # Getting logger of object
     logger = logging.getLogger('file_organizer')
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
 
     # Format of logs
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
