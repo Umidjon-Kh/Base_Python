@@ -18,7 +18,7 @@ def setup_logger(
     """
 
     # Getting logger of object
-    logger = logging.getLogger('file_organizer')
+    logger = logging.getLogger('organizer')
     logger.setLevel(logging.DEBUG)
 
     # Format of logs

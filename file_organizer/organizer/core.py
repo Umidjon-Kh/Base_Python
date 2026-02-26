@@ -95,7 +95,7 @@ class Organizer:
             # 2.Action moving file to dest
             # 1.Scenario: If file is already in destination path
             if file_path.parent == target_dir:
-                logger.debug(f'Skipping (already in destionation folder): {file_path}')
+                logger.debug(f'Skipping (already in destionation folder):\n\t\t\t└──> {file_path}')
                 self.stats['skipped'] += 1
                 return
 
