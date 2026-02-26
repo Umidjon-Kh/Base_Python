@@ -67,8 +67,9 @@ class Organizer:
                     self._process_file(item, dest_root)
 
         # Logging stats
+        mv = 'moved' if not self.dry_run else 'planned'
         logger.info(
-            f'Final stats — Moved: {self.stats['moved' if not self.dry_run else 'planned']},'
+            f'Final stats — Moved: {self.stats[mv]},'
             f' Skipped: {self.stats['skipped']},'
             f' Errors: {self.stats['errors']}'
         )

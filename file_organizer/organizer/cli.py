@@ -51,6 +51,7 @@ Examples:
     parser.add_argument(
         '--stream-level',
         '-sl',
+        default='info',
         choices=['debug', 'info', 'warning', 'error', 'critical'],
         help='Log level for console output (default: debug)',
     )
