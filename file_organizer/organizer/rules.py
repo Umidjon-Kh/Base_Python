@@ -61,7 +61,7 @@ class RuleManager:
                     normalized[ext] = folder
                 self.__rules.update(normalized)
         except (IOError, json.JSONDecodeError) as exc:
-            raise RuleError(f'Error while loading rules from {file_path}: {exc}')
+            raise RuleError(f'Error while loading rules from:\nFile: {file_path}\nError: {exc}')
 
     # Loads defaults rules
     def load_defaults(self):
