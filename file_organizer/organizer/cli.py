@@ -17,7 +17,10 @@ def create_parser():
         epilog='''
 Examples:
   %(prog)s --version    # shows version of organizer
-  %(prog)s ~/Downloads                     # sort files in-place, console level: INFO (default)
+  %(prog)s ~/Downloads          # sort files in-place, console level: INFO (default)
+  %(prog)s ~/Downloads --clean-source
+  %(prog)s ~/Downloads -CS
+                        # sort files in-place, console level: INFO (default), cleans all dirs in source path
   %(prog)s ~/Downloads --dest ~/Sorted     # move files to ~/Sorted
   %(prog)s ~/Downloads --recursive         # process subfolders recursively
   %(prog)s ~/Downloads --dry-run           # dry run (no actual moves)
@@ -26,7 +29,7 @@ Examples:
   %(prog)s ~/Downloads --log-file app.log      # write logs to file (default level DEBUG)
   %(prog)s ~/Downloads --log-file app.log --write-level error  # file logs only errors
   %(prog)s ~/Downloads --stream-level warning --log-file app.log --write-level debug
-                    # console: warnings+, file: all messages
+                                    # console: warnings+, file: all messages
         ''',
     )
 
@@ -34,6 +37,7 @@ Examples:
     parser.add_argument('source', help='Source folder to organize')
 
     # Optional arguments
+    parser.add_argument('--clean-source', '-CS', action='store_true', help='Cleans all empty dirs in source')
     parser.add_argument('--dest', '-d', help='Destination root folder (default: source folder)')
     parser.add_argument('--rules', '-r', help='Custom User rules')
     parser.add_argument('--rule-file', help='JSON file with custom rules')
@@ -105,7 +109,11 @@ def main() -> None:
 
         # Create organizer instance
         organizer = Organizer(
-            rule_manager=rule_manager, dest_root=dest_path, recursive=args.recursive, dry_run=args.dry_run
+            rule_manager=rule_manager,
+            dest_root=dest_path,
+            recursive=args.recursive,
+            dry_run=args.dry_run,
+            clean_source=args.clean_source
         )
 
         # Run the organization
