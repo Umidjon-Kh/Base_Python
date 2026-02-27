@@ -3,7 +3,7 @@ from sys import stdout
 from typing import Optional
 
 
-def setup_logger(
+def standard_logger(
     stream_level: str = 'debug',
     log_file: Optional[str] = None,
     write_level: str = 'debug',

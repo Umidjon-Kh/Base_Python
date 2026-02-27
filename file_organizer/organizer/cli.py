@@ -5,7 +5,7 @@ from pathlib import Path
 
 # project modules
 from . import __version__
-from .loggers import setup_logger
+from .loggers import standard_logger
 from .src import Organizer, RuleManager, ConfigManager, OrganizerError
 
 
@@ -91,7 +91,7 @@ def main() -> None:
     configs = ConfigManager(args, args.config).configs
 
     # 1.Action: Set up logging
-    logger = setup_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
+    logger = standard_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
 
     # 2.Main Action: core (file organizing)
     try:
