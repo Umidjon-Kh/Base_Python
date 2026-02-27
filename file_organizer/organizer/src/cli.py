@@ -5,12 +5,13 @@ from pathlib import Path
 
 # project modules
 from . import __version__
-from .logger import setup_logger
+from ..loggers.logger import setup_logger
 from .rules import RuleManager
 from .core import Organizer
 from .exceptions import OrganizerError
 
 
+# Adding args and description for --help
 def create_parser():
     parser = argparse.ArgumentParser(
         description='File organizer — sorts files into folders based on their extensions.',
@@ -71,6 +72,7 @@ Examples:
     return parser
 
 
+# Main code running in cli mode
 def main() -> None:
     parser = create_parser()
     args = parser.parse_args()
@@ -113,7 +115,7 @@ def main() -> None:
             dest_root=dest_path,
             recursive=args.recursive,
             dry_run=args.dry_run,
-            clean_source=args.clean_source
+            clean_source=args.clean_source,
         )
 
         # Run the organization
