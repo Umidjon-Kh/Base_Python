@@ -1,1 +1,0 @@
-"""Configs of organizer"""

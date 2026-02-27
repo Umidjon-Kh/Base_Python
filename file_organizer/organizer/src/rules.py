@@ -46,7 +46,7 @@ class RuleManager:
     # Normalizing rules in dict
     @staticmethod
     def normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
-        """Returns fight format of dict of rules"""
+        """Returns right format of dict of rules"""
         normalized = {}
         for ext, folder in data.items():
             ext = ext.lower()
@@ -57,7 +57,7 @@ class RuleManager:
 
     # To load rules from file
     def load_from_file(self, file_path: Path) -> None:
-        """Loading rules from JSON-file"""
+        """Loads rules from JSON-file"""
         try:
             with open(file_path, encoding='utf-8') as file:
                 data = json.load(file)

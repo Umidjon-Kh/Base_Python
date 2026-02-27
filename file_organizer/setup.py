@@ -38,9 +38,9 @@ setup(
     # Additional files to include inside the package
     package_data={
         'organizer': [
-            'organizer/config/default_rules.json',
+            'organizer/configs/default_rules.json',
             'organizer/loggers/logger.py',
-            'organizer/configs/config.py',
+            'organizer/configs/default_configs.json',
         ],  # relative to package root
     },
     # Classifiers for PyPI (optional but recommended)

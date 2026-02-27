@@ -1,0 +1,11 @@
+{
+    ""
+    "dest": "/home/user/Organized",
+    "recursive": true,
+    "dry_run": false,
+    "clean_source": true,
+    "rules": "{'.txt': 'Texts', '.py': 'Scripts'}",
+    "log_file": "/home/user/organizer.log",
+    "stream_level": "debug",
+    "write_level": "info"
+}
