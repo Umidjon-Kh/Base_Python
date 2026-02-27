@@ -1,11 +1,12 @@
 {
-    ""
-    "dest": "/home/user/Organized",
+    "dest": null,
     "recursive": true,
     "dry_run": false,
     "clean_source": true,
-    "rules": "{'.txt': 'Texts', '.py': 'Scripts'}",
-    "log_file": "/home/user/organizer.log",
+    "rules": null,
+    "rules_file": null,
+    "combine": false,
     "stream_level": "debug",
-    "write_level": "info"
+    "log_file": null,
+    "write_level": "debug"
 }

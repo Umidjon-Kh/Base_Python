@@ -31,7 +31,7 @@ class RuleManager:
         # 3.Action: Adding user rules to attr
         if rules:
             # Normalizing rules
-            normalized = self.normalize_dict(rules)
+            normalized = self._normalize_dict(rules)
             self.__rules.update(normalized)
         # 4.Action: Setting default rules
         if not self.__rules:
@@ -45,7 +45,7 @@ class RuleManager:
 
     # Normalizing rules in dict
     @staticmethod
-    def normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
+    def _normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
         """Returns right format of dict of rules"""
         normalized = {}
         for ext, folder in data.items():
@@ -66,13 +66,13 @@ class RuleManager:
                 if not isinstance(data, dict):
                     raise RuleError('File of rules must contain dict')
                 # normalizing extentions in dict
-                normalized = self.normalize_dict(data)
+                normalized = self._normalize_dict(data)
                 self.__rules.update(normalized)
         except (IOError, json.JSONDecodeError) as exc:
             raise RuleError(f'Error while loading rules from:\nFile: {file_path}\nError: {exc}')
 
     # Loads defaults rules
-    def load_defaults(self):
+    def load_defaults(self) -> None:
         """
         Loads default rules in default_rules.json if it exists
         else loads basic integrated rules

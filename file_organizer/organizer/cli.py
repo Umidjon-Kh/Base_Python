@@ -4,11 +4,9 @@ from ast import literal_eval
 from pathlib import Path
 
 # project modules
-from .. import __version__
-from ..loggers import setup_logger
-from .rules import RuleManager
-from .core import Organizer
-from .exceptions import OrganizerError
+from . import __version__
+from .loggers import setup_logger
+from .src import Organizer, RuleManager, OrganizerError
 
 
 # Adding args and description for --help
@@ -41,7 +39,7 @@ Examples:
     parser.add_argument('--clean-source', '-C', action='store_true', help='Cleans all empty dirs in source')
     parser.add_argument('--dest', '-d', help='Destination root folder (default: source folder)')
     parser.add_argument('--rules', '-r', help='Custom User rules')
-    parser.add_argument('--rule-file', help='JSON file with custom rules')
+    parser.add_argument('--rules-file', help='JSON file with custom rules')
     parser.add_argument(
         '--combine',
         '-c',
@@ -91,6 +89,7 @@ def main() -> None:
     try:
         source_path = Path(args.source).resolve()
         dest_path = Path(args.dest).resolve() if args.dest else None
+        rules_file = Path(args.rules_file).resolve() if args.rules_file else None
 
         # Initialize rule manager with rule args
         # Converting rules to dict
@@ -107,7 +106,7 @@ def main() -> None:
                 logger.exception(f'Wrong format --rules:\n{exc}')
                 sys.exit(1)
 
-        rule_manager = RuleManager(rules=rules_dict, rules_file=args.rule_file, combine=args.combine)
+        rule_manager = RuleManager(rules=rules_dict, rules_file=rules_file, combine=args.combine)
 
         # Create organizer instance
         organizer = Organizer(
