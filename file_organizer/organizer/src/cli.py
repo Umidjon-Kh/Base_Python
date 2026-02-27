@@ -4,8 +4,8 @@ from ast import literal_eval
 from pathlib import Path
 
 # project modules
-from . import __version__
-from ..loggers.logger import setup_logger
+from .. import __version__
+from ..loggers import setup_logger
 from .rules import RuleManager
 from .core import Organizer
 from .exceptions import OrganizerError

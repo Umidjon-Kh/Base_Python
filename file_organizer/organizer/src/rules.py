@@ -10,7 +10,7 @@ class RuleManager:
     # Slots for instance
     __slots__ = ('__rules',)
 
-    DEFAULT_RULES_FILE = Path(__file__).parent.parent / 'config' / 'default_rules.json'
+    DEFAULT_RULES_FILE = Path(__file__).parent.parent / 'configs' / 'default_rules.json'
 
     # Initializing rules and rules file
     def __init__(
