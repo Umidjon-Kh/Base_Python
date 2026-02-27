@@ -6,7 +6,7 @@ from pathlib import Path
 # project modules
 from . import __version__
 from .loggers import setup_logger
-from .src import Organizer, RuleManager, OrganizerError
+from .src import Organizer, RuleManager, ConfigManager, OrganizerError
 
 
 # Adding args and description for --help
@@ -74,30 +74,24 @@ Examples:
 def main() -> None:
     parser = create_parser()
     args = parser.parse_args()
+    configs = ConfigManager(args, args.config).configs
 
     # 1.Action: Set up logging
-    # If dry run mode is on we need to set
-    # stream level to debug to show all changes
-    if args.dry_run:
-        stream_level = 'debug'
-    else:
-        stream_level = args.stream_level
-
-    logger = setup_logger(stream_level=stream_level, log_file=args.log_file, write_level=args.write_level)
+    logger = setup_logger(configs['stream_level'], configs['log_file'], configs['log_file'])
 
     # 2.Main Action: core (file organizing)
     try:
-        source_path = Path(args.source).resolve()
-        dest_path = Path(args.dest).resolve() if args.dest else None
-        rules_file = Path(args.rules_file).resolve() if args.rules_file else None
+        source_path = Path(configs['source']).resolve()
+        dest_path = Path(configs['dest']).resolve() if args.dest else None
+        rules_file = Path(configs['rules_file']).resolve() if args.rules_file else None
 
         # Initialize rule manager with rule args
         # Converting rules to dict
         rules_dict = None
-        if args.rules:
+        if configs['rules']:
             try:
                 # Using literal_eval from ast to safety converting string to dict
-                rules_dict = literal_eval(args.rules)
+                rules_dict = literal_eval(configs['rules'])
                 if not isinstance(rules_dict, dict):
                     logger.error('Argument --rules must be dict object, example: "{\'.txt\': \'Docs\'}"')
                     sys.exit(1)
@@ -106,15 +100,15 @@ def main() -> None:
                 logger.exception(f'Wrong format --rules:\n{exc}')
                 sys.exit(1)
 
-        rule_manager = RuleManager(rules=rules_dict, rules_file=rules_file, combine=args.combine)
+        rule_manager = RuleManager(configs['rules'], rules_file, configs['combine'])
 
         # Create organizer instance
         organizer = Organizer(
             rule_manager=rule_manager,
             dest_root=dest_path,
-            recursive=args.recursive,
-            dry_run=args.dry_run,
-            clean_source=args.clean_source,
+            recursive=configs['recursive'],
+            dry_run=configs['dry_run'],
+            clean_source=configs['clean_source'],
         )
 
         # Run the organization

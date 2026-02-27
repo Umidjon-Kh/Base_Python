@@ -9,21 +9,29 @@ class ConfigManager:
 
     __slots__ = ('__configs',)
 
-    DEFAULT_CONFIGS_FILE = Path(__file__).parent.parent / 'configs' / 'deafult_configs.json'
+    DEFAULT_CONFIGS_FILE = Path(__file__).parent.parent / 'configs' / 'default_configs.json'
 
     # Initializing configs
-    def __init__(self, config_path: Optional[Path]) -> None:
+    def __init__(self, args: Optional[Any], config_path: Optional[Path]) -> None:
         """
         Initializes configs dict and
         calls methods to load and normalizes all data in config dict
         """
 
+        self.__configs = {}
         # 1.Action: getting defalut configs
         self.load_defaults()
         # 2.Action: if config path is not None
         # Updating config with custom configs
         if config_path:
             self.load_from_file(config_path)
+
+        if args:
+            self.__configs.update(vars(args))
+            self.__configs.pop('config', None)
+
+        if self.__configs['source'] is None:
+            raise ConfigError('Error configuration must contain path for argument source')
 
     # Getter for private attr
     @property
@@ -59,6 +67,7 @@ class ConfigManager:
         except (IOError, json.JSONDecodeError) as exc:
             raise ConfigError(f'Error while loading configs from:\nFile: {file_path}\nError: {exc}')
 
+    # Loading default configurations
     def load_defaults(self) -> None:
         """
         Loads default cinfigs in default_configs.json if it exits
@@ -73,6 +82,7 @@ class ConfigManager:
             # Integrated configs
             self.__configs.update(
                 {
+                    'source': None,
                     'dest': None,
                     'recursive': True,
                     'dry_run': False,

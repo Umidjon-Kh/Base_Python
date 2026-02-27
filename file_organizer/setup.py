@@ -30,7 +30,7 @@ setup(
     entry_points={
         'console_scripts': [
             # After installation, 'organizer' command will call main() from organizer.cli
-            'organizer = organizer.src.cli:main',
+            'organizer = organizer.cli:main',
         ],
     },
     # Include non-code files specified in package_data

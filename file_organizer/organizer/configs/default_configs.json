@@ -1,4 +1,5 @@
 {
+    "source": null,
     "dest": null,
     "recursive": true,
     "dry_run": false,
