@@ -1,5 +1,12 @@
 from .core import Organizer
 from .rules import RuleManager
-from .exceptions import OrganizerError
+from .exceptions import OrganizerError, RuleError, PathError, ConfigError
 
-__all__ = ['Organizer', 'RuleManager', 'OrganizerError']
+__all__ = [
+    'Organizer',
+    'RuleManager',
+    'OrganizerError',
+    'RuleError',
+    'PathError',
+    'ConfigError'
+]

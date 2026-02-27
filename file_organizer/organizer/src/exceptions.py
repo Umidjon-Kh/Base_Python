@@ -14,3 +14,9 @@ class PathError(OrganizerError):
     """Error related to paths"""
 
     pass
+
+
+class ConfigError(OrganizerError):
+    """Error while loading Custom Configs"""
+
+    pass

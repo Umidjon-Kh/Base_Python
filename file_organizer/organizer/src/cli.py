@@ -6,9 +6,7 @@ from pathlib import Path
 # project modules
 from .. import __version__
 from ..loggers import setup_logger
-from .rules import RuleManager
-from .core import Organizer
-from .exceptions import OrganizerError
+from . import RuleManager, Organizer, OrganizerError
 
 
 # Adding args and description for --help
