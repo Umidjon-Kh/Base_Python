@@ -15,21 +15,32 @@ def create_parser():
         description='File organizer — sorts files into folders based on their extensions.',
         epilog='''
 Examples:
-  %(prog)s --version    # shows version of organizer
-  %(prog)s ~/Downloads          # sort files in-place, console level: INFO (default)
-  %(prog)s ~/Downloads --clean-source
-  %(prog)s ~/Downloads -CS
-                        # sort files in-place, console level: INFO (default), cleans all dirs in source path
-  %(prog)s ~/Downloads --dest ~/Sorted     # move files to ~/Sorted
-  %(prog)s ~/Downloads --recursive         # process subfolders recursively
-  %(prog)s ~/Downloads --dry-run           # dry run (no actual moves)
-  %(prog)s ~/Downloads --rules my_rules.json  # use custom rules from JSON file
-  %(prog)s ~/Downloads --stream-level debug   # detailed console output (DEBUG level)
-  %(prog)s ~/Downloads --log-file app.log      # write logs to file (default level DEBUG)
-  %(prog)s ~/Downloads --log-file app.log --write-level error  # file logs only errors
-  %(prog)s ~/Downloads --stream-level warning --log-file app.log --write-level debug
-                                    # console: warnings+, file: all messages
-        ''',
+  %(prog)s --version                          # show version
+  %(prog)s ~/Downloads                         # sort files in‑place
+  %(prog)s ~/Downloads --dest ~/Sorted         # move to ~/Sorted
+  %(prog)s ~/Downloads --recursive              # process subfolders
+  %(prog)s ~/Downloads --dry-run                # preview only
+  %(prog)s ~/Downloads --clean-source           # remove empty dirs after
+
+  # Custom rules
+  %(prog)s ~/Downloads --rules "{'.txt': 'Texts', '.py': 'Scripts'}"
+  %(prog)s ~/Downloads --rules-file my_rules.json
+
+  # Combine default and custom rules
+  %(prog)s ~/Downloads --rules "{'.md': 'Docs'}" --combine
+
+  # Configuration file (all options can be stored in JSON)
+  %(prog)s ~/Downloads --config my_config.json
+
+  # Logging control
+  %(prog)s ~/Downloads --log-file app.log --stream-level debug
+  %(prog)s ~/Downloads --log-file app.log --write-level error
+
+Priority of settings (higher overrides lower):
+  1. Command line arguments
+  2. Configuration file (if given)
+  3. Built‑in defaults
+''',
     )
 
     # Positional argument
@@ -80,7 +91,7 @@ def main() -> None:
     configs = ConfigManager(args, args.config).configs
 
     # 1.Action: Set up logging
-    logger = setup_logger(configs['stream_level'], configs['log_file'], configs['log_file'])
+    logger = setup_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
 
     # 2.Main Action: core (file organizing)
     try:
@@ -103,7 +114,7 @@ def main() -> None:
                 logger.exception(f'Wrong format --rules:\n{exc}')
                 sys.exit(1)
 
-        rule_manager = RuleManager(configs['rules'], rules_file, configs['combine'])
+        rule_manager = RuleManager(rules_dict, rules_file, configs['combine'])
 
         # Create organizer instance
         organizer = Organizer(
