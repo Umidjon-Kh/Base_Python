@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Dict, Optional
-from . import RuleError
+from .exceptions import RuleError
 
 
 class RuleManager:

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 from typing import Any, Dict, Optional
-from ..src import ConfigError
+from .exceptions import ConfigError
 
 
 class ConfigManager:

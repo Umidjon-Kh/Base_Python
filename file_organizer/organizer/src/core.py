@@ -2,7 +2,8 @@ import logging
 from pathlib import Path
 from shutil import move
 from typing import Optional
-from . import RuleManager, PathError
+from .rules import RuleManager
+from .exceptions import PathError
 
 logger = logging.getLogger(__name__)
 
