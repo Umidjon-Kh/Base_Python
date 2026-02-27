@@ -36,8 +36,15 @@ Examples:
     parser.add_argument('source', help='Source folder to organize')
 
     # Optional arguments
+    # Modes
     parser.add_argument('--clean-source', '-C', action='store_true', help='Cleans all empty dirs in source')
     parser.add_argument('--dest', '-d', help='Destination root folder (default: source folder)')
+    parser.add_argument('--recursive', '-R', action='store_true', help='Process subfolders recursively')
+    parser.add_argument('--dry-run', '-n', action='store_true', help='Simulate without moving files')
+    # Configs and version
+    parser.add_argument('--config', help='Path to custom User configuration')
+    parser.add_argument('--version', '-V', action='version', version=f'%(prog)s {__version__}')
+    # Rules
     parser.add_argument('--rules', '-r', help='Custom User rules')
     parser.add_argument('--rules-file', help='JSON file with custom rules')
     parser.add_argument(
@@ -46,9 +53,6 @@ Examples:
         action='store_true',
         help='Combine deaults rules and custom User rules (needs User custom rules to combine)',
     )
-    parser.add_argument('--recursive', '-R', action='store_true', help='Process subfolders recursively')
-    parser.add_argument('--dry-run', '-n', action='store_true', help='Simulate without moving files')
-
     # Logging related arguments
     parser.add_argument('--log-file', help='Path to log file (if not set, logs go only to console)')
     parser.add_argument(
@@ -65,7 +69,6 @@ Examples:
         choices=['debug', 'info', 'warning', 'error', 'critical'],
         help='Log level for file output (default: debug; only used if --log-file is given)',
     )
-    parser.add_argument('--version', '-V', action='version', version=f'%(prog)s {__version__}')
 
     return parser
 
