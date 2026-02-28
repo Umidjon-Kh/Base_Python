@@ -9,5 +9,6 @@
     "combine": false,
     "stream_level": "debug",
     "log_file": null,
-    "write_level": "debug"
+    "write_level": "debug",
+    "logger": "standard"
 }

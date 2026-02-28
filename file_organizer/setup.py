@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from setuptools import setup, find_packages
+from setuptools import setup, find_packages  # type: ignore
 
 # Read the long description from README.md
 with open('README.md', 'r', encoding='utf-8') as fh:
@@ -23,9 +23,9 @@ setup(
     # Automatically find all packages (directories with __init__.py)
     packages=find_packages(),
     # Python version requirement
-    python_requires='>=3.6',
+    python_requires='>=3.10',
     # External dependencies (none, only standard library)
-    install_requires=[],
+    install_requires=['loguru'],
     # Entry point to create a command-line script
     entry_points={
         'console_scripts': [
@@ -39,8 +39,8 @@ setup(
     package_data={
         'organizer': [
             'organizer/configs/default_rules.json',
-            'organizer/loggers/logger.py',
             'organizer/configs/default_configs.json',
+            'organizer/loggers',
         ],  # relative to package root
     },
     # Classifiers for PyPI (optional but recommended)

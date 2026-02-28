@@ -93,5 +93,6 @@ class ConfigManager:
                     'stream_level': 'debug',
                     'log_file': None,
                     'write_level': 'debug',
+                    'logger': 'standard',
                 }
             )

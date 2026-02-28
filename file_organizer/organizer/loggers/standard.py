@@ -1,5 +1,5 @@
 import logging
-from sys import stdout
+from sys import stderr
 from typing import Optional
 
 
@@ -25,7 +25,7 @@ def standard_logger(
     formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
     # ------------ Handling for console -----------
-    console_handler = logging.StreamHandler(stdout)
+    console_handler = logging.StreamHandler(stderr)
     # Setting level and format
     console_handler.setLevel(getattr(logging, stream_level.upper(), logging.DEBUG))
     console_handler.setFormatter(formatter)

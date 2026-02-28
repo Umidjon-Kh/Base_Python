@@ -40,7 +40,15 @@ class Organizer:
         self.recursive = recursive
         self.dry_run = dry_run
         self.clean_source = clean_source
-        self.stats = {'moved': 0, 'skipped': 0, 'errors': 0, 'moves': 0, 'removed': 0, 'removes': 0}
+        self.stats = {
+            'moved': 0,
+            'skipped': 0,
+            'removed': 0,
+            'moves': 0,
+            'skips': 0,
+            'removes': 0,
+            'errors': 0,
+        }
 
     # Organizer core method
     def organize(self, source: Path) -> None:
@@ -75,12 +83,12 @@ class Organizer:
         # Logging stats
         mv = 'moved' if not self.dry_run else 'moves'
         rm = 'removed' if not self.dry_run else 'removes'
+        sk = 'skipped' if not self.dry_run else 'skips'
         logger.info(
-            'Final stats:'
-            f'\t{mv.title()} - {self.stats[mv]},'
-            f'\t{rm.title()} - {self.stats[rm]},'
-            f'\tSkipped - {self.stats['skipped']},'
-            f' Errors - {self.stats['errors']}'
+            'Final stats:\n'
+            f'\t{mv.title()} - {self.stats[mv]},\n'
+            f'\t{rm.title()} - {self.stats[rm]},\n'
+            f'\t{sk.title()} - {self.stats[sk]}'
         )
 
     # processing files
@@ -97,7 +105,8 @@ class Organizer:
             # 1.Scenario: If file is already in destination path
             if file_path.parent == target_dir:
                 logger.debug(f'Skipping (already in destionation folder):\n\t\t\t└──> {file_path}')
-                self.stats['skipped'] += 1
+                sk = 'skipped' if not self.dry_run else 'skips'
+                self.stats[sk] += 1
                 return
 
             # handling name collisions

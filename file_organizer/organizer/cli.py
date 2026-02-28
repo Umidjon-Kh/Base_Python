@@ -5,7 +5,7 @@ from pathlib import Path
 
 # project modules
 from . import __version__
-from .loggers import standard_logger
+from .loggers import standard_logger, loguru_logger
 from .src import Organizer, RuleManager, ConfigManager, OrganizerError
 
 
@@ -35,6 +35,7 @@ Examples:
   # Logging control
   %(prog)s ~/Downloads --log-file app.log --stream-level debug
   %(prog)s ~/Downloads --log-file app.log --write-level error
+  %(prog)s ~/Downloads --logger loguru
 
 Priority of settings (higher overrides lower):
   1. Command line arguments
@@ -47,11 +48,11 @@ Priority of settings (higher overrides lower):
     parser.add_argument('source', help='Source folder to organize')
 
     # Optional arguments
-    # Modes
-    parser.add_argument('--clean-source', '-C', action='store_true', help='Cleans all empty dirs in source')
     parser.add_argument('--dest', '-d', help='Destination root folder (default: source folder)')
+    # Modes
     parser.add_argument('--recursive', '-R', action='store_true', help='Process subfolders recursively')
     parser.add_argument('--dry-run', '-n', action='store_true', help='Simulate without moving files')
+    parser.add_argument('--clean-source', '-C', action='store_true', help='Cleans all empty dirs in source')
     # Configs and version
     parser.add_argument('--config', help='Path to custom User configuration')
     parser.add_argument('--version', '-V', action='version', version=f'%(prog)s {__version__}')
@@ -80,6 +81,12 @@ Priority of settings (higher overrides lower):
         choices=['debug', 'info', 'warning', 'error', 'critical'],
         help='Log level for file output (default: debug; only used if --log-file is given)',
     )
+    parser.add_argument(
+        '--logger',
+        default='standard',
+        choices=['loguru', 'standard'],
+        help='Choose logger to show and write log messages ',
+    )
 
     return parser
 
@@ -91,7 +98,11 @@ def main() -> None:
     configs = ConfigManager(args, args.config).configs
 
     # 1.Action: Set up logging
-    logger = standard_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
+    if configs['logger'] == 'standard':
+        logger = standard_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
+    # elif configs['logger'] == 'loguru':
+    else:
+        logger = loguru_logger(configs['stream_level'], configs['log_file'], configs['write_level'])
 
     # 2.Main Action: core (file organizing)
     try:
