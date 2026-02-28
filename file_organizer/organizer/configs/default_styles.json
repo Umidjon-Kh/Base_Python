@@ -1,0 +1,14 @@
+{
+    "console": {
+        "minimalistic": "<green>{time:HH:mm:ss}</green> | <level>{message}</level>",
+        "simple": "<level>{level: <8}</level> | <cyan>{name}</cyan> | <level>{message}</level>",
+        "modern": "<fg #808080>[</fg #808080><level>{level: <8}</level><fg #808080>]</fg #808080> <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <level>{message}</level>",
+        "split": "{time:HH:mm:ss} | {level} | {message}"
+    },
+    "file": {
+        "minimalistic": "{time:HH:mm:ss} | {message}",
+        "simple": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name} | {message}",
+        "modern": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}.{function}:{line} | {message}",
+        "split": "{time:HH:mm:ss} | {level} | {message}"
+    }
+}
