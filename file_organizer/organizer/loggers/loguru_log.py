@@ -53,8 +53,8 @@ def loguru_logger(
     # 2.Action: Customizing logger to stream
     console_format = (
         '<green>{time:YYYY-MM-DD HH:mm:ss}</green> | '
-        '<cyan><level>{level: <8}</level></cyan> | '
-        '<yellow>{name}</yellow>:<blue>{function}</blue>:<blue>{line}</blue> | '
+        '<level>{level: <8}</level> | '
+        '<cyan>{name}</cyan>:<blue>{function}</blue>:<yellow>{line}</yellow> | '
         '<level>{message}</level>'
     )
     logger.add(stderr, format=console_format, level=stream_level.upper(), colorize=True)  # thread of output
