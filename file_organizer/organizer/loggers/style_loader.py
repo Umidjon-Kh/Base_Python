@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Project modules
-from ..src import PathError
+from ..src import PathError, ConfigError
 
 
 class StyleLoader:
@@ -15,7 +15,7 @@ class StyleLoader:
 
     __slots__ = ('default_styles_path', '_styles_cache')
 
-    def __init__(self, default_styles_path: Optional[str] = None):
+    def __init__(self, default_styles_path: Optional[str] = None) -> None:
         if default_styles_path and (p := Path(default_styles_path).resolve()).exists():
             self.default_styles_path = p
         else:
@@ -24,7 +24,7 @@ class StyleLoader:
 
     def load_styles(self, custom_path: Optional[str] = None) -> Dict:
         """Loads style from file (Custom or Default)"""
-        # Checking custom path is not None and exist or not
+        # Checking custom path is not None and exists or not
         if custom_path and (p := Path(custom_path).resolve()).exists():
             path = p
         else:
@@ -35,6 +35,9 @@ class StyleLoader:
         try:
             with open(path, encoding='utf-8') as file:
                 self._styles_cache = json.load(file)
+            # Chacking styles in right type or not
+            if not isinstance(self._styles_cache, dict):
+                raise ConfigError('File of styles must contain dict')
             return self._styles_cache
         except (IOError, json.JSONDecodeError) as exc:
             raise PathError(f"Failed to load styles: {exc}")
