@@ -1,0 +1,23 @@
+{
+    "simple": [
+    "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | ",
+    "<level>{level: <8}</level> | ",
+    "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | ",
+    "<level>{message}</level>"
+],
+    "frame": [
+    "<green>{time:YYYY-MM-DD HH:mm:ss}</green>\n",
+    "┌─[<level>{level: <8}</level>]─[{name}.{function}:{line}]\n",
+    "│ <level>{message}</level>\n",
+    "└────────────────────────────"
+],
+    "splitted": [
+    "<fg #0051FF>╭─</fg #0051FF> <level>{level: ^5}</level> <fg #FFFFFF>at</fg #FFFFFF> <green>{time:HH:mm:ss}</green>\n",
+    "<fg #0051FF>│</fg #0051FF> <level>{message}</level>\n<fg #0051FF>│</fg #0051FF>\n",
+    "<fg #0051FF>╰─</fg #0051FF> from <blue>{name}</blue>:<cyan>{function}</cyan>:<cyan>{line}</cyan>"
+],
+    "minimalistic": [
+    "<fg #0051FF>[</fg #0051FF><level>{level: <4}</level><fg #0051FF>]</fg #0051FF> ",
+    "| <level>{message}</level>"
+]
+}
