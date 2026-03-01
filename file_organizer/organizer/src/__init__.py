@@ -1,8 +1,12 @@
-from .validator import ConfigValidator
+from .config_manager import ConfigManager
+from .core import Organizer
+from .rule_manager import RuleManager
 from .exceptions import PathError, ConfigError, OrganizerError, RuleError
 
 __all__ = [
-    'ConfigValidator',
+    'ConfigManager',
+    'Organizer',
+    'RuleManager',
     'OrganizerError',
     'RuleError',
     'ConfigError',

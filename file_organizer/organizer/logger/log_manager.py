@@ -16,12 +16,13 @@ class LogManager:
     5) Choose colors of logs msg and etc..
     """
 
-    __slots__ = ('__config', '__style_loader')
+    __slots__ = ('__config', '__loader', '__normalizer')
 
     def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
         # if config got in Path type
-        self.__config = ConfigNormalizer().data_normalizer(data=config or {}, mg='log_mg')
-        self.__style_loader = Loader()
+        self.__normalizer = ConfigNormalizer()
+        self.__loader = Loader()
+        self.__config = self.__normalizer.data_normalizer(data=config or {}, mg='log_mg')
 
     # Main log configurator that calls other methdos
     def configure(self) -> None:
@@ -91,6 +92,6 @@ class LogManager:
         If styles_data is not None, gets from it else loads from file
         """
         if data is None:
-            data = self.__style_loader.load_from_file('styles', path)
+            data = self.__loader.load_from_file('styles', path)
         handler_styles = data.get(handler, {})
         return handler_styles.get(style) or handler_styles.get('simple')

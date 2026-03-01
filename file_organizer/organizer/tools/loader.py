@@ -31,6 +31,8 @@ class Loader:
                 path = cls.STYLES
             elif which == 'rules':
                 path = cls.RULES
+            elif which == 'config':
+                path = cls.CONFIG
             else:
                 path = cls.CONFIG
         # Trying to load data
