@@ -35,6 +35,11 @@ class RuleManager:
         if not self.__rules:
             self.__rules.update(self.__rule_loader.load_rules())
 
+    def get_folder(self, extension: str) -> str:
+        """Returns ext folder name in dict of rules"""
+        ext = extension.lower()
+        return self.__rules.get(ext, 'Others')
+
     @staticmethod
     def _normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
         """Returns right format dict of rules"""
