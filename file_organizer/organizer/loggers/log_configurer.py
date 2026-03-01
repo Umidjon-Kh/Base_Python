@@ -17,11 +17,12 @@ class LogConfigurer:
     5) Choose colors of logs msg and etc..
     """
 
-    __slots__ = ('__config',)
+    __slots__ = ('__config', '__style_loader')
 
     def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
         # if config got in Path type
         self.__config = ConfigValidator().validate_logging_config(config or {})
+        self.__style_loader = StyleLoader()
 
     # Main log configurator that calls other methdos
     def configure(self) -> None:
@@ -51,10 +52,10 @@ class LogConfigurer:
         colorize = cfg.get('colorize', True)
         # Style format of logs
         style = cfg.get('style', None)
-        styles_data = cfg.get('style_data', None)
-        styles_path = cfg.get('style_path', None)
+        styles_data = cfg.get('styles_data', None)
+        styles_path = cfg.get('styles_path', None)
         # Getting style from style_data
-        style_to_use = StyleLoader().get_style('file', style, styles_data, styles_path)
+        style_to_use = self.__style_loader.get_style('console', style, styles_data, styles_path)
 
         logger.add(stderr, format=style_to_use, level=level, colorize=colorize)  # type: ignore
 
@@ -68,14 +69,14 @@ class LogConfigurer:
         styles_data = cfg.get('styles_data', None)
         styles_path = cfg.get('styles_path', None)
         # Getting style from style_data
-        style_to_use = StyleLoader().get_style('file', style, styles_data, styles_path)
+        style_to_use = self.__style_loader.get_style('file', style, styles_data, styles_path)
 
         rotation = cfg.get('rotation', None)
         retention = cfg.get('retention', None)
         compression = cfg.get('compression', None)
 
         logger.add(
-            log_file=cfg['path'],
+            cfg['path'],
             format=style_to_use,  # type: ignore
             level=level,
             rotation=rotation,

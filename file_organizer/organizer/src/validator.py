@@ -34,7 +34,7 @@ class ConfigValidator:
                 ):
                     raise ConfigError(f'Logger Configuration param "{param}" is unacceptable')
             # Checking file path added or not
-            if config['file'].get('path', None):
+            if not config['file'].get('path'):
                 raise ConfigError('File logger enabled but not \'path\' specified')
         # If it doesnt gets config we just return dict
         return config or {}

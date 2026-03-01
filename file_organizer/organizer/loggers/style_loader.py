@@ -30,7 +30,7 @@ class StyleLoader:
         else:
             path = self.default_styles_path
         # If we cached styles we return it
-        if self._styles_cache is not None:
+        if self._styles_cache:
             return self._styles_cache
         try:
             with open(path, encoding='utf-8') as file:
