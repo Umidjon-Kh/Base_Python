@@ -3,11 +3,10 @@ from loguru import logger
 from typing import Any, Dict, Optional
 
 # Project modules
-from .style_loader import StyleLoader
-from ..src import ConfigValidator
+from ..tools import ConfigNormalizer, Loader
 
 
-class LogConfigurer:
+class LogManager:
     """
     Configurator for Loguru to customize logs
     1) Set logs default min stream level
@@ -21,8 +20,8 @@ class LogConfigurer:
 
     def __init__(self, config: Optional[Dict[str, Any]] = None) -> None:
         # if config got in Path type
-        self.__config = ConfigValidator().validate_logging_config(config or {})
-        self.__style_loader = StyleLoader()
+        self.__config = ConfigNormalizer().data_normalizer(data=config or {}, mg='log_mg')
+        self.__style_loader = Loader()
 
     # Main log configurator that calls other methdos
     def configure(self) -> None:
@@ -54,8 +53,8 @@ class LogConfigurer:
         style = cfg.get('style', None)
         styles_data = cfg.get('styles_data', None)
         styles_path = cfg.get('styles_path', None)
-        # Getting style from style_data
-        style_to_use = self.__style_loader.get_style('console', style, styles_data, styles_path)
+        # Getting style from style_data or style_path
+        style_to_use = self.get_style('console', style, styles_data, styles_path)
 
         logger.add(stderr, format=style_to_use, level=level, colorize=colorize)  # type: ignore
 
@@ -68,8 +67,8 @@ class LogConfigurer:
         style = cfg.get('style', None)
         styles_data = cfg.get('styles_data', None)
         styles_path = cfg.get('styles_path', None)
-        # Getting style from style_data
-        style_to_use = self.__style_loader.get_style('file', style, styles_data, styles_path)
+        # Getting style from style_data or stye_path
+        style_to_use = self.get_style('file', style, styles_data, styles_path)
 
         rotation = cfg.get('rotation', None)
         retention = cfg.get('retention', None)
@@ -83,3 +82,15 @@ class LogConfigurer:
             retention=retention,
             compression=compression,
         )
+
+    def get_style(
+        self, handler: str, style: Optional[str] = None, data: Optional[Dict] = None, path: Optional[str] = None
+    ) -> Optional[str]:
+        """
+        Returns string of format and handler style
+        If styles_data is not None, gets from it else loads from file
+        """
+        if data is None:
+            data = self.__style_loader.load_from_file('styles', path)
+        handler_styles = data.get(handler, {})
+        return handler_styles.get(style) or handler_styles.get('simple')

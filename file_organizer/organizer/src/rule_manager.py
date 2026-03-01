@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 # Project modules
-from .rule_loader import RuleLoader
+from ..tools import ConfigNormalizer, Loader
 
 
 # class to configure rules of organizer
@@ -12,41 +12,32 @@ class RuleManager:
     to Rules, User Rules always Priority higher than default rules
     """
 
-    __slots__ = ('__rules', '__rule_loader')
+    __slots__ = ('__rules', '__loader', '__normalizer')
 
     def __init__(
         self, rules: Optional[Dict[str, str]] = None, rules_path: Optional[str] = None, combine: bool = False
     ) -> None:
 
         self.__rules = {}
-        self.__rule_loader = RuleLoader()
+        self.__loader = Loader()
+        self.__normalizer = ConfigNormalizer()
         # 1.Action: combines default and user custom rules
         if combine:
-            self.__rules.update(self.__rule_loader.load_rules())
+            self.__rules.update(self.__loader.load_from_file('rules'))
         # 2.Action: Loading rules form file if it added
         if rules_path:
-            normalized = self._normalize_dict(self.__rule_loader.load_rules(rules_path))
+            data = self.__loader.load_from_file('rules', rules_path)
+            normalized = self.__normalizer.data_normalizer(data, 'rule_mg')
             self.__rules.update(normalized)
         # 3.Action: Adding user rules to dict
         if rules:
-            normalized = self._normalize_dict(rules)
+            normalized = self.__normalizer.data_normalizer(rules, 'rule_mg')
             self.__rules.update(normalized)
         # 4.Action: Setting default rules if not entered
         if not self.__rules:
-            self.__rules.update(self.__rule_loader.load_rules())
+            self.__rules.update(self.__loader.load_from_file('rules'))
 
     def get_folder(self, extension: str) -> str:
         """Returns ext folder name in dict of rules"""
         ext = extension.lower()
         return self.__rules.get(ext, 'Others')
-
-    @staticmethod
-    def _normalize_dict(data: Dict[str, str]) -> Dict[str, str]:
-        """Returns right format dict of rules"""
-        normalized = {}
-        for ext, folder in data.items():
-            ext = ext.lower()
-            if not ext.startswith('.'):
-                ext = '.' + ext
-            normalized[ext] = folder
-        return normalized

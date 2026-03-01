@@ -1,5 +1,5 @@
 """Logger package Initsialization"""
 
-from .logger import LogConfigurer
+from .log_manager import LogManager
 
-__all__ = ['LogConfigurer']
+__all__ = ['LogManager']
