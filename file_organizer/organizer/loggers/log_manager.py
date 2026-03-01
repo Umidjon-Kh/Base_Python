@@ -75,7 +75,7 @@ class LogManager:
         compression = cfg.get('compression', None)
 
         logger.add(
-            cfg['path'],
+            cfg.get('path', '~/Downloads/app.log'),
             format=style_to_use,  # type: ignore
             level=level,
             rotation=rotation,
