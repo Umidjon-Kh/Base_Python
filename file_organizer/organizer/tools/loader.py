@@ -19,7 +19,7 @@ class Loader:
     CONFIG = Path(__file__).parent.parent / 'configs' / 'default_config.json'
 
     @classmethod
-    def load_from_file(cls, which: str, custom_path: Optional[str] = None) -> Dict:
+    def load_from_json(cls, which: str, custom_path: Optional[str] = None) -> Dict:
         """Loads data from file (Custom or Default)"""
         # Checking custom path is not None and exists or not
         if custom_path is not None:

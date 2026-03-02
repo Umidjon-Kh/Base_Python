@@ -22,7 +22,8 @@ class LogManager:
         # if config got in Path type
         self.__normalizer = ConfigNormalizer()
         self.__loader = Loader()
-        self.__config = self.__normalizer.data_normalizer(data=config or {}, mg='log_mg')
+        self.__config = self.__normalizer.data_normalizer(config or {}, 'log_mg')
+        self.configure()
 
     # Main log configurator that calls other methdos
     def configure(self) -> None:
@@ -37,7 +38,7 @@ class LogManager:
 
         # 3.Action: Configuring file if enabled
         file_cfg = self.__config.get('file', {})
-        if file_cfg.get('enabled', True):
+        if file_cfg.get('enabled', False):
             self._setup_file(file_cfg)
 
         # 4.Action: If not added handlers config att all, adds only stream logger
@@ -92,6 +93,6 @@ class LogManager:
         If styles_data is not None, gets from it else loads from file
         """
         if data is None:
-            data = self.__loader.load_from_file('styles', path)
+            data = self.__loader.load_from_json('styles', path)
         handler_styles = data.get(handler, {})
         return handler_styles.get(style) or handler_styles.get('simple')
