@@ -29,14 +29,14 @@ class Normalizer:
         normalized_params = {}
         for param, value in params.items():
             if cfg_type == 'rule_cfg':
-                if param == 'rules':
+                if param == 'rules' and not isinstance(value, dict):
                     value = cls.rule_checker(value)
                     value = cls.rules_normalizer(value)
                 elif param == 'combine':
                     param, value = cls.boolean_checker(param, value)
                 else:
                     value = cls.rules_normalizer(value)
-            if cfg_type == 'logger_cfg':
+            if cfg_type == 'logger_cfg' and param in ('console', 'file'):
                 param, value = cls.log_param_normalizer(param, value)
             if cfg_type == 'core_cfg':
                 if param not in ('source', 'dest'):
@@ -105,9 +105,7 @@ class Normalizer:
                     raise ConfigError(f'LogManager file handler config param \'{param}\' is uneccaptable')
                 if param == 'enabled' and not isinstance(value, bool):
                     raise ConfigError(f'Param: \'{param}\' value must be bool type')
-                if param == 'style_data' and not isinstance(value, bool):
-                    raise ConfigError(f'Param: \'{param}\' value must be in a dict format')
-
+            # Checking path if file handler is enabled
             if params.get('path', None) is None:
                 raise ConfigError('File handler config must contain path to save if its enabled')
         return handler, params

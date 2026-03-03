@@ -33,10 +33,10 @@ class Loader:
             elif which == 'config':
                 path = cls.CONFIG
             else:
-                raise PathError('Which one to load data is not defined')
+                raise ConfigError('Which one to load data is not defined')
         # Trying to load data
         try:
-            with open(path, encoding='uf-8') as file:
+            with open(path, encoding='utf-8') as file:
                 data = load(file)
             # checking data in right format or not
             if not isinstance(data, dict):

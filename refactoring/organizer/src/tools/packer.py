@@ -17,7 +17,8 @@ class Packer:
     @staticmethod
     def pack_args(args: Any) -> Dict[str, Any]:
         """Returns args converted to dict format and combined with default config pack"""
-        config = {}
+        # Loading default configs
+        default_config = Loader().load_from_json('config')
         # Converting args to dict
         args_dict = vars(args)
 
@@ -48,9 +49,10 @@ class Packer:
             config = Loader().load_from_json('config', cfg_file)
             if not isinstance(config, dict):
                 raise ConfigError('Config file must contain dict format data')
+            default_config.update(config)
 
-        # Setting all params to config
-        config.update(
+        # UPdating all default configs
+        default_config.update(
             {
                 'core_cfg': {
                     'source': source,
@@ -66,8 +68,4 @@ class Packer:
                 },
             }
         )
-        # Packing all configs in one with defaults
-        default_config = Loader().load_from_json('config')
-        default_config.update(config)
-
         return default_config

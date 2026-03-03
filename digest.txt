@@ -1,0 +1,611 @@
+Directory structure:
+└── umidjon-kh-base_python/
+    ├── README.md
+    └── refactoring/
+        ├── README.md
+        ├── MANIFEST.in
+        ├── setup.py
+        └── organizer/
+            ├── __init__.py
+            ├── __main__.py
+            ├── configs/
+            │   ├── default_configs.json
+            │   ├── default_rules.json
+            │   └── default_styles.json
+            └── src/
+                ├── README.md
+                ├── __init__.py
+                ├── cli.py
+                ├── core.py
+                ├── runner.py
+                ├── exceptions/
+                │   ├── __init__.py
+                │   └── exceptions.py
+                ├── managers/
+                │   ├── README.md
+                │   ├── __init__.py
+                │   ├── config_mg.py
+                │   ├── log_mg.py
+                │   └── rule_mg.py
+                └── tools/
+                    ├── README.md
+                    ├── __init__.py
+                    ├── loader.py
+                    ├── normalizer.py
+                    └── packer.py
+
+================================================
+FILE: README.md
+================================================
+# Base_Python
+In this Repository  I introduce all my pet and mini projects on my way to learn python
+
+
+
+================================================
+FILE: refactoring/README.md
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/MANIFEST.in
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/setup.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/__init__.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/__main__.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/configs/default_configs.json
+================================================
+{
+    "core_cfg": {
+            "source": null,
+            "dest": null,
+            "recursive": false,
+            "dry_run": false,
+            "clean": false
+    },
+    "rule_cfg": {
+        "rules": null,
+        "rules_file": null,
+        "combine": false 
+    },
+    "logger_cfg": {
+        "console": {
+            "enabled": true,
+            "level": "debug",
+            "style": "simple",
+            "colorize": true
+        },
+        "file": {
+            "enabled": false,
+            "path": null,
+            "level": "debug",
+            "style": "simple",
+            "rotation": null,
+            "retention": null,
+            "compression": null
+        },
+        "styles_data": null,
+        "styles_file": null
+    }
+}
+
+
+================================================
+FILE: refactoring/organizer/configs/default_rules.json
+================================================
+{
+    ".jpg": "Images",
+    ".jpeg": "Images",
+    ".png": "Images",
+    ".gif": "Images",
+    ".bmp": "Images",
+    ".txt": "Documents",
+    ".pdf": "Documents",
+    ".docx": "Documents",
+    ".xlsx": "Documents",
+    ".pptx": "Documents",
+    ".mp3": "Music",
+    ".wav": "Music",
+    ".flac": "Music",
+    ".mp4": "Videos",
+    ".avi": "Videos",
+    ".mkv": "Videos",
+    ".zip": "Archives",
+    ".rar": "Archives",
+    ".7z": "Archives",
+    ".tar": "Archives",
+    ".gz": "Archives"
+}
+
+
+================================================
+FILE: refactoring/organizer/configs/default_styles.json
+================================================
+{
+    "console": {
+        "minimalistic": "<green>{time:HH:mm:ss}</green> | <level>{message}</level>",
+        "simple": "<level>{level: <8}</level> | <cyan>{name}</cyan> | <level>{message}</level>",
+        "modern": "<fg #808080>[</fg #808080><level>{level: <8}</level><fg #808080>]</fg #808080> <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | <level>{message}</level>",
+        "split": "{time:HH:mm:ss} | {level} | {message}"
+    },
+    "file": {
+        "minimalistic": "{time:HH:mm:ss} | {message}",
+        "simple": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name} | {message}",
+        "modern": "{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}.{function}:{line} | {message}",
+        "split": "{time:HH:mm:ss} | {level} | {message}"
+    }
+}
+
+
+================================================
+FILE: refactoring/organizer/src/README.md
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/__init__.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/cli.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/core.py
+================================================
+class Organizer:
+    pass
+
+
+================================================
+FILE: refactoring/organizer/src/runner.py
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/exceptions/__init__.py
+================================================
+"""Exceptions Package Initializer"""
+
+from .exceptions import OrganizerError, ConfigError, RuleError, PathError
+
+__all__ = ['OrganizerError', 'ConfigError', 'RuleError', 'PathError']
+
+
+
+================================================
+FILE: refactoring/organizer/src/exceptions/exceptions.py
+================================================
+"""All Exceptions for Organizer package"""
+
+
+class OrganizerError(BaseException):
+    """
+    Main core excpetions triggers all sub errors:
+    1) RuleError: wrong format of rules error
+    2) PathError: wrong path or smething went wrong while loading from file error
+    3) StyleError: wrong format of styles error
+    4) ConfigError: wrong format of config params error
+    """
+
+    pass
+
+
+class ConfigError(OrganizerError):
+    """Triggers if format of config params is wrong"""
+
+    pass
+
+
+class RuleError(ConfigError):
+    """Triggers if format of rules is wrong"""
+
+    pass
+
+
+class StyleError(ConfigError):
+    """Triggers if format of styles for log is wrong"""
+
+    pass
+
+
+class PathError(ConfigError):
+    """Triggers if something goes wrong while loading"""
+
+    pass
+
+
+
+================================================
+FILE: refactoring/organizer/src/managers/README.md
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/managers/__init__.py
+================================================
+"""All Managers Package Initializer"""
+
+from .config_mg import ConfigManager
+from .rule_mg import RuleManager
+from .log_mg import LogManager
+
+__all__ = ['ConfigManager', 'RuleManager', 'LogManager']
+
+
+
+================================================
+FILE: refactoring/organizer/src/managers/config_mg.py
+================================================
+from typing import Optional, Any, Dict
+
+# Project modules
+from ..tools import Normalizer, Packer, Loader
+
+
+class ConfigManager:
+    """
+    Manages all Configs for:
+    1) Core
+    2) RuleMnager
+    3) LogManager
+    """
+
+    __slots__ = ('__configs', '__normalizer', '__packer', '__loader')
+
+    def __init__(self, args: Optional[Any], custom_cfg_path: Optional[str]) -> None:
+        """
+        Initialize configs from cli args and custom_cfg_path to load
+        Calls method to load, normalize and pack all params into a one config
+        """
+
+        self.__normalizer = Normalizer()
+        self.__packer = Packer()
+        self.__loader = Loader()
+        # self.__configs = {}
+
+        # 1.Action: Loading all configs and packing into a one cfg
+        if args is not None:
+            configs = self.__packer.pack_args(args)
+        elif custom_cfg_path is not None:
+            configs = self.__packer.pack_custom_cfg(custom_cfg_path)
+        else:
+            configs = self.__loader.load_from_json('config')
+
+        # 2.Action: Loading all custom rules and styles
+        # Rules
+        if configs['rule_cfg']['rules_file'] is not None:
+            rules_file = configs['rule_cfg'].pop('rules_file')
+            configs['rule_cfg']['rules_data'] = self.__loader.load_from_json('rules', rules_file)
+        # Log Styles
+        if configs['logger_cfg']['styles_file'] is not None:
+            styles_file = configs['logger_cfg'].pop('styles_file')
+            styles_data = configs['logger_cfg']['styles_data'] or {}
+            styles_data.update(self.__loader.load_from_json('styles', styles_file))
+            configs['logger_cfg']['styles_data'] = styles_data
+
+        # 3.Action: Normalizing all data
+        configs = self.__normalizer.normalize_all_data(configs)
+
+        # 4.Action: Creating real configs dict with corrected and loaded data
+        # Adding custom rules from args to rules_data
+        configs['rule_cfg']['rules_data'].update(configs['rule_cfg'].pop('rules'))
+        # Creating real configs
+        self.__configs = configs
+
+    @property
+    def configs(self) -> Dict[str, Any]:
+        """Returns copy of configs"""
+        return self.__configs.copy()
+
+
+
+================================================
+FILE: refactoring/organizer/src/managers/log_mg.py
+================================================
+class LogManager:
+    pass
+
+
+================================================
+FILE: refactoring/organizer/src/managers/rule_mg.py
+================================================
+class RuleManager:
+    pass
+
+
+================================================
+FILE: refactoring/organizer/src/tools/README.md
+================================================
+[Empty file]
+
+
+================================================
+FILE: refactoring/organizer/src/tools/__init__.py
+================================================
+"""All Tools Package Initializer"""
+
+from .loader import Loader
+from .normalizer import Normalizer
+from .packer import Packer
+
+__all__ = ['Loader', 'Normalizer', 'Packer']
+
+
+
+================================================
+FILE: refactoring/organizer/src/tools/loader.py
+================================================
+from json import load, JSONDecodeError
+from pathlib import Path
+from typing import Dict, Optional
+# Project modules
+from ..exceptions import PathError, ConfigError
+
+
+class Loader:
+    """
+    Loads content os JSON file and returns if in dict format to:
+    1) RuleManager: to load all custom user rules
+    2) LogManager: to load all styles format
+    3) ConfigManager: to load all config params for all managers and returns them
+    """
+
+    STYLES = Path(__file__).parent.parent.parent / 'configs' / 'default_styles.json'
+    RULES = Path(__file__).parent.parent.parent / 'configs' / 'default_rules.json'
+    CONFIG = Path(__file__).parent.parent.parent / 'configs' / 'default_configs.json'
+
+    @classmethod
+    def load_from_json(cls, which: str, custom_path: Optional[str] = None) -> Dict:
+        """Loads data from JSON-file (Custom or Default)"""
+        # Checking custom path is not None and exists or not
+        if custom_path is not None:
+            path = Path(custom_path).resolve()
+            if not path.exists():
+                raise PathError(f'{path.name} is not exists: {path}')
+        else:
+            if which == 'styles':
+                path = cls.STYLES
+            elif which == 'rules':
+                path = cls.RULES
+            elif which == 'config':
+                path = cls.CONFIG
+            else:
+                raise PathError('Which one to load data is not defined')
+        # Trying to load data
+        try:
+            with open(path, encoding='uf-8') as file:
+                data = load(file)
+            # checking data in right format or not
+            if not isinstance(data, dict):
+                raise ConfigError('File must contain configs in dict format')
+            return data
+        except (IOError, JSONDecodeError) as exc:
+            raise PathError(f'Failed to load data: {exc}')
+
+
+
+================================================
+FILE: refactoring/organizer/src/tools/normalizer.py
+================================================
+from ast import literal_eval
+from typing import Dict, Any, Tuple
+
+# project modules
+from ..exceptions import ConfigError, RuleError
+
+
+class Normalizer:
+    """Normalizes all configs params and returns in right format"""
+
+    @classmethod
+    def normalize_all_data(cls, data: Dict[str, Any]) -> Dict[str, Any]:
+        """Returns data configs in normalized format"""
+        normalized_data = {}
+        for cfg_type, params in data.items():
+            params = cls.data_normalizer(params, cfg_type)
+            normalized_data[cfg_type] = params
+        return normalized_data
+
+    @classmethod
+    def data_normalizer(cls, params: Dict[str, Any], cfg_type: str) -> Dict[str, Any]:
+        """
+        Returns normalized params for configs type:
+        1) Core configs: Main organizer params
+        2) RuleManager configs: dict of rules
+        3) LogManager configs: dict of log params
+        """
+
+        normalized_params = {}
+        for param, value in params.items():
+            if cfg_type == 'rule_cfg':
+                if param == 'rules':
+                    value = cls.rule_checker(value)
+                    value = cls.rules_normalizer(value)
+                elif param == 'combine':
+                    param, value = cls.boolean_checker(param, value)
+                else:
+                    value = cls.rules_normalizer(value)
+            if cfg_type == 'logger_cfg':
+                param, value = cls.log_param_normalizer(param, value)
+            if cfg_type == 'core_cfg':
+                if param not in ('source', 'dest'):
+                    param, value = cls.boolean_checker(param, value)
+            normalized_params[param] = value
+        return normalized_params
+
+    @staticmethod
+    def boolean_checker(param: str, value: Any) -> Tuple[str, bool]:
+        if not isinstance(value, bool):
+            if value.lower() == 'true':
+                value = True
+            elif value.lower() == 'false':
+                value = False
+            else:
+                raise ConfigError(f'Param: \'{param}\' must be boolean type (true/false)')
+        return param, value
+
+    @staticmethod
+    def rule_checker(rules: Any) -> Dict[str, str]:
+        """Checks and returns rules from args if it in right format"""
+        try:
+            rules_dict = literal_eval(rules)
+            if not isinstance(rules, dict):
+                raise ConfigError('Param \'rules\' value must be in dict format(\'.png\': \'PNG\')')
+            return rules_dict
+        except (SyntaxError, ValueError) as exc:
+            raise RuleError(f'Wrong format of rules param: {exc}')
+
+    @staticmethod
+    def rules_normalizer(rules: Dict[str, str]) -> Dict[str, str]:
+        """Normalizes all rules dict: extention to work properly"""
+        normalized_rules = {}
+        for ext, folder in rules.items():
+            ext = ext.lower()
+            if not ext.startswith('.'):
+                ext = '.' + ext
+            normalized_rules[ext] = folder
+        return normalized_rules
+
+    @staticmethod
+    def log_param_normalizer(handler: str, params) -> Tuple[str, Dict]:
+        """Returns validated and right formated of configs params for log"""
+        # Validating console log handler configs
+        if handler == 'console' and params.get('enabled', True):
+            for param, value in params.items():
+                if param not in ('enabled', 'level', 'colorize', 'style'):
+                    raise ConfigError(f'LogManager console handler config param \'{param}\' is unacceptable')
+                if param in ('colorize', 'enabled'):
+                    if not isinstance(value, bool):
+                        raise ConfigError(f'Param: \'{param}\' value must be bool type')
+                if param == 'styles_data':
+                    if not isinstance(value, dict):
+                        raise ConfigError(f'Param: \'{param}\' must be in a dict format')
+        elif handler == 'file' and params.get('enabled', False):
+            for param, value in params.items():
+                if param not in (
+                    'enabled',
+                    'level',
+                    'style',
+                    'path',
+                    'rotation',
+                    'retention',
+                    'compression',
+                ):
+                    raise ConfigError(f'LogManager file handler config param \'{param}\' is uneccaptable')
+                if param == 'enabled' and not isinstance(value, bool):
+                    raise ConfigError(f'Param: \'{param}\' value must be bool type')
+                if param == 'style_data' and not isinstance(value, bool):
+                    raise ConfigError(f'Param: \'{param}\' value must be in a dict format')
+
+            if params.get('path', None) is None:
+                raise ConfigError('File handler config must contain path to save if its enabled')
+        return handler, params
+
+
+
+================================================
+FILE: refactoring/organizer/src/tools/packer.py
+================================================
+from typing import Dict, Any
+
+# Project modules
+from ..exceptions import ConfigError
+from .loader import Loader
+
+
+class Packer:
+    @staticmethod
+    def pack_custom_cfg(custom_cfg_path: str) -> Dict[str, Any]:
+        """Returns custom and default config combined and packed in one"""
+        custom_config = Loader().load_from_json('config', custom_cfg_path)
+        default_config = Loader().load_from_json('config')
+        default_config.update(custom_config)
+        return default_config
+
+    @staticmethod
+    def pack_args(args: Any) -> Dict[str, Any]:
+        """Returns args converted to dict format and combined with default config pack"""
+        config = {}
+        # Converting args to dict
+        args_dict = vars(args)
+
+        # Main Organizer config params
+        source = args_dict.get('source', None)
+        # Checking source is not None
+        if source is None:
+            raise ConfigError('Arguments must contain Source param to run organizer')
+        dest = args_dict.get('dest', None)
+        dry_run = args_dict.get('dry_run', False)
+        recursive = args_dict.get('recursive', False)
+        clean = args_dict.get('clean', False)
+
+        # Rule params
+        rules = args_dict.get('rules', None)
+        rules_file = args_dict.get('rules_file', None)
+        combine = args_dict.get('combine', False)
+
+        # Log params
+        stream_level = args_dict.get('stream_level', 'debug')
+        log_file = args_dict.get('log_file', None)
+        enabled = True if log_file else False
+        write_level = args_dict.get('write_level', 'debug')
+        style = args.get('style', 'simple')
+        cfg_file = args.get('config', None)
+        # If cfg is not none loading file from path
+        if cfg_file is not None:
+            config = Loader().load_from_json('config', cfg_file)
+            if not isinstance(config, dict):
+                raise ConfigError('Config file must contain dict format data')
+
+        # Setting all params to config
+        config.update(
+            {
+                'core_cfg': {
+                    'source': source,
+                    'dest': dest,
+                    'recursive': recursive,
+                    'dry_run': dry_run,
+                    'clean': clean,
+                },
+                'rule_cfg': {'rules': rules, 'rules_file': rules_file, 'combine': combine},
+                'logger_cfg': {
+                    'console': {'level': stream_level, 'style': style},
+                    'file': {'enabled': enabled, 'path': log_file, 'level': write_level},
+                },
+            }
+        )
+        # Packing all configs in one with defaults
+        default_config = Loader().load_from_json('config')
+        default_config.update(config)
+
+        return default_config
+
+

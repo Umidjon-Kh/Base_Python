@@ -50,7 +50,9 @@ class ConfigManager:
 
         # 4.Action: Creating real configs dict with corrected and loaded data
         # Adding custom rules from args to rules_data
-        configs['rule_cfg']['rules_data'].update(configs['rule_cfg'].pop('rules'))
+        additional_rules = configs['rule_cfg'].pop('rules')
+        if additional_rules is not None:
+            configs['rule_cfg']['rules_data'].update(additional_rules)
         # Creating real configs
         self.__configs = configs
 
