@@ -1,4 +1,4 @@
-```markdown
+<!-- ```markdown -->
 # File Organizer
 
 A powerful command-line tool and Python library to automatically sort files into folders based on their extensions.  
