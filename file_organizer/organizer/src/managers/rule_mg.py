@@ -11,12 +11,8 @@ class RuleManager:
     __slots__ = ('__rules_data',)
 
     def __init__(self, config: Dict[str, Any]) -> None:
-        # Initializing a
-        rules_data = config.get('rules_data', {})
-        if config.get('combine', False):
-            default_rules = config.get('default_rules', {})
-            rules_data.update(default_rules)
-        self.__rules_data = config
+        # Initializing a rules
+        self.__rules_data = config.pop('rules_data', {})
 
     def get_folder(self, extension: str) -> str:
         """Returns ext folder name in dict of rules"""

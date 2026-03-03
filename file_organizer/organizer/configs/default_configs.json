@@ -27,6 +27,7 @@
             "retention": null,
             "compression": null
         },
+        "combine": false,
         "styles_data": null,
         "styles_file": null
     }

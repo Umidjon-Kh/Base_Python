@@ -1,3 +1,4 @@
+from .version import __version__
 from .src import (
     Organizer,
     main,
@@ -14,6 +15,7 @@ from .src import (
     PathError,
 )
 
+
 __all__ = [
     'Organizer',
     'main',
@@ -28,4 +30,5 @@ __all__ = [
     'ConfigError',
     'RuleError',
     'PathError',
+    '__version__',
 ]

@@ -33,31 +33,47 @@ class ConfigManager:
         else:
             configs = self.__loader.load_from_json('config')
 
-        # 2.Action: Loading all custom rules and styles
-        # Rules
-        if configs['rule_cfg']['rules_file'] is not None:
-            rules_file = configs['rule_cfg'].pop('rules_file')
-            configs['rule_cfg']['rules_data'] = self.__loader.load_from_json('rules', rules_file)
-        # Log Styles
-        if configs['logger_cfg']['styles_file'] is not None:
-            styles_file = configs['logger_cfg'].pop('styles_file')
-            styles_data = self.__loader.load_from_json('styles')
-            styles_data.update(self.__loader.load_from_json('styles', styles_file))
-            styles_data.update(configs['logger_cfg']['styles_data'] or {})
-            configs['logger_cfg']['styles_data'] = styles_data
+        # 2.Action: Loading default rules and styles dict
+        default_rules = self.__loader.load_from_json('rules')
+        default_styles = self.__loader.load_from_json('styles')
 
-        # 3.Action: Normalizing all data
-        configs = self.__normalizer.normalize_all_data(configs)
+        # 3.Action: getting all configs blocks
+        rules_cfg = configs.pop('rules_cfg', {})
+        logger_cfg = configs.pop('logger_cfg', {})
 
-        # 4.Action: Creating real configs dict with corrected and loaded data
-        # Adding custom rules from args to rules_data
-        additional_rules = configs['rule_cfg'].pop('rules')
-        if additional_rules is not None:
-            configs['rule_cfg']['rules_data'].update(additional_rules)
-        # Creating default rules dict and adding it to rule cfg
-        configs['rule_cfg']['default_rules'] = self.__loader.load_from_json('rules')
+        # 4.ACtion: Loading all data:
+        # rules and styles from custom path
+        # Checking rules file if its not None
+        rules_data = None
+        if rules_cfg.get('rules_file') is not None:
+            temp_data = self.__loader.load_from_json('rules', rules_cfg.pop('rules_file'))
+            if rules_cfg.pop('combine', False):
+                rules_data = self.__packer.deep_merge(default_rules, temp_data)
+            else:
+                rules_data = temp_data
+        # Setting new rules for rules config
+        rules_cfg['rules_data'] = rules_data if rules_data is not None else default_rules
+        configs['rules_cfg'] = rules_cfg
+        # Checking styles file if its not None
+        styles_data = None
+        if logger_cfg.get('style_file') is not None:
+            temp_file = self.__loader.load_from_json('sytles', logger_cfg.pop('styles_file'))
+            temp_data = logger_cfg.pop('styles_data', {}) or {}
+            data = self.__packer.deep_merge(temp_file, temp_data)
+            if logger_cfg.pop('combine', False):
+                styles_data = self.__packer.deep_merge(default_styles, data)
+            else:
+                styles_data = data
+        # Setting new styles for logger config
+        logger_cfg['styles_data'] = styles_data if styles_data is not None else default_styles
+        configs['logger_cfg'] = logger_cfg
+
+        # 5.Action: Normalzing and validating all cfg params
+        normalized_cfg = self.__normalizer.normalize_all_data(configs)
+        # After normalizing we need to add rules to rules data if it exists
+        normalized_cfg['rules_cfg']['rules_data'].update(configs['rules_cfg'].pop('rules', {}) or {})
         # Creating real configs
-        self.__configs = configs
+        self.__configs = normalized_cfg
 
     @property
     def configs(self) -> Dict[str, Any]:

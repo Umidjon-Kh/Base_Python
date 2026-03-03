@@ -45,9 +45,10 @@ class LogManager:
         level = cfg.get('level', 'debug').upper()
         # Style params
         style = cfg.get('style', 'simple')
-        style_to_use = self.__config.get('styles_data', {}).get('console', {}).get(style, "{time:HH:mm:ss} | {message}")
+        styles_data = self.__config.get('styles_data', {})
+        styles = styles_data.get('console', {})
+        style_to_use = styles.get(style, "{time:HH:mm:ss} | {message}")
         colorize = cfg.get('colorize', True)
-
         logger.add(stderr, format=style_to_use, level=level, colorize=colorize)
 
     def _setup_file(self, cfg: Dict[str, Any]) -> None:

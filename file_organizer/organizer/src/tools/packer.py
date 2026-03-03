@@ -6,16 +6,16 @@ from .loader import Loader
 
 
 class Packer:
-    @staticmethod
-    def pack_custom_cfg(custom_cfg_path: str) -> Dict[str, Any]:
+    @classmethod
+    def pack_custom_cfg(cls, custom_cfg_path: str) -> Dict[str, Any]:
         """Returns custom and default config combined and packed in one"""
         custom_config = Loader().load_from_json('config', custom_cfg_path)
         default_config = Loader().load_from_json('config')
-        default_config.update(custom_config)
-        return default_config
+        merged_config = cls.deep_merge(default_config, custom_config)
+        return merged_config
 
-    @staticmethod
-    def pack_args(args: Any) -> Dict[str, Any]:
+    @classmethod
+    def pack_args(cls, args: Any) -> Dict[str, Any]:
         """Returns args converted to dict format and combined with default config pack"""
         # Loading default configs
         default_config = Loader().load_from_json('config')
@@ -42,30 +42,43 @@ class Packer:
         log_file = args_dict.get('log_file', None)
         enabled = True if log_file else False
         write_level = args_dict.get('write_level', 'debug')
-        style = args.get('style', 'simple')
-        cfg_file = args.get('config', None)
+        style = args_dict.get('style', 'simple')
+        cfg_file = args_dict.get('config', None)
         # If cfg is not none loading file from path
         if cfg_file is not None:
-            config = Loader().load_from_json('config', cfg_file)
-            if not isinstance(config, dict):
+            custom_config = Loader().load_from_json('config', cfg_file)
+            if not isinstance(custom_config, dict):
                 raise ConfigError('Config file must contain dict format data')
-            default_config.update(config)
+            merged_config = cls.deep_merge(default_config, custom_config)
 
-        # UPdating all default configs
-        default_config.update(
-            {
-                'core_cfg': {
-                    'source': source,
-                    'dest': dest,
-                    'recursive': recursive,
-                    'dry_run': dry_run,
-                    'clean': clean,
-                },
-                'rule_cfg': {'rules': rules, 'rules_file': rules_file, 'combine': combine},
-                'logger_cfg': {
-                    'console': {'level': stream_level, 'style': style},
-                    'file': {'enabled': enabled, 'path': log_file, 'level': write_level},
-                },
-            }
-        )
-        return default_config
+        # Updating all default configs
+        custom_config = {
+            'core_cfg': {
+                'source': source,
+                'dest': dest,
+                'recursive': recursive,
+                'dry_run': dry_run,
+                'clean': clean,
+            },
+            'rule_cfg': {'rules': rules, 'rules_file': rules_file, 'combine': combine},
+            'logger_cfg': {
+                'console': {'level': stream_level, 'style': style},
+                'file': {'enabled': enabled, 'path': log_file, 'level': write_level},
+            },
+        }
+        merged_config = cls.deep_merge(default_config, custom_config)
+        return merged_config
+
+    @classmethod
+    def deep_merge(cls, base: Dict, update: Dict) -> Dict:
+        """
+        Recursively merges two Dictionaries.
+        Values from `update` override those in `base`.
+        """
+        result = base.copy()
+        for key, value in update.items():
+            if key in result and isinstance(result[key], Dict) and isinstance(value, Dict):
+                result[key] = cls.deep_merge(result[key], value)
+            else:
+                result[key] = value
+        return result

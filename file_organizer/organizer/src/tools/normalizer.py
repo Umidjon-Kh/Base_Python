@@ -28,8 +28,8 @@ class Normalizer:
 
         normalized_params = {}
         for param, value in params.items():
-            if cfg_type == 'rule_cfg':
-                if param == 'rules' and not isinstance(value, dict):
+            if cfg_type == 'rule_cfg' and value is not None:
+                if param == 'rules':
                     value = cls.rule_checker(value)
                     value = cls.rules_normalizer(value)
                 elif param == 'combine':
