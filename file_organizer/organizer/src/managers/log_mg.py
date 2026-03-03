@@ -54,16 +54,17 @@ class LogManager:
     def _setup_file(self, cfg: Dict[str, Any]) -> None:
         """Configuring and setting all params to file handler"""
         # Log params
-        level = cfg.get('level', 'debug')
+        level = cfg.get('level', 'debug').upper()
         rotation = cfg.get('rotation', None)
         retention = cfg.get('retention', None)
         compression = cfg.get('compression', None)
         # Style format of logs
         style = cfg.get('style', 'simple')
         style_to_use = self.__config.get('styles_data', {}).get('file', {}).get(style, "{time:HH:mm:ss} | {message}")
+        log_file = cfg.get('path')
 
         logger.add(
-            cfg.get('path', 'app.log'),
+            log_file,  # type: ignore
             format=style_to_use,
             level=level,
             rotation=rotation,
