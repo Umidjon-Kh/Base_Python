@@ -1,7 +1,3 @@
----
-
-### Русский
-
 ```markdown
 # File Organizer
 
