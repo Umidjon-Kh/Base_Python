@@ -1,4 +1,4 @@
-```markdown
+<!-- ```markdown -->
 # Managers
 
 This directory contains the core managers that handle different aspects of the File Organizer.
