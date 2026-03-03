@@ -12,7 +12,7 @@ class RuleManager:
 
     def __init__(self, config: Dict[str, Any]) -> None:
         # Initializing a rules
-        self.__rules_data = config.pop('rules_data', {})
+        self.__rules_data = config.pop('rules_data')
 
     def get_folder(self, extension: str) -> str:
         """Returns ext folder name in dict of rules"""

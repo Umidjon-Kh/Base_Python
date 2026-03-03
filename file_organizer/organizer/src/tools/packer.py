@@ -82,3 +82,10 @@ class Packer:
             else:
                 result[key] = value
         return result
+
+    # @classmethod
+    # def deep_print(cls, base, count=0):
+    #     for key, value in base.items():
+    #         print(f'{'----' * count}{key}: {value}')
+    #         if isinstance(value, dict):
+    #             cls.deep_print(value, count=count + 1)
