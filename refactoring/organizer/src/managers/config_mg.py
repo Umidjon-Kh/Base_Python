@@ -41,7 +41,8 @@ class ConfigManager:
         # Log Styles
         if configs['logger_cfg']['styles_file'] is not None:
             styles_file = configs['logger_cfg'].pop('styles_file')
-            styles_data = configs['logger_cfg']['styles_data'] or {}
+            styles_data = self.__loader.load_from_json('styles')
+            styles_data.update(configs['logger_cfg']['styles_data'] or {})
             styles_data.update(self.__loader.load_from_json('styles', styles_file))
             configs['logger_cfg']['styles_data'] = styles_data
 

@@ -88,9 +88,7 @@ class Normalizer:
                 if param in ('colorize', 'enabled'):
                     if not isinstance(value, bool):
                         raise ConfigError(f'Param: \'{param}\' value must be bool type')
-                if param == 'styles_data':
-                    if not isinstance(value, dict):
-                        raise ConfigError(f'Param: \'{param}\' must be in a dict format')
+        # Validating file log handler
         elif handler == 'file' and params.get('enabled', False):
             for param, value in params.items():
                 if param not in (
@@ -102,7 +100,7 @@ class Normalizer:
                     'retention',
                     'compression',
                 ):
-                    raise ConfigError(f'LogManager file handler config param \'{param}\' is uneccaptable')
+                    raise ConfigError(f'LogManager file handler config param \'{param}\' is unacceptable')
                 if param == 'enabled' and not isinstance(value, bool):
                     raise ConfigError(f'Param: \'{param}\' value must be bool type')
             # Checking path if file handler is enabled

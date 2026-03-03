@@ -316,7 +316,9 @@ class ConfigManager:
 
         # 4.Action: Creating real configs dict with corrected and loaded data
         # Adding custom rules from args to rules_data
-        configs['rule_cfg']['rules_data'].update(configs['rule_cfg'].pop('rules'))
+        additional_rules = configs['rule_cfg'].pop('rules')
+        if additional_rules is not None:
+            configs['rule_cfg']['rules_data'].update(additional_rules)
         # Creating real configs
         self.__configs = configs
 
@@ -398,10 +400,10 @@ class Loader:
             elif which == 'config':
                 path = cls.CONFIG
             else:
-                raise PathError('Which one to load data is not defined')
+                raise ConfigError('Which one to load data is not defined')
         # Trying to load data
         try:
-            with open(path, encoding='uf-8') as file:
+            with open(path, encoding='utf-8') as file:
                 data = load(file)
             # checking data in right format or not
             if not isinstance(data, dict):
@@ -446,14 +448,14 @@ class Normalizer:
         normalized_params = {}
         for param, value in params.items():
             if cfg_type == 'rule_cfg':
-                if param == 'rules':
+                if param == 'rules' and not isinstance(value, dict):
                     value = cls.rule_checker(value)
                     value = cls.rules_normalizer(value)
                 elif param == 'combine':
                     param, value = cls.boolean_checker(param, value)
                 else:
                     value = cls.rules_normalizer(value)
-            if cfg_type == 'logger_cfg':
+            if cfg_type == 'logger_cfg' and param in ('console', 'file'):
                 param, value = cls.log_param_normalizer(param, value)
             if cfg_type == 'core_cfg':
                 if param not in ('source', 'dest'):
@@ -522,9 +524,7 @@ class Normalizer:
                     raise ConfigError(f'LogManager file handler config param \'{param}\' is uneccaptable')
                 if param == 'enabled' and not isinstance(value, bool):
                     raise ConfigError(f'Param: \'{param}\' value must be bool type')
-                if param == 'style_data' and not isinstance(value, bool):
-                    raise ConfigError(f'Param: \'{param}\' value must be in a dict format')
-
+            # Checking path if file handler is enabled
             if params.get('path', None) is None:
                 raise ConfigError('File handler config must contain path to save if its enabled')
         return handler, params
@@ -553,7 +553,8 @@ class Packer:
     @staticmethod
     def pack_args(args: Any) -> Dict[str, Any]:
         """Returns args converted to dict format and combined with default config pack"""
-        config = {}
+        # Loading default configs
+        default_config = Loader().load_from_json('config')
         # Converting args to dict
         args_dict = vars(args)
 
@@ -584,9 +585,10 @@ class Packer:
             config = Loader().load_from_json('config', cfg_file)
             if not isinstance(config, dict):
                 raise ConfigError('Config file must contain dict format data')
+            default_config.update(config)
 
-        # Setting all params to config
-        config.update(
+        # UPdating all default configs
+        default_config.update(
             {
                 'core_cfg': {
                     'source': source,
@@ -602,10 +604,6 @@ class Packer:
                 },
             }
         )
-        # Packing all configs in one with defaults
-        default_config = Loader().load_from_json('config')
-        default_config.update(config)
-
         return default_config
 
 
