@@ -1,7 +1,7 @@
 """All Exceptions for Organizer package"""
 
 
-class OrganizerError(BaseException):
+class OrganizerError(Exception):
     """
     Main core excpetions triggers all sub errors:
     1) RuleError: wrong format of rules error

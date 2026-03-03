@@ -49,7 +49,7 @@ class Organizer:
 
         # 2.Action: Creating destination for organized folders
         dest = Path(self.dest).resolve() if self.dest else path
-        logger.info(f'Starting organizer: Source: {path}. Destination: {dest}')
+        logger.info(f'Starting organizer: Source: {path} Destination: {dest}')
         logger.info('Modes:')
         logger.info(f'[Recursive]: {self.recursive}')
         logger.info(f'[Dry Run]: {self.dry_run}')
@@ -97,7 +97,7 @@ class Organizer:
             # 2.Action: Moving file to destination
             # 1.Scenario: If file is already in destionation
             if file_path.parent == directory:
-                logger.debug(f'Skipping already in destionation folder: {file_path.stem}')
+                logger.debug(f'Skipping already in destination folder: {file_path.stem}')
                 self.stats['skipped'] += 1
                 return
 
@@ -150,7 +150,7 @@ class Organizer:
                             self.stats['removed'] += 1
                             continue
                         path.rmdir()
-                        logger.warning(f'Removed empty dir: {path}')
+                        logger.info(f'Removed empty dir: {path}')
                         self.stats['removed'] += 1
                 except PermissionError:
                     pass

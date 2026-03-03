@@ -60,7 +60,7 @@ class Normalizer:
         """Checks and returns rules from args if it in right format"""
         try:
             rules_dict = literal_eval(rules)
-            if not isinstance(rules, dict):
+            if not isinstance(rules_dict, dict):
                 raise ConfigError('Param \'rules\' value must be in dict format(\'.png\': \'PNG\')')
             return rules_dict
         except (SyntaxError, ValueError) as exc:
