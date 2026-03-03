@@ -108,5 +108,5 @@ def main() -> None:
     parser = create_parser()
     args = parser.parse_args()
 
-    # Everything is delegated to the runner
-    runner(args, config_path=args.config)
+    # Running script
+    runner(args, None)
