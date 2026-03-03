@@ -2,7 +2,7 @@ import argparse
 
 # project modules
 from .runner import runner
-from .. import __version__
+from . import __version__
 
 
 def create_parser() -> argparse.ArgumentParser:

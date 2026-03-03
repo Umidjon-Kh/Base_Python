@@ -24,7 +24,7 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     # Project home page / repository URL
-    url="https://github.com/Umidjon-kh/Base_Python/tree/main/refactoring",
+    url="https://github.com/Umidjon-kh/Base_Python/tree/main/file_organizer",
     # Automatically find all packages (directories with __init__.py)
     packages=find_packages(),
     # Python version requirement
