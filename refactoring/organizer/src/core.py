@@ -30,8 +30,8 @@ class Organizer:
         :param clean: If True cleans all source path empty folders after organizing
         :param stats: To shows action stats
         """
-
         self.rule_manager = rule_manager
+        self.source = config.get('source', '')
         self.dest = config.get('dest', None)
         self.recursive = config.get('recursive', False)
         self.dry_run = config.get('dry_run', False)
@@ -71,7 +71,7 @@ class Organizer:
         # 4.Action: If Clean mode is on
         if self.clean:
             # Removing all empty dirs if not in mode dry_run
-            self._rm_empty_dirs()
+            self._rm_empty_dirs(path)
 
         # 5.Action: Showing all actions in logging mode
         mv = 'Moved' if not self.dry_run else 'Moves'
@@ -132,7 +132,7 @@ class Organizer:
             logger.error(f'Error while processing | File: {file_path} | Error: {exc}')
             self.stats['errors'] += 1
 
-    def _rm_empty_dirs(self) -> None:
+    def _rm_empty_dirs(self, path) -> None:
         """
         Recursively removes empty directories
         After Organizing
@@ -140,7 +140,7 @@ class Organizer:
         """
 
         # Getting all path of dirs from source: from down to up
-        for path in sorted(self.source.rglob('*'), key=lambda p: len(p.parts), reverse=True):
+        for path in sorted(path.rglob('*'), key=lambda p: len(p.parts), reverse=True):
             if path.is_dir():
                 # Only removes dir if its empty
                 try:

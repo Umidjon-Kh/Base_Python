@@ -12,8 +12,10 @@ class RuleManager:
 
     def __init__(self, config: Dict[str, Any]) -> None:
         # Initializing a
+        rules_data = config.get('rules_data', {})
         if config.get('combine', False):
-            config['rules_data'].update(config.pop('default_rules', {}))
+            default_rules = config.get('default_rules', {})
+            rules_data.update(default_rules)
         self.__rules_data = config
 
     def get_folder(self, extension: str) -> str:
