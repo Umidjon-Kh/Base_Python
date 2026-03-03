@@ -37,7 +37,7 @@ class LogManager:
 
         # 4.Action: If not added handlers config att all, adds only stream logger
         if not logger._core.handlers:  # type: ignore
-            self._setup_file({})
+            self._setup_console({})
 
     def _setup_console(self, cfg: Dict[str, Any]) -> None:
         """Configuring and setting all params to stream handler"""
@@ -45,7 +45,7 @@ class LogManager:
         level = cfg.get('level', 'debug').upper()
         # Style params
         style = cfg.get('style', 'simple')
-        style_to_use = cfg.get(style, "{time:HH:mm:ss} | {message}")
+        style_to_use = self.__config.get('styles_data', {}).get('console', {}).get(style, "{time:HH:mm:ss} | {message}")
         colorize = cfg.get('colorize', True)
 
         logger.add(stderr, format=style_to_use, level=level, colorize=colorize)
@@ -59,7 +59,7 @@ class LogManager:
         compression = cfg.get('compression', None)
         # Style format of logs
         style = cfg.get('style', 'simple')
-        style_to_use = cfg.get(style, "{time:HH:mm:ss} | {message}")
+        style_to_use = self.__config.get('styles_data', {}).get('file', {}).get(style, "{time:HH:mm:ss} | {message}")
 
         logger.add(
             cfg.get('path', 'app.log'),

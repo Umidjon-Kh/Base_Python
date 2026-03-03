@@ -54,6 +54,8 @@ class ConfigManager:
         additional_rules = configs['rule_cfg'].pop('rules')
         if additional_rules is not None:
             configs['rule_cfg']['rules_data'].update(additional_rules)
+        # Creating default rules dict and adding it to rule cfg
+        configs['rule_cfg']['default_rules'] = self.__loader.load_from_json('rules')
         # Creating real configs
         self.__configs = configs
 
