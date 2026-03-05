@@ -135,4 +135,11 @@ class Directory:
         return self._size_cache
 
     def __repr__(self) -> str:
-        return f'Directory(name={self.name}, children={len(self._children)})'
+        return f'Directory(name={self.name}, children={len(self.children)})'
+
+    def info(self) -> str:
+        return (
+            f'Directory: {self.name}'
+            f'\n\tparent: {self.parent.name if self.parent else None}'
+            f'\n\tsize: {self.size}\n\tchildrens count: {len(self.children)}'
+        )

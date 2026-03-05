@@ -71,4 +71,10 @@ class FileItem:
         return self._size
 
     def __repr__(self) -> str:
-        return f"FileItem(name={self._name})"
+        return f'FileItem(name={self.name})'
+
+    def info(self) -> str:
+        return (
+            f'File: {self.name}'
+            f'\n\tsize: {self.size}\n\tparent: {self.parent.name if self.parent else None}\n\tpath: {self.path}'
+        )
