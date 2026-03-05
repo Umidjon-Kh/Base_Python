@@ -39,6 +39,10 @@ class Directory:
         """Return a copy of children list to prevent external mutation."""
         return self._children.copy()
 
+    def rm_dir(self) -> None:
+        self._parent.del_child(self)
+        object.__setattr__(self, '_parent', None)
+
     def add_child(self, child: Union[FileItem, 'Directory']) -> None:
         """Add a child (file or subdirectory)."""
         self._children.append(child)

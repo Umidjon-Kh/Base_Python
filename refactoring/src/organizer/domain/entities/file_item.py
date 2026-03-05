@@ -70,6 +70,12 @@ class FileItem:
             object.__setattr__(self, '_size_fetched', True)
         return self._size
 
+    def move_file(self, path: Path, parent: Directory) -> None:
+        object.__setattr__(self, '_path', path)
+        self._parent.del_child(self)
+        object.__setattr__(self, '_parent', parent)
+        parent.add_child(self)
+
     def __repr__(self) -> str:
         return f'FileItem(name={self.name})'
 

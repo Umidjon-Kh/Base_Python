@@ -88,7 +88,7 @@ class OSFileSystem(FileSystem):
                 return True
         return False
 
-    def move(self, source: Path, destination: Path) -> None:
+    def move(self, file_item: FileItem, destination: Path, parent_dir: Directory, dry_run: bool) -> None:
         """
         Move a file from source to destination.
         If destination already exists, a unique name is generated (e.g., file_(1).txt).
@@ -96,6 +96,7 @@ class OSFileSystem(FileSystem):
         Args:
             source: Source file path.
             destination: Desired destination path.
+            parent_dir: Directory instance to add new child for dir in new path
 
         Raises:
             SourceFileNotFoundError: if source does not exist.
@@ -103,16 +104,18 @@ class OSFileSystem(FileSystem):
             FileSystemError: for other OS errors.
         """
         try:
-            if not source.exists():
-                raise SourceFileNotFoundError(f'Source file does not exist: {source}')
+            if not file_item.path.exists():
+                raise SourceFileNotFoundError(f'Source file does not exist: {file_item.path}')
 
             destination.parent.mkdir(parents=True, exist_ok=True)
             final_dest = self._resolve_conflict(destination)
-            shutil_move(str(source), str(final_dest))
+            shutil_move(str(file_item.path), str(final_dest))
+            if not dry_run:
+                file_item.move_file(final_dest, parent_dir)
         except PermissionError as exc:
-            raise PermissionDeniedError(f'Permission denied while moving {source} -> {destination}: {exc}') from exc
+            raise PermissionDeniedError(f'Permission denied while moving {file_item} -> {destination}: {exc}') from exc
         except OSError as exc:
-            raise FileSystemError(f'OS error while moving {source} -> {destination}: {exc}') from exc
+            raise FileSystemError(f'OS error while moving {file_item} -> {destination}: {exc}') from exc
 
     def _resolve_conflict(self, path: Path) -> Path:
         """
@@ -161,7 +164,7 @@ class OSFileSystem(FileSystem):
         except OSError as exc:
             raise FileSystemError(f'OS error creating directory {path}: {exc}') from exc
 
-    def rmdir(self, path: Path) -> None:
+    def rmdir(self, dir: Directory, dry_run: bool) -> None:
         """
         Remove an empty directory.
 
@@ -173,13 +176,17 @@ class OSFileSystem(FileSystem):
             FileSystemError: if the directory is not empty or another OS error occurs.
         """
         try:
-            path.rmdir()
+            if not dry_run:
+                dir.path.rmdir()
+
         except FileNotFoundError as exc:
-            raise SourceFileNotFoundError(f'Directory not found: {path}') from exc
+            raise SourceFileNotFoundError(f'Directory not found: {dir.path}') from exc
         except OSError as exc:
             if exc.errno == 39:  # Directory not empty
-                raise FileSystemError(f'Directory not empty: {path}') from exc
-            raise FileSystemError(f'OS error removing directory {path}: {exc}') from exc
+                raise FileSystemError(f'Directory not empty: {dir.path}') from exc
+            raise FileSystemError(f'OS error removing directory {dir.path}: {exc}') from exc
+        # If everthing is okey juust remove it from parents children list
+        dir.rm_dir()
 
     def exists(self, path: Path) -> bool:
         """

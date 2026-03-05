@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 # Project modules
-from domain.entities import Directory
+from domain.entities import Directory, FileItem
 
 
 class FileSystem(ABC):
@@ -22,8 +22,8 @@ class FileSystem(ABC):
         pass
 
     @abstractmethod
-    def move(self, source: Path, destination: Path) -> None:
-        """Move a file from source to destination. And some ruls if it exits you can do youw own rules if dublicate"""
+    def move(self, file_item: FileItem, destination: Path, parent_dir: Directory, dry_run: bool) -> None:
+        """Move a file from source to destination. And some ruls if it exits you can do your own rules if dublicate"""
         pass
 
     @abstractmethod
@@ -32,7 +32,7 @@ class FileSystem(ABC):
         pass
 
     @abstractmethod
-    def rmdir(self, path: Path) -> None:
+    def rmdir(self, dir: Directory, dry_run) -> None:
         """Remove an empty directory. Should raise if not empty."""
         pass
 
