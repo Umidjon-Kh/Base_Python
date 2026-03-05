@@ -88,8 +88,7 @@ class OrganizeFiles:
             for child in dir.children:
                 if isinstance(child, Directory):
                     collect_dirs(child)
-            if isinstance(dir, Directory):
-                dirs_to_check.append(dir)
+            dirs_to_check.append(dir)
 
         collect_dirs(root)
 
