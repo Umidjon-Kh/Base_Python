@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import List
 
 # Project modules
 from domain.entities import Directory
@@ -12,10 +13,11 @@ class FileSystem(ABC):
     """
 
     @abstractmethod
-    def scan(self, path: Path) -> Directory:
+    def scan(self, path: Path, recursive: bool = True, ignore_patterns: List[str] = []) -> Directory:
         """
-        Recursively scan a directory and build an in-memory tree.
-        Returns the root Directory entity with all descendants.
+        Scan a directory and build an in-memory tree.
+        If recursive=False, only immediate children are scanned.
+        ignore_patterns: list of glob patterns to exclude from scanning.
         """
         pass
 

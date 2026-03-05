@@ -1,7 +1,6 @@
-# infrastructure/file_system/os_file_system.py
-
 from pathlib import Path
 from shutil import move as shutil_move
+from typing import List
 
 # Project modules
 from application.ports.file_system import FileSystem
@@ -22,7 +21,7 @@ class OSFileSystem(FileSystem):
     defined in domain.exceptions.
     """
 
-    def scan(self, path: Path) -> Directory:
+    def scan(self, path: Path, recursive: bool = True, ignore_patterns: List[str] = []) -> Directory:
         """
         Recursively scan a directory and build an in-memory tree.
 
@@ -38,14 +37,14 @@ class OSFileSystem(FileSystem):
         """
         try:
             root = Directory(path)
-            self._scan_recursive(root)
+            self._scan_directory(root, recursive)
             return root
         except PermissionError as exc:
             raise PermissionDeniedError(f'Permission denied while scanning {path}: {exc}') from exc
         except OSError as exc:
             raise FileSystemError(f'OS error while scanning {path}: {exc}') from exc
 
-    def _scan_recursive(self, directory: Directory) -> None:
+    def _scan_directory(self, directory: Directory, recursive: bool, ignore_patterns: List[str] = []) -> None:
         """
         Helper method to recursively populate a Directory with its children.
 
@@ -57,18 +56,37 @@ class OSFileSystem(FileSystem):
         """
         try:
             for child_path in directory.path.iterdir():
+                # Check if the child should be ignored
+                if self._is_ignored(child_path, ignore_patterns):
+                    continue
+
                 if child_path.is_file():
                     # FileItem automatically registers itself with the parent directory.
                     FileItem(child_path, directory)
                 elif child_path.is_dir():
                     sub_dir = Directory(child_path, directory)
-                    self._scan_recursive(sub_dir)
+                    # if recursive mode is on, continune scanning deeper
+                    if recursive:
+                        self._scan_directory(sub_dir, recursive)
+                    # otherwise, subdir remains empty (only created)
         except PermissionError:
             # Skip directories we cannot read – this is not considered an error.
             pass
         except OSError as exc:
             # Propagate any other OS error as a generic file system error.
             raise FileSystemError(f'Error while iterating {directory.path}: {exc}') from exc
+
+    def _is_ignored(self, path: Path, ignore_patterns: List[str]) -> bool:
+        """Returns True if the path matches any of the ignore patterns"""
+        if not ignore_patterns:
+            return False
+        # Convert path to string relative to the root? We'll just match the full path.
+        # But patterns like "*.tmp" should match filenames. path.match works with relative patterns.
+        # We'll try to match both the full path and the name.
+        for pattern in ignore_patterns:
+            if path.match(pattern) or path.name == pattern:
+                return True
+        return False
 
     def move(self, source: Path, destination: Path) -> None:
         """
