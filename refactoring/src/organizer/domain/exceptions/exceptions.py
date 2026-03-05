@@ -69,7 +69,7 @@ class FileSystemError(InfrastructureError):
     pass
 
 
-class FileNotFoundError(FileSystemError):
+class SourceFileNotFoundError(FileSystemError):
     """Raised when a file or directory does not exist."""
 
     pass

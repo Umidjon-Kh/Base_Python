@@ -1,4 +1,3 @@
-# infrastructure/rules/json_rule_repo.py
 from json import JSONDecodeError, load as loader
 from pathlib import Path
 from typing import Dict, Any

@@ -1,4 +1,3 @@
-# domain/rules/rule_set.py
 from typing import List, Optional
 from domain.entities import FileItem
 
