@@ -23,7 +23,10 @@ class FileSystem(ABC):
 
     @abstractmethod
     def move(self, file_item: FileItem, destination: Path, parent_dir: Directory, dry_run: bool) -> None:
-        """Move a file from source to destination. And some ruls if it exits you can do your own rules if dublicate"""
+        """
+        Move a file from source to destination.
+        And some rules if it exists you can do your own rules if dublicates
+        """
         pass
 
     @abstractmethod
@@ -32,7 +35,7 @@ class FileSystem(ABC):
         pass
 
     @abstractmethod
-    def rmdir(self, dir: Directory, dry_run) -> None:
+    def rmdir(self, dir: Directory, dry_run: bool) -> None:
         """Remove an empty directory. Should raise if not empty."""
         pass
 

@@ -35,7 +35,7 @@ class OrganizeFiles:
         for file_item in root.walk_files():
             self._process_file(file_item, request)
 
-        # 3. Clean empty directories if requested and not dry run
+        # 3. Clean empty directories if requested
         if request.clean:
             self._clean_empty_dirs(root, request.dry_run)
 
@@ -45,6 +45,7 @@ class OrganizeFiles:
     def _process_file(self, file_item: FileItem, request: OrganizeRequest) -> None:
         """Handle a single file: decide destination and move."""
         try:
+            # Getting destination folder to move organized file_items
             target_folder = self.rule_set.get_target_folder(file_item)
             if target_folder is None:
                 logger.debug(f'Ignoring {file_item.name}')
@@ -57,14 +58,11 @@ class OrganizeFiles:
             dest_target_folder = Directory(dest_target_folder, dest_to_organize)
             dest_target_file = dest_target_folder.path / file_item.name
 
-            if request.dry_run:
-                logger.info(f'[DRY RUN] Would move {file_item.path} -> {dest_target_file}')
-                self.stats['moved'] += 1
-            else:
-                logger.info(f'Moved {file_item.path} -> {dest_target_file}')
-                self.stats['moved'] += 1
             # Moving only if not dry run if dry run only changes attrs of file_item no moves
             self.file_system.move(file_item, dest_target_file, dest_target_folder, request.dry_run)
+            mv_word = 'Moved' if not request.dry_run else '[DRY RUN] Would move'
+            logger.info(f'{mv_word}: {file_item.path} -> {dest_target_file}')
+            self.stats['moved'] += 1
 
         except RuleNotFoundError as exc:
             logger.error(str(exc))
@@ -96,8 +94,8 @@ class OrganizeFiles:
             if dir.is_empty():
                 try:
                     self.file_system.rmdir(dir, dry_run)
-                    logger.info(f'Removed empty directory: {dir.path}')
-                    self.stats['removed'] += 1
+                    rm_word = 'Removed' if not dry_run else '[DRY RUN] Would remove'
+                    logger.info(f'{rm_word} empty dir: {dir}')
                 except FileSystemError as exc:
                     logger.error(f'Failed to remove {dir.path}: {exc}')
                     self.stats['errors'] += 1
@@ -108,6 +106,5 @@ class OrganizeFiles:
         skip_word = 'Skipped' if not dry_run else 'Would skip'
         logger.info(f'{moved_word}: {self.stats['moved']}')
         logger.info(f'{skip_word}: {self.stats['skipped']}')
+        logger.info(f'{remove_word} empty dirs: {self.stats['removed']}')
         logger.info(f'Errors: {self.stats['errors']}')
-        if self.stats['removed']:
-            logger.info(f'{remove_word} empty dirs: {self.stats['removed']}')

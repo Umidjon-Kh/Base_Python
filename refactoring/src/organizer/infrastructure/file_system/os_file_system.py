@@ -97,6 +97,7 @@ class OSFileSystem(FileSystem):
             source: Source file path.
             destination: Desired destination path.
             parent_dir: Directory instance to add new child for dir in new path
+            dry_run: Only changes path and dels from pareny children not moves from source to dest
 
         Raises:
             SourceFileNotFoundError: if source does not exist.
@@ -170,6 +171,7 @@ class OSFileSystem(FileSystem):
 
         Args:
             path: Directory path to remove.
+            dry_run: Only cremoves intanse from parent child list not removes from source
 
         Raises:
             SourceFileNotFoundError: if the directory does not exist.
