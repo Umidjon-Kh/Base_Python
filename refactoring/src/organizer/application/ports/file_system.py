@@ -1,4 +1,3 @@
-# application/ports/file_system.py
 from abc import ABC, abstractmethod
 from pathlib import Path
 

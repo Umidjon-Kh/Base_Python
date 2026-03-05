@@ -1,4 +1,3 @@
-# infrastructure/file_system/os_file_system.py
 from pathlib import Path
 from shutil import move as shutil_move
 
