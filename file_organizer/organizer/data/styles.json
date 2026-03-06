@@ -1,0 +1,10 @@
+{
+    "console": {
+        "simple": "{time:HH:mm:ss} | {level} | {message}",
+        "detailed": "{time:HH:mm:ss} | {level} | {name}:{function}:{line} | {message}"
+    },
+    "file": {
+        "simple": "{time} | {level} | {message}",
+        "detailed": "{time} | {level} | {name}:{function}:{line} | {message}"
+    }
+}

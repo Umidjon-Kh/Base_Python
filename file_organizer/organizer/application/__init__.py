@@ -1,3 +1,3 @@
-from .ports import RuleRepository, FileSystem
+from .ports import RuleRepository, FileSystem, StyleRepository, Logger
 
-__all__ = ['RuleRepository', 'FileSystem']
+__all__ = ['RuleRepository', 'FileSystem', 'Logger', 'StyleRepository']
