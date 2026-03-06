@@ -35,8 +35,8 @@ class JsonRuleRepository(RuleRepository):
         try:
             with open(self.file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-        except (IOError, json.JSONDecodeError) as e:
-            raise RuleFormatError(f'Invalid JSON in rules file: {e}')
+        except (IOError, json.JSONDecodeError) as exc:
+            raise RuleFormatError(f'Invalid JSON in rules file: {exc}')
 
         if not isinstance(data, dict):
             raise RuleFormatError('Rules file must contain a dictionary')
