@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-# project modules
+# Project modules
 from ...domain.rules.rule_set import RuleSet
 
 
