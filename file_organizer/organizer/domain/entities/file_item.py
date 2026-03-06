@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, Union, TYPE_CHECKING
 
 # Project modules
 if TYPE_CHECKING:
@@ -17,7 +17,7 @@ class FileItem:
 
     __slots__ = ('_path', '_name', '_parent', '_stem', '_suffix', '_size', '_size_fetched')
 
-    def __init__(self, path: Path, parent: Directory):
+    def __init__(self, path: Union[Path, str], parent: Directory):
         """
         Initialize a FileItem.
 

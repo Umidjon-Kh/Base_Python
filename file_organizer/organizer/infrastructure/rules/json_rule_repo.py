@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Union
 
 # Project modules
-from application.ports.rule_repository import RuleRepository
+from application.ports import RuleRepository
 from domain.rules import Rule, ExtensionRule, SizeRule, CompositeRule, RuleSet
 from domain.exceptions import (
     RuleFileNotFoundError,
@@ -25,16 +25,16 @@ class JsonRuleRepository(RuleRepository):
     Each rule object may contain a "priority" field; if missing, a default priority is assigned.
     """
 
-    def __init__(self, file_path: Path):
-        self.file_path = file_path
+    def __init__(self, file_path: Union[Path, str]):
+        self.file_path = file_path if isinstance(file_path, Path) else Path(file_path)
 
     def load_rules(self) -> RuleSet:
         if not self.file_path.exists():
             raise RuleFileNotFoundError(f'Rules file not found: {self.file_path}')
 
         try:
-            with open(self.file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            with open(self.file_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
         except (IOError, json.JSONDecodeError) as e:
             raise RuleFormatError(f'Invalid JSON in rules file: {e}')
 
@@ -74,21 +74,23 @@ class JsonRuleRepository(RuleRepository):
             extensions = item.get('extensions')
             folder = item.get('folder')
             if not extensions or not folder:
-                raise RuleValidationError(f"Extension rule missing 'extensions' or 'folder': {item}")
+                raise RuleValidationError(f'Extension rule missing \'extensions\' or \'folder\': {item}')
             return ExtensionRule(extensions, folder, priority)
         elif rule_type == 'size':
-            min_size = item.get('min')
-            max_size = item.get('max')
-            folder = item.get('folder', 'Other')
+            min_size = item.get('min', None)
+            max_size = item.get('max', None)
+            folder = item.get('folder', None)
+            if folder is None:
+                raise RuleValidationError(f'Size rule missing \'folder\' attribute: {item}')
             if min_size is None and max_size is None:
-                raise RuleValidationError("Size rule must have 'min' or 'max'")
+                raise RuleValidationError('Size rule must have \'min\' or \'max\'')
             return SizeRule(min_size, max_size, folder, priority)
         elif rule_type == 'composite':
             operator = item.get('operator', 'AND')
             sub_rules_data = item.get('rules')
             if not isinstance(sub_rules_data, list):
-                raise RuleValidationError("Composite rule must have a 'rules' list")
+                raise RuleValidationError('Composite rule must have a \'rules\' list')
             sub_rules = [self._parse_rule(sub) for sub in sub_rules_data]
             return CompositeRule(sub_rules, operator, priority)
         else:
-            raise UnknownRuleTypeError(f"Unknown rule type: {rule_type}")
+            raise UnknownRuleTypeError(f'Unknown rule type: {rule_type}')
