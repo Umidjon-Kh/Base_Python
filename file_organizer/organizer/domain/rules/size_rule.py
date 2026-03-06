@@ -11,7 +11,15 @@ class SizeRule(Rule):
     Returns a fixed folder segment (could be extended to compute dynamic categories).
     """
 
-    def __init__(self, min_size: Optional[int] = None, max_size: Optional[int] = None, folder: str = "Other"):
+    __slots__ = ('_priority', 'min_size', 'max_size', 'folder')
+
+    def __init__(
+        self,
+        min_size: Optional[int] = None,
+        max_size: Optional[int] = None,
+        folder: str = 'Other',
+        priority: Optional[int] = 50,
+    ):
         """
         At least one of min_size or max_size must be provided.
         """
@@ -22,10 +30,11 @@ class SizeRule(Rule):
         self.min_size = min_size
         self.max_size = max_size
         self.folder = folder
+        self._priority = priority if priority is not None else 50
 
     @property
     def priority(self) -> int:
-        return 50
+        return self._priority
 
     def match(self, file_item: FileItem) -> bool:
         size = file_item.size

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 # Project modules
 from ..entities import FileItem
@@ -12,7 +12,7 @@ class CompositeRule(Rule):
     For OR: the first matching sub‑rule determines the target segments.
     """
 
-    def __init__(self, rules: List[Rule], operator: str = "AND"):
+    def __init__(self, rules: List[Rule], operator: str = 'AND', priority: Optional[int] = 100):
         """
         Args:
             rules: List of Rule objects.
@@ -22,6 +22,7 @@ class CompositeRule(Rule):
         self.operator = operator.upper()
         if self.operator not in ('AND', 'OR'):
             raise ValueError('CompositeRule operator must be \'AND\' or \'OR\'')
+        self._priority = priority if priority is not None else 100
 
     @property
     def priority(self) -> int:
