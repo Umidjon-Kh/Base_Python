@@ -1,0 +1,56 @@
+{
+    "other_behavior": "use_other",
+    "ignore_extensions": [".tmp", ".log", ".bak"],
+    "ignore_size_more_than": null,
+    "ignore_size_less_than": null,
+    "rules": [
+        {
+            "type": "extension",
+            "extensions": [".txt", ".md"],
+            "folder": "Documents",
+            "priority": 0
+        },
+        {
+            "type": "extension",
+            "extensions": [".jpg", ".png"],
+            "folder": "Images"
+        },
+        {
+            "type": "size",
+            "min": 102.4,
+            "max": 1024,
+            "folder": "SmallSize"
+        },
+        {
+            "type": "size",
+            "min": 1024,
+            "max": 10240,
+            "folder": "MiddleSize"
+        },
+        {
+            "type": "size",
+            "min": 10240,
+            "max": 102400,
+            "folder": "BigSize",
+            "priority": 50
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {
+                    "type": "extension",
+                    "extensions": [".sh", ".bash"],
+                    "folder": "OS_Files"
+                },
+                {
+                    "type": "size",
+                    "min": 102.4,
+                    "max": 1024,
+                    "folder": "SmallSize"
+                }
+            ]
+        }
+    ]
+}
