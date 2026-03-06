@@ -3,9 +3,9 @@ from shutil import move as shutil_move
 from typing import List, Optional
 
 # Project modules
-from application.ports.file_system import FileSystem
-from domain.entities import Directory, FileItem
-from domain.exceptions import (
+from ...application.ports.file_system import FileSystem
+from ...domain.entities import Directory, FileItem
+from ...domain.exceptions import (
     SourceFileNotFoundError,
     PermissionDeniedError,
     DestinationExistsError,
