@@ -12,6 +12,8 @@ class CompositeRule(Rule):
     For OR: the first matching sub‑rule determines the target segments.
     """
 
+    __slots__ = ('rules', 'operator', '_priority')
+
     def __init__(self, rules: List[Rule], operator: str = 'AND', priority: Optional[int] = 100):
         """
         Args:
@@ -26,7 +28,7 @@ class CompositeRule(Rule):
 
     @property
     def priority(self) -> int:
-        return 100
+        return self._priority
 
     def match(self, file_item: FileItem) -> bool:
         if self.operator == 'AND':

@@ -12,6 +12,8 @@ class InMemoryRuleRepository(RuleRepository):
     Useful for CLI‑provided rules (--rules) and for combining with default rules.
     """
 
+    __slots__ = ('rues_cfg', 'default_repo' 'combine')
+
     def __init__(
         self,
         rules_cfg: Dict[str, Any],
