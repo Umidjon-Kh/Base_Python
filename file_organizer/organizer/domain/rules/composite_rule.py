@@ -20,7 +20,7 @@ class CompositeRule(Rule):
             rules: List of Rule objects.
             operator: "AND" or "OR".
         """
-        self.rules = rules
+        self.rules = sorted(rules, key=lambda r: r.priority, reverse=True)
         self.operator = operator.upper()
         if self.operator not in ('AND', 'OR'):
             raise ValueError('CompositeRule operator must be \'AND\' or \'OR\'')

@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Dict, Any, Union
 
 # Project modules
-from application.ports import RuleRepository
-from domain.rules import Rule, ExtensionRule, SizeRule, CompositeRule, RuleSet
-from domain.exceptions import (
+from ...application.ports import RuleRepository
+from ...domain.rules import Rule, ExtensionRule, SizeRule, CompositeRule, RuleSet
+from ...domain.exceptions import (
     RuleFileNotFoundError,
     RuleFormatError,
     RuleValidationError,
@@ -70,7 +70,7 @@ class JsonRuleRepository(RuleRepository):
 
     def _parse_rule(self, item: Dict[str, Any]) -> Rule:
         rule_type = item.get('type')
-        priority = item.get('priority')
+        priority = item.get('priority', None)
         # If priority not provided, default will be set inside each rule's constructor
         if rule_type == 'extension':
             extensions = item.get('extensions')
