@@ -12,7 +12,7 @@ class Rule(ABC):
     (folder names) that should be appended to the destination root.
     """
 
-    __slots__ = ('_priority')
+    __slots__ = ()
 
     @property
     @abstractmethod
