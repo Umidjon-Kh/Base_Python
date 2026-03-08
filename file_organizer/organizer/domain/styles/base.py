@@ -81,7 +81,7 @@ class LevelStyle(ABC):
                 config['file_style'] = styles_dict['file']
 
         # Set each slot from config or default
-        for slot in self.__slots__:
+        for slot in LevelStyle.__slots__:
             attr_name = slot.removeprefix('_')  # remove leading underscore
             value = config.get(attr_name, defaults.get(attr_name))
             object.__setattr__(self, slot, value)
