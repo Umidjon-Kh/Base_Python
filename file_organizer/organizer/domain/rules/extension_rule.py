@@ -8,7 +8,7 @@ from .rule import Rule
 class ExtensionRule(Rule):
     """Matches files by extension and returns a fixed folder segment."""
 
-    __slots__ = ('_priority', 'extensions', 'folder')
+    __slots__ = ('extensions', 'folder')
 
     def __init__(self, extensions: List[str], folder: str, priority: Optional[int] = 0):
         """

@@ -12,7 +12,7 @@ class CompositeRule(Rule):
     For OR: the first matching sub‑rule determines the target segments.
     """
 
-    __slots__ = ('rules', 'operator', '_priority')
+    __slots__ = ('rules', 'operator')
 
     def __init__(self, rules: List[Rule], operator: str = 'AND', priority: Optional[int] = 100):
         """
