@@ -1,9 +1,6 @@
-"""
-Port for loading log styles.
-"""
-
 from abc import ABC, abstractmethod
 
+# Project modules
 from ...domain.styles import StyleSet
 
 
