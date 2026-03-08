@@ -1,8 +1,13 @@
 from typing import Dict
 
 # Project modules
-from .styles import LevelStyle, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
-from .exceptions import StyleNotFoundError
+from .base import LevelStyle
+from .debug import DebugStyle
+from .info import InfoStyle
+from .warning import WarningStyle
+from .error import ErrorStyle
+from .critical import CriticalStyle
+from ..exceptions import StyleNotFoundError
 
 
 class StyleSet:
