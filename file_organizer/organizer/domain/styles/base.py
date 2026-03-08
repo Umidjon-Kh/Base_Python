@@ -82,7 +82,7 @@ class LevelStyle(ABC):
 
         # Set each slot from config or default
         for slot in self.__slots__:
-            attr_name = slot[1:]  # remove leading underscore
+            attr_name = slot.removeprefix('_')  # remove leading underscore
             value = config.get(attr_name, defaults.get(attr_name))
             object.__setattr__(self, slot, value)
 
