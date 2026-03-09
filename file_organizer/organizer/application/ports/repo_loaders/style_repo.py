@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 # Project modules
-from ..setter import Setter
+from ..setter import StyleSetter
 
 
 class StyleRepository(ABC):
@@ -11,7 +11,7 @@ class StyleRepository(ABC):
     """
 
     @abstractmethod
-    def load_styles(self) -> Setter:
+    def load_styles(self) -> StyleSetter:
         """
         Load and return a StyleSet containing all level styles.
 

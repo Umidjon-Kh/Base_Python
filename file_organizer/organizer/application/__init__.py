@@ -1,5 +1,5 @@
 from .ports import (
-    Setter,
+    StyleSetter,
     FileSystem,
     Logger,
     RuleRepository,
@@ -7,7 +7,7 @@ from .ports import (
 )
 
 __all__ = [
-    'Setter',
+    'StyleSetter',
     'FileSystem',
     'Logger',
     'RuleRepository',

@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict
 
 
-class Setter(ABC):
+class StyleSetter(ABC):
     """
     Base abstract class for all setter like RuleSet and StyleSet
     and methods that should be in all child cls
@@ -13,6 +13,6 @@ class Setter(ABC):
         pass
 
     @abstractmethod
-    def get(self, target) -> Any:
+    def get_style(self, target) -> Any:
         """Returns target object content"""
         pass

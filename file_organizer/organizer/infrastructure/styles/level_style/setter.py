@@ -1,7 +1,7 @@
 from typing import Dict
 
 # Project modules
-from ....application import Setter
+from ....application import StyleSetter
 from .base import LevelStyle
 from .debug import DebugStyle
 from .info import InfoStyle
@@ -11,7 +11,7 @@ from .critical import CriticalStyle
 from ....exceptions import StyleNotFoundError
 
 
-class StyleSet(Setter):
+class StyleSet(StyleSetter):
     __slots__ = ('_styles',)
 
     def __init__(self, styles: Dict[str, LevelStyle]) -> None:
@@ -26,7 +26,7 @@ class StyleSet(Setter):
         # Merge: user styles override defaults
         self._styles = {**default_styles, **{k.lower(): v for k, v in styles.items()}}
 
-    def get(self, target: str) -> LevelStyle:
+    def get_style(self, target: str) -> LevelStyle:
         """
         Return style for the given level name (case-insensitive).
         """

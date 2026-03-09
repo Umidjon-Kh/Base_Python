@@ -9,7 +9,7 @@ from pathlib import Path
 
 from organizer.domain import FileItem, Directory
 from organizer.infrastructure import OSFileSystem
-from organizer.domain.exceptions import (
+from organizer.exceptions import (
     SourceFileNotFoundError,
     # PermissionDeniedError,
     # DestinationExistsError,

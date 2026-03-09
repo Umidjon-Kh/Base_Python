@@ -1,12 +1,11 @@
 from typing import Optional, Any, Dict
 
 # Project modules
-from ...application import Setter
 from ..entities import FileItem
 from ...exceptions import RuleNotFoundError, UnknownBehaviorType
 
 
-class RuleSet(Setter):
+class RuleSet:
     """
     Container for all rules, plus global settings about how to handle unmapped files.
     This class encapsulates the logic of applying rules to a file item.

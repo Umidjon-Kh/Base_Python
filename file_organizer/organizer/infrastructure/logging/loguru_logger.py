@@ -65,7 +65,7 @@ class LoguruLogger(LoggerPort):
 
         def formatter(record):
             level_name = record['level'].name
-            style = self._style_set.get(level_name)
+            style = self._style_set.get_style(level_name)
             return style.get_format_string(handler_type) + '\n'
 
         return formatter
