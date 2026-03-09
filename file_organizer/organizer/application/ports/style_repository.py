@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 # Project modules
-from ...domain.styles import StyleSet
+from ...infrastructure.styles.level_styles import StyleSet
 
 
 class StyleRepository(ABC):

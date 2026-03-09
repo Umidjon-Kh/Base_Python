@@ -4,7 +4,7 @@ from loguru import logger
 
 # Project modules
 from ...application.ports import Logger as LoggerPort
-from ...domain.styles import StyleSet
+from ..styles.level_styles import StyleSet
 
 
 class LoguruLogger(LoggerPort):

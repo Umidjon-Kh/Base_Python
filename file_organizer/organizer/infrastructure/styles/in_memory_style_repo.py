@@ -2,7 +2,7 @@ from typing import Dict, Any
 
 # Project modules
 from ...application.ports import StyleRepository
-from ...domain.styles import (
+from .level_styles import (
     LevelStyle,
     StyleSet,
     DebugStyle,

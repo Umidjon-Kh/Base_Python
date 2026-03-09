@@ -7,7 +7,7 @@ from .info import InfoStyle
 from .warning import WarningStyle
 from .error import ErrorStyle
 from .critical import CriticalStyle
-from ..exceptions import StyleNotFoundError
+from ....domain.exceptions import StyleNotFoundError
 
 
 class StyleSet:
