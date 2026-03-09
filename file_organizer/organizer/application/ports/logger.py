@@ -32,8 +32,3 @@ class Logger(ABC):
     def critical(self, msg: str, *args: Any, **kwargs: Any) -> None:
         """Log a critical message."""
         pass
-
-    @abstractmethod
-    def exception(self, msg: str, *args: Any, **kwargs: Any) -> None:
-        """Log an exception with traceback."""
-        pass
