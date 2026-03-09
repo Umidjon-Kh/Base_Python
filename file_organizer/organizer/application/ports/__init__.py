@@ -1,6 +1,12 @@
-from .rule_repository import RuleRepository
+from .setter import Setter
 from .file_system import FileSystem
-from .style_repository import StyleRepository
 from .logger import Logger
+from .repo_loaders import RuleRepository, StyleRepository
 
-__all__ = ['RuleRepository', 'FileSystem', 'StyleRepository', 'Logger']
+__all__ = [
+    'Setter',
+    'FileSystem',
+    'Logger',
+    'RuleRepository',
+    'StyleRepository',
+]

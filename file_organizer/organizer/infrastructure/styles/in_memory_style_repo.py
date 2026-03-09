@@ -2,7 +2,7 @@ from typing import Dict, Any
 
 # Project modules
 from ...application.ports import StyleRepository
-from .level_styles import (
+from .level_style import (
     LevelStyle,
     StyleSet,
     DebugStyle,
@@ -11,7 +11,7 @@ from .level_styles import (
     ErrorStyle,
     CriticalStyle,
 )
-from ...domain.exceptions import UnknownStyleType
+from ...exceptions import UnknownStyleType
 
 
 class InMemoryStyleRepository(StyleRepository):

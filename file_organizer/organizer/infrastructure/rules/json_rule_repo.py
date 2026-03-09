@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Dict, Any, Union
 
 # Project modules
-from ...application.ports import RuleRepository
-from ...domain.rules import Rule, ExtensionRule, SizeRule, CompositeRule, RuleSet
-from ...domain.exceptions import (
+from ...application import RuleRepository
+from ...domain import Rule, ExtensionRule, SizeRule, CompositeRule, RuleSet
+from ...exceptions import (
     RuleFileNotFoundError,
     RuleFormatError,
     RuleValidationError,

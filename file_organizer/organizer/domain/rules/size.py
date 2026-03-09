@@ -1,8 +1,8 @@
 from typing import Optional, List
 
-# Project modules
+# Project modules: abstract of rules and file item to type getting filed
 from ..entities import FileItem
-from .rule import Rule
+from .base import Rule
 
 
 class SizeRule(Rule):

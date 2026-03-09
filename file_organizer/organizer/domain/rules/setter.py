@@ -1,11 +1,12 @@
 from typing import Optional, Any, Dict
 
 # Project modules
+from ...application import Setter
 from ..entities import FileItem
-from ..exceptions import RuleNotFoundError, UnknownBehaviorType
+from ...exceptions import RuleNotFoundError, UnknownBehaviorType
 
 
-class RuleSet:
+class RuleSet(Setter):
     """
     Container for all rules, plus global settings about how to handle unmapped files.
     This class encapsulates the logic of applying rules to a file item.
@@ -45,7 +46,7 @@ class RuleSet:
         self.ignore_size_more_than = more
         self.ignore_size_less_than = less
 
-    def get_target_folder(self, file_item: FileItem) -> Optional[str]:
+    def get(self, target: FileItem) -> Optional[str]:
         """
         Determine the target folder for a file item.
 
@@ -54,6 +55,7 @@ class RuleSet:
             - None if the file should be ignored (by extension, size or other_behavior = "ignore")
             - raises RuleNotFoundError if other_behavior == "raise" and no rule matches
         """
+        file_item = target
         # 1. Check ignore by extension
         if file_item.suffix.lower() in self.ignore_extensions:
             return None

@@ -1,16 +1,17 @@
 from typing import Dict
 
 # Project modules
+from ....application import Setter
 from .base import LevelStyle
 from .debug import DebugStyle
 from .info import InfoStyle
 from .warning import WarningStyle
 from .error import ErrorStyle
 from .critical import CriticalStyle
-from ....domain.exceptions import StyleNotFoundError
+from ....exceptions import StyleNotFoundError
 
 
-class StyleSet:
+class StyleSet(Setter):
     __slots__ = ('_styles',)
 
     def __init__(self, styles: Dict[str, LevelStyle]) -> None:
@@ -25,10 +26,11 @@ class StyleSet:
         # Merge: user styles override defaults
         self._styles = {**default_styles, **{k.lower(): v for k, v in styles.items()}}
 
-    def get_style(self, level_name: str) -> LevelStyle:
+    def get(self, target: str) -> LevelStyle:
         """
         Return style for the given level name (case-insensitive).
         """
+        level_name = target
         key = level_name.lower()
         if key not in self._styles:
             # This should never happen because we have defaults, but just in case

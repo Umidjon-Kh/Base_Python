@@ -2,7 +2,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List, Union, Optional, Generator, Dict
 
-# Project modules
+# File model
 from .file_item import FileItem
 
 

@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 from loguru import logger
 
-from organizer.domain.styles import StyleSet, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
+from organizer.infrastructure.styles import StyleSet, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
 from organizer.infrastructure.logging import LoguruLogger
 
 

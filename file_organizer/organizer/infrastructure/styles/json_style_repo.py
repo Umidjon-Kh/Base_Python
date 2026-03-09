@@ -4,7 +4,7 @@ from typing import Union, Dict, Any
 
 # Project modules
 from ...application.ports import StyleRepository
-from .level_styles import (
+from .level_style import (
     LevelStyle,
     StyleSet,
     DebugStyle,
@@ -13,7 +13,7 @@ from .level_styles import (
     ErrorStyle,
     CriticalStyle,
 )
-from ...domain.exceptions import StyleFileNotFoundError, StyleFormatError, UnknownStyleType
+from ...exceptions import StyleFileNotFoundError, StyleFormatError, UnknownStyleType
 
 
 class JsonStyleRepository(StyleRepository):
@@ -50,8 +50,8 @@ class JsonStyleRepository(StyleRepository):
             raise StyleFileNotFoundError(f'Styles file not found: {self._file_path}')
 
         try:
-            with open(self._file_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            with open(self._file_path, 'r', encoding='utf-8') as file:
+                data = json.load(file)
         except (IOError, json.JSONDecodeError) as exc:
             raise StyleFormatError(f'Invalid JSON in styles file: {exc}') from exc
 

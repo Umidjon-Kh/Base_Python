@@ -4,7 +4,7 @@ from loguru import logger
 
 # Project modules
 from ...application.ports import Logger as LoggerPort
-from ..styles.level_styles import StyleSet
+from ..styles.level_style import StyleSet
 
 
 class LoguruLogger(LoggerPort):
@@ -65,7 +65,7 @@ class LoguruLogger(LoggerPort):
 
         def formatter(record):
             level_name = record['level'].name
-            style = self._style_set.get_style(level_name)
+            style = self._style_set.get(level_name)
             return style.get_format_string(handler_type) + '\n'
 
         return formatter

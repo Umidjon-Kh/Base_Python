@@ -3,7 +3,7 @@ from typing import Dict, Any, Optional, List
 # Project modules
 from ...application.ports import RuleRepository
 from ...domain.rules import Rule, RuleSet, ExtensionRule, SizeRule, CompositeRule
-from ...domain.exceptions import RuleValidationError, UnknownRuleTypeError
+from ...exceptions import RuleValidationError, UnknownRuleTypeError
 
 
 class InMemoryRuleRepository(RuleRepository):

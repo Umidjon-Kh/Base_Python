@@ -2,8 +2,9 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Optional, Union, TYPE_CHECKING
 
-# Project modules
+# type checking for file model to handle cycle error
 if TYPE_CHECKING:
+    # Directory model
     from .directory import Directory
 
 

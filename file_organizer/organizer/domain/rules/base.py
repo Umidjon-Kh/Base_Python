@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-# Project modules
+# Model of File that need get for matching and getting target segments
 from ..entities import FileItem
 
 
@@ -12,7 +12,7 @@ class Rule(ABC):
     (folder names) that should be appended to the destination root.
     """
 
-    __slots__ = ('_priority')
+    __slots__ = '_priority'
 
     @property
     @abstractmethod

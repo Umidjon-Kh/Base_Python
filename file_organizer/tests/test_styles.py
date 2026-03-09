@@ -6,7 +6,7 @@ import pytest
 import json
 from pathlib import Path
 
-from organizer.domain.styles import (
+from organizer.infrastructure.styles.level_styles import (
     # LevelStyle,
     DebugStyle,
     InfoStyle,

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 # Project modules
-from ...domain.rules.rule_set import RuleSet
+from ....domain import RuleSet
 
 
 class RuleRepository(ABC):

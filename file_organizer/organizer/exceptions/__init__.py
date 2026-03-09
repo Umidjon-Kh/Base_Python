@@ -1,4 +1,5 @@
-from .exceptions import (
+# Basic errors
+from .base import (
     OrganizerError,
     DomainError,
     InvalidPathError,
@@ -6,28 +7,47 @@ from .exceptions import (
     ApplicationError,
     OrganizeRequestError,
     InfrastructureError,
+)
+
+# File System errors
+from .file_system import (
     FileSystemError,
     SourceFileNotFoundError,
     PermissionDeniedError,
     DestinationExistsError,
+)
+
+# Config Errors
+from .config import (
     ConfigError,
-    ConfigNotFoundError,
     ConfigFormatError,
+    ConfigNotFoundError,
     ConfigValidationError,
-    StyleError,
-    StyleFormatError,
-    StyleNotFoundError,
-    StyleFileNotFoundError,
-    UnknownStyleType,
+)
+
+# Rule Errors
+from .rule import (
     RuleError,
     RuleFileNotFoundError,
     RuleFormatError,
-    RuleValidationError,
     UnknownRuleTypeError,
-    RuleNotFoundError,
     UnknownBehaviorType,
-    LoggingError,
+    RuleNotFoundError,
+    RuleValidationError,
 )
+
+# Style Errors
+from .style import (
+    StyleError,
+    StyleFormatError,
+    StyleFileNotFoundError,
+    StyleNotFoundError,
+    UnknownStyleType,
+)
+
+# Logging Errors
+from .logging import LoggingError
+
 
 __all__ = [
     'OrganizerError',
@@ -42,20 +62,20 @@ __all__ = [
     'PermissionDeniedError',
     'DestinationExistsError',
     'ConfigError',
-    'ConfigNotFoundError',
     'ConfigFormatError',
+    'ConfigNotFoundError',
     'ConfigValidationError',
-    'StyleError',
-    'StyleFormatError',
-    'StyleNotFoundError',
-    'StyleFileNotFoundError',
-    'UnknownStyleType',
     'RuleError',
     'RuleFileNotFoundError',
     'RuleFormatError',
-    'RuleValidationError',
     'UnknownRuleTypeError',
-    'RuleNotFoundError',
     'UnknownBehaviorType',
+    'RuleNotFoundError',
+    'RuleValidationError',
+    'StyleError',
+    'StyleFormatError',
+    'StyleFileNotFoundError',
+    'StyleNotFoundError',
+    'UnknownStyleType',
     'LoggingError',
 ]

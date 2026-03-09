@@ -1,4 +1,4 @@
-from .file_item import FileItem
 from .directory import Directory
+from .file_item import FileItem
 
-__all__ = ['FileItem', 'Directory']
+__all__ = ['Directory', 'FileItem']
