@@ -1,4 +1,4 @@
-from sys import stderr
+import sys
 from typing import Dict, Any
 from loguru import logger
 
@@ -37,7 +37,7 @@ class LoguruLogger(LoggerPort):
         # Console handler
         console_level = self._config.get('console_level', 'INFO').upper()
         logger.add(
-            stderr,
+            sys.stderr,
             level=console_level,
             format=self._make_formatter('console'),
         )
