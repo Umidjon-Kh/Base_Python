@@ -1,0 +1,139 @@
+from pathlib import Path
+from typing import Optional, List, Dict, Any
+
+
+class AppConfig:
+    """
+    Application configuration object.
+
+    Holds all settings required to run the file organizer.
+    All paths are stored as absolute :class:`Path` objects.
+    The configuration is immutable after creation.
+    """
+
+    __slots__ = (
+        '_source_dir',
+        '_dest_dir',
+        '_dry_run',
+        '_recursive',
+        '_ignore_patterns',
+        '_rules_file',
+        '_styles_file',
+        '_logging',
+    )
+
+    def __init__(
+        self,
+        source_dir: Path,
+        dest_dir: Path,
+        dry_run: bool = False,
+        recursive: bool = True,
+        ignore_patterns: Optional[List[str]] = None,
+        rules_file: Optional[Path] = None,
+        styles_file: Optional[Path] = None,
+        logging: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """
+        Initialize an immutable application configuration.
+
+        Args:
+            source_dir: Absolute path to the source directory to organize.
+            dest_dir: Absolute path to the destination root directory.
+            dry_run: If True, simulate without moving files.
+            recursive: Scan source directory recursively.
+            ignore_patterns: List of glob patterns to ignore during scanning.
+            rules_file: Absolute path to the JSON file containing sorting rules.
+            styles_file: Absolute path to the JSON file containing logging styles.
+            logging: Raw logging configuration dictionary (will be passed to logger adapter).
+
+        Raises:
+            ValueError: If any path is not absolute or if a boolean is not bool.
+        """
+        self._source_dir = source_dir
+        self._dest_dir = dest_dir
+        self._dry_run = dry_run
+        self._recursive = recursive
+        self._ignore_patterns = ignore_patterns
+        self._rules_file = rules_file
+        self._styles_file = styles_file
+        self._logging = logging
+        self._post_init()
+
+    def _post_init(self) -> None:
+        """Validate the configuration after initialization."""
+        # All paths must be absolute
+        if not self._source_dir.is_absolute():
+            raise ValueError(f'source_dir must be absolute, got {self._source_dir}')
+        if not self._dest_dir.is_absolute():
+            raise ValueError(f'dest_dir must be absolute, got {self._dest_dir}')
+        if self._rules_file is not None and not self._rules_file.is_absolute():
+            raise ValueError(f'rules_file must be absolute, got {self._rules_file}')
+        if self._styles_file is not None and not self._styles_file.is_absolute():
+            raise ValueError(f'styles_file must be absolute, got {self._styles_file}')
+
+        # Type checks
+        if not isinstance(self._dry_run, bool):
+            raise ValueError(f'dry_run must be a boolean, got {type(self._dry_run)}')
+        if not isinstance(self._recursive, bool):
+            raise ValueError(f'recursive must be a boolean, got {type(self._recursive)}')
+
+        # ignore_patterns can be None or list of strings
+        if self._ignore_patterns is not None:
+            if not isinstance(self._ignore_patterns, list):
+                raise ValueError('ignore_patterns must be a list or None')
+            for pat in self._ignore_patterns:
+                if not isinstance(pat, str):
+                    raise ValueError(f'ignore pattern must be string, got {type(pat)}')
+
+    @property
+    def source_dir(self) -> Path:
+        """Absolute path to the source directory."""
+        return self._source_dir
+
+    @property
+    def dest_dir(self) -> Path:
+        """Absolute path to the destination root directory."""
+        return self._dest_dir
+
+    @property
+    def dry_run(self) -> bool:
+        """If True, simulate moving without actually moving files."""
+        return self._dry_run
+
+    @property
+    def recursive(self) -> bool:
+        """If True, scan source directory recursively."""
+        return self._recursive
+
+    @property
+    def ignore_patterns(self) -> Optional[List[str]]:
+        """List of glob patterns to ignore during scanning."""
+        return self._ignore_patterns
+
+    @property
+    def rules_file(self) -> Optional[Path]:
+        """Absolute path to JSON file with sorting rules, or None."""
+        return self._rules_file
+
+    @property
+    def styles_file(self) -> Optional[Path]:
+        """Absolute path to JSON file with logging styles, or None."""
+        return self._styles_file
+
+    @property
+    def logging(self) -> Optional[Dict[str, Any]]:
+        """Raw logging configuration dictionary."""
+        return self._logging
+
+    def __repr__(self) -> str:
+        return (
+            f'AppConfig('
+            f'source_dir={self._source_dir!r}, '
+            f'dest_dir={self._dest_dir!r}, '
+            f'dry_run={self._dry_run!r}, '
+            f'recursive={self._recursive!r}, '
+            f'ignore_patterns={self._ignore_patterns!r}, '
+            f'rules_file={self._rules_file!r}, '
+            f'styles_file={self._styles_file!r}, '
+            f'logging={self._logging!r})'
+        )
