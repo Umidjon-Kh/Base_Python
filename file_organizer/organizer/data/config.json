@@ -11,7 +11,8 @@
     },
     "styles": {
         "styles": null,
-        "styles_file": null
+        "styles_file": null,
+        "combine": false
     },
     "logging": {
         "console": {
