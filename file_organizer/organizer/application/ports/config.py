@@ -67,7 +67,7 @@ class AppConfig:
         # All paths must be absolute
         if not self._source_dir.is_absolute():
             raise PathIsNotAbsoluteError(f'source_dir must be absolute, got {self._source_dir}')
-        if not self._dest_dir.is_absolute():
+        if self._dest_dir is not None and not self._dest_dir.is_absolute():
             raise PathIsNotAbsoluteError(f'dest_dir must be absolute, got {self._dest_dir}')
         if self._rules_file is not None and not self._rules_file.is_absolute():
             raise PathIsNotAbsoluteError(f'rules_file must be absolute, got {self._rules_file}')

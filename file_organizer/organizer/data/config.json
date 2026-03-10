@@ -1,11 +1,11 @@
 {
-    "source_dir": "~/Pictures",
-    "dest_dir": "~/Pictures/Organized",
+    "source_dir": null,
+    "dest_dir": null,
     "dry_run": false,
     "recursive": true,
     "ignore_patterns": [".tmp", "*.log", "*.bak"],
-    "rules_file": "rules.json",
-    "styles_file": "styles.json",
+    "rules_file": null,
+    "styles_file": null,
     "logging": {
         "console": {
             "enabled": true,
@@ -14,7 +14,7 @@
         "file": {
             "enabled": true,
             "level": "DEBUG",
-            "path": "logs/organizer.log",
+            "path": null,
             "rotation": "1 day",
             "retention": "7 days"
         }
