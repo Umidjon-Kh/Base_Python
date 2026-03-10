@@ -67,7 +67,7 @@ class InMemoryRuleRepository(RuleRepository):
         return rules
 
     def _parse_rule(self, item: Dict[str, Any]) -> Rule:
-        rule_type = item.get('type')
+        rule_type = item.get('type', None)
         priority = item.get('priority', None)
         # If priority not provided, default will be set inside each rule's constructor
         if rule_type == 'extension':
