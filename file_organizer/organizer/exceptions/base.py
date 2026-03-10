@@ -50,6 +50,12 @@ class OrganizeRequestError(ApplicationError):
     pass
 
 
+class PathIsNotAbsoluteError(ApplicationError):
+    """Raised when path for config path params is not absolute (e.g., soure is not absolute)"""
+
+    pass
+
+
 # ----------------------------------------------------------------------
 # Infrastructure exceptions (file system, config, rules, logging)
 # ----------------------------------------------------------------------

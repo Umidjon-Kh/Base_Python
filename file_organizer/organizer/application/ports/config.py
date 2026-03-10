@@ -1,6 +1,9 @@
 from pathlib import Path
 from typing import Optional, List, Dict, Any
 
+# Project module: exceptions
+from ...exceptions import PathIsNotAbsoluteError
+
 
 class AppConfig:
     """
@@ -63,13 +66,13 @@ class AppConfig:
         """Validate the configuration after initialization."""
         # All paths must be absolute
         if not self._source_dir.is_absolute():
-            raise ValueError(f'source_dir must be absolute, got {self._source_dir}')
+            raise PathIsNotAbsoluteError(f'source_dir must be absolute, got {self._source_dir}')
         if not self._dest_dir.is_absolute():
-            raise ValueError(f'dest_dir must be absolute, got {self._dest_dir}')
+            raise PathIsNotAbsoluteError(f'dest_dir must be absolute, got {self._dest_dir}')
         if self._rules_file is not None and not self._rules_file.is_absolute():
-            raise ValueError(f'rules_file must be absolute, got {self._rules_file}')
+            raise PathIsNotAbsoluteError(f'rules_file must be absolute, got {self._rules_file}')
         if self._styles_file is not None and not self._styles_file.is_absolute():
-            raise ValueError(f'styles_file must be absolute, got {self._styles_file}')
+            raise PathIsNotAbsoluteError(f'styles_file must be absolute, got {self._styles_file}')
 
         # Type checks
         if not isinstance(self._dry_run, bool):

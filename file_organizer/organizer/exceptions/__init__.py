@@ -7,6 +7,7 @@ from .base import (
     ApplicationError,
     OrganizeRequestError,
     InfrastructureError,
+    PathIsNotAbsoluteError,
 )
 
 # File System errors
@@ -60,6 +61,7 @@ __all__ = [
     'ApplicationError',
     'OrganizeRequestError',
     'InfrastructureError',
+    'PathIsNotAbsoluteError',
     'FileSystemError',
     'SourceFileNotFoundError',
     'PermissionDeniedError',
