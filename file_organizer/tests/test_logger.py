@@ -77,7 +77,7 @@ def sample_styles() -> StyleSet:
 @pytest.fixture
 def console_config() -> dict:
     """Configuration for console-only logging."""
-    return {'console': {'enabled': True, 'console_level': 'DEBUG'}}
+    return {'console': {'enabled': True, 'level': 'DEBUG'}}
 
 
 @pytest.fixture
@@ -88,8 +88,8 @@ def file_config(tmp_path) -> dict:
         'console': {'console_level': 'INFO'},
         'file': {
             'enabled': True,
-            'file_level': 'DEBUG',
-            'file_path': str(log_file),
+            'level': 'DEBUG',
+            'path': str(log_file),
             'rotation': '1 MB',
             'retention': '1 day',
         },
@@ -144,7 +144,7 @@ def test_logger_console_output(style_set, console_config, capture_stderr):
 def test_logger_level_filtering(style_set, console_config, capture_stderr):
     """Test that messages below console_level are not printed."""
     config = console_config.copy()
-    config['console']['console_level'] = 'WARNING'  # only WARNING and above
+    config['console']['level'] = 'WARNING'  # only WARNING and above
     log = LoguruLogger(config, style_set)
 
     log.debug('Debug message')
@@ -190,7 +190,7 @@ def test_logger_custom_styles(sample_styles, console_config, capture_stderr):
 
 def test_logger_file_output(tmp_path, style_set, file_config, capture_stderr):
     """Test that log messages are written to a file when file_path is provided."""
-    log_file = Path(file_config['file']['file_path'])
+    log_file = Path(file_config['file']['path'])
     log = LoguruLogger(file_config, style_set)
 
     log.debug('Debug file message')
@@ -218,12 +218,12 @@ def test_logger_rotation_and_retention_passed(tmp_path, style_set, mocker):
     """Test that rotation and retention parameters are passed to loguru.add."""
     config = {
         'console': {
-            'console_level': 'INFO',
+            'level': 'INFO',
         },
         'file': {
             'enabled': True,
-            'file_level': 'DEBUG',
-            'file_path': str(tmp_path / 'test.log'),
+            'level': 'DEBUG',
+            'path': str(tmp_path / 'test.log'),
             'rotation': '1 day',
             'retention': '7 days',
         },
@@ -238,7 +238,7 @@ def test_logger_rotation_and_retention_passed(tmp_path, style_set, mocker):
     assert mock_add.call_count == 2
 
     # Find the file handler call
-    file_calls = [call for call in mock_add.call_args_list if call[0][0] == config['file']['file_path']]
+    file_calls = [call for call in mock_add.call_args_list if call[0][0] == config['file']['path']]
     assert len(file_calls) == 1
     call_args, call_kwargs = file_calls[0]
     assert call_kwargs['rotation'] == '1 day'

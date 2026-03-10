@@ -38,7 +38,7 @@ class LoguruLogger(LoggerPort):
         # Console handler
         console_cfg = self._config.get('console', {})
         if console_cfg.get('enabled', True):
-            console_level = console_cfg.get('console_level', 'INFO').upper()
+            console_level = console_cfg.get('level', 'INFO').upper()
             logger.add(
                 sys.stderr,
                 level=console_level,
@@ -48,9 +48,9 @@ class LoguruLogger(LoggerPort):
         # File handler if file_path is provided
         file_cfg = self._config.get('file', {})
         if file_cfg.get('enabled', False):
-            file_path = file_cfg.get('file_path', None)
+            file_path = file_cfg.get('path', None)
             if file_path is not None:
-                file_level = file_cfg.get('file_level', 'DEBUG').upper()
+                file_level = file_cfg.get('level', 'DEBUG').upper()
                 rotation = file_cfg.get('rotation', '1 day')
                 retention = file_cfg.get('retention', '7 days')
                 logger.add(
