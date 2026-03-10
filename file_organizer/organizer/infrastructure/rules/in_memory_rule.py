@@ -3,7 +3,7 @@ from typing import Dict, Any, Optional, List
 # Project modules
 from ...application.ports import RuleRepository
 from ...domain.rules import Rule, RuleSet, ExtensionRule, SizeRule, CompositeRule
-from ...exceptions import RuleValidationError, UnknownRuleTypeError
+from ...exceptions import RuleValidationError, UnknownRuleTypeError, RuleNotFoundError
 
 
 class InMemoryRuleRepository(RuleRepository):
@@ -68,6 +68,8 @@ class InMemoryRuleRepository(RuleRepository):
 
     def _parse_rule(self, item: Dict[str, Any]) -> Rule:
         rule_type = item.get('type', None)
+        if rule_type is None:
+            raise RuleNotFoundError('Rules not founded in user custom rules configuration')
         priority = item.get('priority', None)
         # If priority not provided, default will be set inside each rule's constructor
         if rule_type == 'extension':
