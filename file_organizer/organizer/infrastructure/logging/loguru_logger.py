@@ -5,6 +5,7 @@ from loguru import logger
 # Project modules
 from ...application.ports import Logger as LoggerPort
 from ..styles.level_style import StyleSet
+from ...exceptions import LogFileNotDefinedError
 
 
 class LoguruLogger(LoggerPort):
@@ -35,26 +36,32 @@ class LoguruLogger(LoggerPort):
         logger.remove()
 
         # Console handler
-        console_level = self._config.get('console_level', 'INFO').upper()
-        logger.add(
-            sys.stderr,
-            level=console_level,
-            format=self._make_formatter('console'),
-        )
+        console_cfg = self._config.get('console', {})
+        if console_cfg.get('enabled', True):
+            console_level = console_cfg.get('console_level', 'INFO').upper()
+            logger.add(
+                sys.stderr,
+                level=console_level,
+                format=self._make_formatter('console'),
+            )
 
         # File handler if file_path is provided
-        file_path = self._config.get('file_path')
-        if file_path:
-            file_level = self._config.get('file_level', 'DEBUG').upper()
-            rotation = self._config.get('rotation', '1 day')
-            retention = self._config.get('retention', '7 days')
-            logger.add(
-                file_path,
-                level=file_level,
-                format=self._make_formatter('file'),
-                rotation=rotation,
-                retention=retention,
-            )
+        file_cfg = self._config.get('file', {})
+        if file_cfg.get('enabled', False):
+            file_path = file_cfg.get('file_path', None)
+            if file_path is not None:
+                file_level = file_cfg.get('file_level', 'DEBUG').upper()
+                rotation = file_cfg.get('rotation', '1 day')
+                retention = file_cfg.get('retention', '7 days')
+                logger.add(
+                    file_path,
+                    level=file_level,
+                    format=self._make_formatter('file'),
+                    rotation=rotation,
+                    retention=retention,
+                )
+            else:
+                raise LogFileNotDefinedError('Log file path is not defined')
 
     def _make_formatter(self, handler_type: str):
         """

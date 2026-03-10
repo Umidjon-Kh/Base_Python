@@ -46,7 +46,10 @@ from .style import (
 )
 
 # Logging Errors
-from .logging import LoggingError
+from .logging import (
+    LoggingError,
+    LogFileNotDefinedError,
+)
 
 
 __all__ = [
@@ -78,4 +81,5 @@ __all__ = [
     'StyleNotFoundError',
     'UnknownStyleType',
     'LoggingError',
+    'LogFileNotDefinedError',
 ]
