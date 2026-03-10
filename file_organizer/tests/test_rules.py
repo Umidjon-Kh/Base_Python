@@ -72,9 +72,9 @@ def test_in_memory_basic_loading(sample_rules_dict, parent_dir):
     jpg_file = FileItem(Path('/tmp/image.jpg'), parent_dir)
     unknown_file = FileItem(Path('/tmp/unknown.xyz'), parent_dir)
 
-    assert rule_set.get(txt_file) == 'Documents'
-    assert rule_set.get(jpg_file) == 'Images'
-    assert rule_set.get(unknown_file) == 'Other'
+    assert rule_set.get_folder_name(txt_file) == 'Documents'
+    assert rule_set.get_folder_name(jpg_file) == 'Images'
+    assert rule_set.get_folder_name(unknown_file) == 'Other'
 
 
 def test_in_memory_ignore_by_extension(sample_rules_dict, parent_dir):
@@ -85,7 +85,7 @@ def test_in_memory_ignore_by_extension(sample_rules_dict, parent_dir):
     rule_set = repo.load_rules()
 
     bak_file = FileItem(Path('/tmp/backup.bak'), parent_dir)
-    assert rule_set.get(bak_file) is None
+    assert rule_set.get_folder_name(bak_file) is None
 
 
 def test_in_memory_ignore_by_size(sample_rules_dict, parent_dir):
@@ -100,13 +100,13 @@ def test_in_memory_ignore_by_size(sample_rules_dict, parent_dir):
     # Override the size because FileItem normally reads it from the real FS
     object.__setattr__(small_file, '_size', 50)
     object.__setattr__(small_file, '_size_fetched', True)
-    assert rule_set.get(small_file) is None
+    assert rule_set.get_folder_name(small_file) is None
 
     # File larger than ignore_size_more_than
     huge_file = FileItem(Path('/tmp/huge.mov'), parent_dir)
     object.__setattr__(huge_file, '_size', 20_000_000)
     object.__setattr__(huge_file, '_size_fetched', True)
-    assert rule_set.get(huge_file) is None
+    assert rule_set.get_folder_name(huge_file) is None
 
 
 def test_in_memory_priority(sample_rules_dict, parent_dir):
@@ -135,7 +135,7 @@ def test_in_memory_priority(sample_rules_dict, parent_dir):
     object.__setattr__(script_file, '_size_fetched', True)
 
     # Composite should win because of higher priority
-    assert rule_set.get(script_file) == 'MediumFiles/Scripts'
+    assert rule_set.get_folder_name(script_file) == 'MediumFiles/Scripts'
 
 
 def test_in_memory_composite_and(sample_rules_dict, parent_dir):
@@ -150,7 +150,7 @@ def test_in_memory_composite_and(sample_rules_dict, parent_dir):
     object.__setattr__(good_script, '_size', 5000)
     object.__setattr__(good_script, '_size_fetched', True)
 
-    assert rule_set.get(good_script) == 'MediumFiles/Scripts'
+    assert rule_set.get_folder_name(good_script) == 'MediumFiles/Scripts'
 
     # File with correct extension but wrong size – composite should not match
     wrong_size_script = FileItem(Path('/tmp/deploy.sh'), parent_dir)
@@ -158,14 +158,14 @@ def test_in_memory_composite_and(sample_rules_dict, parent_dir):
     object.__setattr__(wrong_size_script, '_size_fetched', True)
     # Falls through to other rules: size rule matches (priority 50)
     assert wrong_size_script.size == 50
-    assert rule_set.get(wrong_size_script) is None
+    assert rule_set.get_folder_name(wrong_size_script) is None
 
     # File with correct size but wrong extension
     data_file = FileItem(Path('/tmp/data.bin'), parent_dir)
     object.__setattr__(data_file, '_size', 5000)
     object.__setattr__(data_file, '_size_fetched', True)
     # Size rule matches
-    assert rule_set.get(data_file) == 'MediumFiles'
+    assert rule_set.get_folder_name(data_file) == 'MediumFiles'
 
 
 def test_in_memory_other_behavior_raise(sample_rules_dict, parent_dir):
@@ -179,7 +179,7 @@ def test_in_memory_other_behavior_raise(sample_rules_dict, parent_dir):
 
     unknown_file = FileItem(Path('/tmp/unknown.xyz'), parent_dir)
     with pytest.raises(RuleNotFoundError):
-        rule_set.get(unknown_file)
+        rule_set.get_folder_name(unknown_file)
 
 
 def test_in_memory_other_behavior_ignore(sample_rules_dict, parent_dir):
@@ -192,7 +192,7 @@ def test_in_memory_other_behavior_ignore(sample_rules_dict, parent_dir):
     rule_set = repo.load_rules()
 
     unknown_file = FileItem(Path('/tmp/unknown.xyz'), parent_dir)
-    assert rule_set.get(unknown_file) is None
+    assert rule_set.get_folder_name(unknown_file) is None
 
 
 def test_in_memory_combine_with_default(parent_dir):
@@ -230,9 +230,9 @@ def test_in_memory_combine_with_default(parent_dir):
     txt_file = FileItem(Path('/tmp/doc.txt'), parent_dir)
 
     # .py has higher priority and should match first
-    assert rule_set.get(py_file) == 'PythonScripts'
+    assert rule_set.get_folder_name(py_file) == 'PythonScripts'
     # .txt should still match
-    assert rule_set.get(txt_file) == 'Texts'
+    assert rule_set.get_folder_name(txt_file) == 'Texts'
 
 
 # ----------------------------------------------------------------------
@@ -259,9 +259,9 @@ def test_json_repository(tmp_path, parent_dir):
     rule_set = repo.load_rules()
 
     txt_file = FileItem(Path('/tmp/doc.txt'), parent_dir)
-    assert rule_set.get(txt_file) == 'Documents'
+    assert rule_set.get_folder_name(txt_file) == 'Documents'
     unknown_file = FileItem(Path('/tmp/unknown.xyz'), parent_dir)
-    assert rule_set.get(unknown_file) == 'Other'
+    assert rule_set.get_folder_name(unknown_file) == 'Other'
 
 
 def test_json_repository_missing_file(tmp_path):

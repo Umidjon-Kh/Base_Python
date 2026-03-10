@@ -45,7 +45,7 @@ class RuleSet:
         self.ignore_size_more_than = more
         self.ignore_size_less_than = less
 
-    def get(self, target: FileItem) -> Optional[str]:
+    def get_folder_name(self, target: FileItem) -> Optional[str]:
         """
         Determine the target folder for a file item.
 
