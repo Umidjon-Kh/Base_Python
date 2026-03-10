@@ -2,7 +2,7 @@ from .setter import StyleSetter
 from .file_system import FileSystem
 from .logger import Logger
 from .config import AppConfig
-from .repo_loaders import RuleRepository, StyleRepository
+from .repo_loaders import RuleRepository, StyleRepository, ConfigRepository
 
 __all__ = [
     'StyleSetter',
@@ -11,4 +11,5 @@ __all__ = [
     'AppConfig',
     'RuleRepository',
     'StyleRepository',
+    'ConfigRepository',
 ]

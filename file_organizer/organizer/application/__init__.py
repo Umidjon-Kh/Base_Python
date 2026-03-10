@@ -2,8 +2,10 @@ from .ports import (
     StyleSetter,
     FileSystem,
     Logger,
+    AppConfig,
     RuleRepository,
     StyleRepository,
+    ConfigRepository,
 )
 
 __all__ = [
@@ -12,4 +14,6 @@ __all__ = [
     'Logger',
     'RuleRepository',
     'StyleRepository',
+    'AppConfig',
+    'ConfigRepository',
 ]
