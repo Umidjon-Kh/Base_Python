@@ -12,12 +12,13 @@ class InMemoryRuleRepository(RuleRepository):
     Useful for CLI‑provided rules (--rules) and for combining with default rules.
     """
 
-    __slots__ = ('rules_cfg', 'default_repo' 'combine')
+    __slots__ = ('rules_cfg', 'rules_repo', 'default_repo' 'combine')
 
     def __init__(
         self,
-        rules_cfg: Dict[str, Any],
-        default_repo: Optional[RuleRepository] = None,
+        default_repo: RuleRepository,
+        rules_cfg: Optional[Dict[str, Any]] = None,
+        rules_repo: Optional[RuleRepository] = None,
         combine: bool = False,
     ) -> None:
         """
@@ -26,39 +27,70 @@ class InMemoryRuleRepository(RuleRepository):
             default_repo: Repository to load default rules from (if combine=True).
             combine: If True, merge default rules with the provided rules_cfg.
         """
-        self.rules_cfg = rules_cfg
         self.default_repo = default_repo
+        self.rules_repo = rules_repo
         self.combine = combine
+        self.rules_cfg = rules_cfg
 
     def load_rules(self) -> RuleSet:
-        if self.combine and self.default_repo:
-            default_set = self.default_repo.load_rules()
-            # Build user rules
-            user_rules = self._build_rules_from_dict(self.rules_cfg)
-            # Merge: user rules first (higher priority)
-            combined_rules = user_rules + list(default_set.rules)
-            # Other settings: user takes precedence
-            other_behavior = self.rules_cfg.get('other_behavior', default_set.other_behavior)
-            ignore_extensions = self.rules_cfg.get('ignore_extensions', default_set.ignore_extensions)
-            ignore_size_more = self.rules_cfg.get('ignore_size_more_than', default_set.ignore_size_more_than)
-            ignore_size_less = self.rules_cfg.get('ignore_size_less_than', default_set.ignore_size_less_than)
-            merged_dict = {
-                'rules': combined_rules,
-                'other_behavior': other_behavior,
-                'ignore_extensions': ignore_extensions,
-                'ignore_size_more_than': ignore_size_more,
-                'ignore_size_less_than': ignore_size_less,
-            }
-            return RuleSet(merged_dict)
+        """
+        Main code for loading and combining setter params if user cfg is not None
+        Priority of setter attributes
+            3 - default rules repository
+            2 - custom user rules repository
+            1 - custom user config args
+        Returns RuleSetter with all combined rules
+        """
+        # List of rules: extension, size, composite, ...
+        rules_data = []
+        # Setting default setter
+        setter = self.default_repo.load_rules()
+        # If combine overrides all default setter attributes with user args
+        if self.combine:
+            rules_data = setter.rules
+            # Adding rules from custom fules repository
+            if self.rules_repo is not None:
+                user_rule_set = self.rules_repo.load_rules()
+                rules_data = user_rule_set.rules + rules_data
+                setter = user_rule_set
+            # Adding user custom rules if its not None
+            if self.rules_cfg is not None:
+                user_rules = self._build_rules_from_dict(self.rules_cfg.get('rules', []))
+                rules_data = user_rules + rules_data
+        # Otherwise if combine is false only using user rules
+        # But if user custom rules cfg and custom rules repo is None
+        # Using default rules attributes, without rules list
         else:
-            # Just build from given dict
-            rules = self._build_rules_from_dict(self.rules_cfg)
-            config = self.rules_cfg.copy()
-            config['rules'] = rules
-            return RuleSet(config)
+            if self.rules_repo is not None:
+                user_rule_set = self.rules_repo.load_rules()
+                rules_data = user_rule_set.rules
+                setter = user_rule_set
+            if self.rules_cfg is not None:
+                user_rules = self._build_rules_from_dict(self.rules_cfg.get('rules', []))
+                rules_data = user_rules + rules_data
 
-    def _build_rules_from_dict(self, cfg: Dict[str, Any]) -> List[Rule]:
-        rules_data = cfg.get('rules', [])
+        # Building new config from setter and user config params
+        config = self._config_builder(self.rules_cfg or {}, rules_data, setter)
+        # Returning RuleSet
+        return RuleSet(config)
+
+    def _config_builder(
+        self,
+        config: Dict[str, Any],
+        rules: List[Rule],
+        setter: RuleSet,
+    ) -> Dict[str, Any]:
+        """Returns updated config with setter and user rule setter config params"""
+        builded_config = {
+            'other_behavior': config.get('other_behavior', setter.other_behavior),
+            'ignore_extensions': config.get('ignore_extensions', setter.ignore_extensions),
+            'ignore_size_more_than': config.get('ignore_size_more_than', setter.ignore_size_more_than),
+            'ignore_size_less_than': config.get('ignore_size_less_than', setter.ignore_size_less_than),
+            'rules': rules,
+        }
+        return builded_config
+
+    def _build_rules_from_dict(self, rules_data: list) -> List[Rule]:
         if not isinstance(rules_data, list):
             raise RuleValidationError('\'rules\' must be a list')
         rules = []

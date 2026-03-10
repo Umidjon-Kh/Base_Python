@@ -5,13 +5,13 @@
     "recursive": true,
     "ignore_patterns": [".tmp", "*.log", "*.bak"],
     "rules": {
-        "rules": null,
-        "rules_file": null,
+        "rules_cfg": null,
+        "rules_repo": null,
         "combine": false
     },
     "styles": {
         "styles": null,
-        "styles_file": null,
+        "styles_repo": null,
         "combine": false
     },
     "logging": {

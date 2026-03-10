@@ -1,4 +1,3 @@
-from copy import deepcopy
 from typing import Dict, Any, Optional
 
 # Project modules
@@ -26,13 +25,13 @@ class InMemoryStyleRepository(StyleRepository):
     Unknown level names will raise UnknownStyleType.
     """
 
-    __slots__ = ('styles_data', 'styles_file', 'default_repo', 'combine')
+    __slots__ = ('styles_data', 'styles_repo', 'default_repo', 'combine')
 
     def __init__(
         self,
+        default_repo: StyleRepository,
         styles_data: Optional[Dict[str, Dict[str, Any]]] = None,
         styles_repo: Optional[StyleRepository] = None,
-        default_repo: Optional[StyleRepository] = None,
         combine: bool = False,
     ) -> None:
         """
@@ -41,50 +40,36 @@ class InMemoryStyleRepository(StyleRepository):
             default_repo: Repository to load default styles from (if combine=True).
             combine: If True, merge default styles with provided styles cfg
         """
-        self.styles_data = styles_data
-        self.styles_file = styles_repo
         self.default_repo = default_repo
+        self.styles_repo = styles_repo
+        self.styles_data = styles_data
         self.combine = combine
 
     def load_styles(self) -> StyleSet:
+        """
+        Main code for loading and combinig setter and custom user cfg if is not None
+        Priority of setter styles attributes
+            3 - default styles repository
+            2 - custom user styles repository
+            1 - custom user config args
+        Returns StyleSetter with all combined styles
+        """
+        # Creating styles data for default styles dict
         styles_data = {}
-        if self.combine and self.default_repo:
+        # If combine loads default repository styles to styles_data
+        if self.combine:
             styles_data = self.default_repo.load_styles().styles
-            # If user styles-file is not None
-            if self.styles_file is not None:
-                # Deep merging user styles and default styles
-                user_styles = self.styles_file.load_styles().styles
-                styles_data = self._deep_merge(styles_data, user_styles)
-            if self.styles_data is not None:
-                # Deep merging styles data and styles_data
-                styles_data = self._deep_merge(styles_data, self.styles_data)
-            # Building styles from merged styles_data
-            styles = self._build_styles_from_dict(styles_data)
-            # Returning StyleSet
-            return StyleSet(styles)
-        else:
-            if self.styles_file is not None:
-                styles_data = self.styles_file.load_styles().styles
-                if self.styles_data is not None:
-                    styles_data = self._deep_merge(styles_data, self.styles_data)
-            # Building styles from styles_data
-            styles = self._build_styles_from_dict(styles_data)
-            # Returning StyleSet
-            return StyleSet(styles)
-
-    def _deep_merge(self, non_priority_dict: Dict, priority_dict: Dict) -> Dict:
-        """Returns recursively deep merged dict"""
-        base = deepcopy(non_priority_dict)
-        # Iterating dict items if item value is dict calling to recursively copy deep_merge
-        for key, value in priority_dict.items():
-            # if both values are dict type
-            if key in base and isinstance(base[key], dict) and isinstance(value, dict):
-                base[key] = self._deep_merge(base[key], value)
-            else:
-                # Otherwise, overwrite the value in base dict
-                base[key] = value
-
-        return base
+        # if user custom styles repo is not None, updates styles_data
+        if self.styles_repo is not None:
+            user_styles = self.styles_repo.load_styles().styles
+            styles_data.update(user_styles)
+        # If user custom styles is not None, updates styles_data
+        if self.styles_data is not None:
+            # Builds styles from user config
+            user_styles = self._build_styles_from_dict(self.styles_data)
+            styles_data.update(user_styles)
+        # Returning StyleSetter
+        return StyleSet(styles_data)
 
     def _build_styles_from_dict(self, styles_data: Dict[str, Any]) -> Dict[str, LevelStyle]:
         if not isinstance(styles_data, dict):
