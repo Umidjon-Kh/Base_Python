@@ -10,8 +10,14 @@ class AppConfig:
     Application configuration object.
 
     Holds all settings required to run the file organizer.
-    All paths are stored as absolute :class:`Path` objects.
+    All paths are stored as absolute Path objects.
     The configuration is immutable after creation.
+
+    Rules and styles can be provided in two ways (mutually exclusive):
+        _file  — path to a JSON file  (JsonRuleRepository / JsonStyleRepository)
+        _cfg   — inline dict          (InMemoryRuleRepository / InMemoryStyleRepository)
+    bootstrap() decides which adapter to create based on which one is not None.
+    If both are provided, _cfg takes priority (more specific overrides less specific).
     """
 
     __slots__ = (
@@ -21,7 +27,9 @@ class AppConfig:
         '_recursive',
         '_ignore_patterns',
         '_rules_file',
+        '_rules_cfg',
         '_styles_file',
+        '_styles_cfg',
         '_logging',
     )
 
@@ -33,38 +41,26 @@ class AppConfig:
         recursive: bool = True,
         ignore_patterns: Optional[List[str]] = None,
         rules_file: Optional[Path] = None,
+        rules_cfg: Optional[Dict[str, Any]] = None,
         styles_file: Optional[Path] = None,
+        styles_cfg: Optional[Dict[str, Any]] = None,
         logging: Optional[Dict[str, Any]] = None,
     ) -> None:
-        """
-        Initialize an immutable application configuration.
-
-        Args:
-            source_dir: Absolute path to the source directory to organize.
-            dest_dir: Absolute path to the destination root directory.
-            dry_run: If True, simulate without moving files.
-            recursive: Scan source directory recursively.
-            ignore_patterns: List of glob patterns to ignore during scanning.
-            rules_file: Absolute path to the JSON file containing sorting rules.
-            styles_file: Absolute path to the JSON file containing logging styles.
-            logging: Raw logging configuration dictionary (will be passed to logger adapter).
-
-        Raises:
-            ValueError: If any path is not absolute or if a boolean is not bool.
-        """
         self._source_dir = source_dir
         self._dest_dir = dest_dir
         self._dry_run = dry_run
         self._recursive = recursive
         self._ignore_patterns = ignore_patterns
         self._rules_file = rules_file
+        self._rules_cfg = rules_cfg
         self._styles_file = styles_file
+        self._styles_cfg = styles_cfg
         self._logging = logging
         self._post_init()
 
     def _post_init(self) -> None:
         """Validate the configuration after initialization."""
-        # All paths must be absolute
+        # Path checks
         if not self._source_dir.is_absolute():
             raise PathIsNotAbsoluteError(f'source_dir must be absolute, got {self._source_dir}')
         if self._dest_dir is not None and not self._dest_dir.is_absolute():
@@ -80,13 +76,21 @@ class AppConfig:
         if not isinstance(self._recursive, bool):
             raise ValueError(f'recursive must be a boolean, got {type(self._recursive)}')
 
-        # ignore_patterns can be None or list of strings
+        # ignore_patterns: None or list of strings
         if self._ignore_patterns is not None:
             if not isinstance(self._ignore_patterns, list):
                 raise ValueError('ignore_patterns must be a list or None')
             for pat in self._ignore_patterns:
                 if not isinstance(pat, str):
                     raise ValueError(f'ignore pattern must be string, got {type(pat)}')
+
+        # rules_cfg and styles_cfg must be dicts if provided
+        if self._rules_cfg is not None and not isinstance(self._rules_cfg, dict):
+            raise ValueError(f'rules_cfg must be a dict, got {type(self._rules_cfg)}')
+        if self._styles_cfg is not None and not isinstance(self._styles_cfg, dict):
+            raise ValueError(f'styles_cfg must be a dict, got {type(self._styles_cfg)}')
+
+    # ── Properties ────────────────────────────────────────────────────────────
 
     @property
     def source_dir(self) -> Path:
@@ -119,9 +123,19 @@ class AppConfig:
         return self._rules_file
 
     @property
+    def rules_cfg(self) -> Optional[Dict[str, Any]]:
+        """Inline rules config dict, or None."""
+        return self._rules_cfg
+
+    @property
     def styles_file(self) -> Optional[Path]:
         """Absolute path to JSON file with logging styles, or None."""
         return self._styles_file
+
+    @property
+    def styles_cfg(self) -> Optional[Dict[str, Any]]:
+        """Inline styles config dict, or None."""
+        return self._styles_cfg
 
     @property
     def logging(self) -> Optional[Dict[str, Any]]:
@@ -137,6 +151,8 @@ class AppConfig:
             f'recursive={self._recursive!r}, '
             f'ignore_patterns={self._ignore_patterns!r}, '
             f'rules_file={self._rules_file!r}, '
+            f'rules_cfg={self._rules_cfg!r}, '
             f'styles_file={self._styles_file!r}, '
+            f'styles_cfg={self._styles_cfg!r}, '
             f'logging={self._logging!r})'
         )
