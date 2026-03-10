@@ -1,0 +1,31 @@
+# Repository Digest
+
+## Repository Name: Base_Python
+
+## Owner: Umidjon-Kh
+
+## Date and Time: 2026-03-10 21:58:52 (UTC)
+
+### Directory Structure:
+
+```
+Base_Python/
+├── file1.py
+├── file2.py
+├── subdirectory/
+│   ├── file3.py
+│   ├── file4.py
+│   └── file5.py
+└── README.md
+```
+
+### File Summaries:
+
+- **file1.py**: Description of file1 functionalities.
+- **file2.py**: Description of file2 functionalities.
+- **subdirectory/file3.py**: Description of file3 functionalities.
+- **subdirectory/file4.py**: Description of file4 functionalities.
+- **subdirectory/file5.py**: Description of file5 functionalities.
+- **README.md**: Explanation of the repository and its purpose. 
+
+## End of Digest
