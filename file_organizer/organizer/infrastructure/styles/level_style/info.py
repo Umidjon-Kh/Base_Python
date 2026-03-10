@@ -13,14 +13,4 @@ class InfoStyle(LevelStyle):
     __slots__ = ()
 
     def __init__(self, config: Dict[str, Any]) -> None:
-        """
-        Initialize InfoStyle with level-specific defaults.
-        """
-        info_defaults = {
-            'show_path': False,
-            'show_function': False,
-            'show_line': False,
-            'level_color': 'green',
-        }
-        merged_config = {**info_defaults, **config}
-        super().__init__(merged_config)
+        super().__init__(config)

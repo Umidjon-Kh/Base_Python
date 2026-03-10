@@ -13,15 +13,4 @@ class CriticalStyle(LevelStyle):
     __slots__ = ()
 
     def __init__(self, config: Dict[str, Any]) -> None:
-        """
-        Initialize CriticalStyle with level-specific defaults.
-        """
-        critical_defaults = {
-            'level_color': 'RED',  # loguru bright red
-            'msg_color': 'RED',
-            'show_path': True,
-            'show_function': True,
-            'show_line': True,
-        }
-        merged_config = {**critical_defaults, **config}
-        super().__init__(merged_config)
+        super().__init__(config)

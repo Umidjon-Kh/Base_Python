@@ -13,15 +13,4 @@ class ErrorStyle(LevelStyle):
     __slots__ = ()
 
     def __init__(self, config: Dict[str, Any]) -> None:
-        """
-        Initialize ErrorStyle with level-specific defaults.
-        """
-        error_defaults = {
-            'level_color': 'red',
-            'msg_color': 'red',
-            'show_path': True,
-            'show_function': True,
-            'show_line': True,
-        }
-        merged_config = {**error_defaults, **config}
-        super().__init__(merged_config)
+        super().__init__(config)

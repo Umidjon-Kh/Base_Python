@@ -13,12 +13,4 @@ class WarningStyle(LevelStyle):
     __slots__ = ()
 
     def __init__(self, config: Dict[str, Any]) -> None:
-        """
-        Initialize WarningStyle with level-specific defaults.
-        """
-        warning_defaults = {
-            'level_color': 'yellow',
-            'msg_color': 'yellow',
-        }
-        merged_config = {**warning_defaults, **config}
-        super().__init__(merged_config)
+        super().__init__(config)
