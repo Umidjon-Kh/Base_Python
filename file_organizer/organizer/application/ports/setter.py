@@ -8,6 +8,8 @@ class StyleSetter(ABC):
     and methods that should be in all child cls
     """
 
+    __slots__ = ('styles')
+
     @abstractmethod
     def __init__(self, cfg: Dict[str, Any]) -> None:
         pass

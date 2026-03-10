@@ -19,7 +19,7 @@ class InMemoryRuleRepository(RuleRepository):
         rules_cfg: Dict[str, Any],
         default_repo: Optional[RuleRepository] = None,
         combine: bool = False,
-    ):
+    ) -> None:
         """
         Args:
             rules_cfg: Dictionary with the same structure as the JSON file.

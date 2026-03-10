@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 # Project modules
 from ...application.ports import StyleRepository
@@ -11,7 +11,7 @@ from .level_style import (
     ErrorStyle,
     CriticalStyle,
 )
-from ...exceptions import UnknownStyleType
+from ...exceptions import UnknownStyleType, StyleFormatError
 
 
 class InMemoryStyleRepository(StyleRepository):
@@ -25,57 +25,67 @@ class InMemoryStyleRepository(StyleRepository):
     Unknown level names will raise UnknownStyleType.
     """
 
-    __slots__ = ('_config',)
+    __slots__ = ('styles_cfg', 'default_repo', 'combine')
 
-    def __init__(self, config: Dict[str, Dict[str, Any]]) -> None:
+    def __init__(
+        self,
+        styles_cfg: Dict[str, Dict[str, Any]],
+        default_repo: Optional[StyleRepository] = None,
+        combine: bool = False,
+    ) -> None:
         """
         Args:
-            config: Dictionary with level names as keys and style configs as values.
+            styles_g: Dictionary with level names as keys and style configs as values.
+            default_repo: Repository to load default styles from (if combine=True).
+            combine: If True, merge default styles with provided styles cfg
         """
-        self._config = config.copy()
+        self.styles_cfg = styles_cfg
+        self.default_repo = default_repo
+        self.combine = combine
 
     def load_styles(self) -> StyleSet:
-        """
-        Convert the stored config dictionary into a StyleSet.
+        if self.combine and self.default_repo:
+            default_set = self.default_repo.load_styles()
+            # Build user styles
+            user_styles = self._build_styles_from_dict(self.styles_cfg)
+            combined_styles = {**default_set.styles, **user_styles}
+            return StyleSet(combined_styles)
+        else:
+            user_styles = self._build_styles_from_dict(self.styles_cfg)
+            return StyleSet(user_styles)
 
-        Returns:
-            StyleSet instance containing styles for all configured levels.
+    def _build_styles_from_dict(self, styles_cfg: Dict[str, Any]) -> Dict[str, LevelStyle]:
+        if not isinstance(styles_cfg, dict):
+            raise StyleFormatError('\'styles\' must be a dict')
+        styles: Dict[str, LevelStyle] = {}
+        for level, config in styles_cfg.items():
+            style = self._create_style(level, config)
+            styles[level] = style
+        return styles
 
-        Raises:
-            UnknownStyleType: if any key in config is not one of the five standard levels.
-        """
-        style_instances: Dict[str, LevelStyle] = {}
-
-        for level_name, level_config in self._config.items():
-            style = self._create_style(level_name, level_config)
-            style_instances[level_name] = style
-
-        # StyleSet will merge these with its own defaults for missing levels
-        return StyleSet(style_instances)
-
-    def _create_style(self, level_name: str, config: Dict[str, Any]) -> LevelStyle:
+    def _create_style(self, level: str, config: Dict[str, Any]) -> LevelStyle:
         """
         Factory method to create a specific LevelStyle instance based on level name.
 
         Args:
-            level_name: One of 'debug', 'info', 'warning', 'error', 'critical'.
+            level: One of 'debug', 'info', 'warning', 'error', 'critical'.
             config: Configuration dictionary for that level (may be empty).
 
         Returns:
             An instance of the corresponding LevelStyle subclass.
 
         Raises:
-            UnknownStyleType: if level_name is not recognized.
+            UnknownStyleType: if level is not recognized.
         """
-        if level_name == 'debug':
+        if level == 'debug':
             return DebugStyle(config)
-        elif level_name == 'info':
+        elif level == 'info':
             return InfoStyle(config)
-        elif level_name == 'warning':
+        elif level == 'warning':
             return WarningStyle(config)
-        elif level_name == 'error':
+        elif level == 'error':
             return ErrorStyle(config)
-        elif level_name == 'critical':
+        elif level == 'critical':
             return CriticalStyle(config)
         else:
-            raise UnknownStyleType(f'Unknown level name: {level_name}')
+            raise UnknownStyleType(f'Unknown level name: {level}')

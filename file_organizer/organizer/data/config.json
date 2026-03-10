@@ -4,8 +4,15 @@
     "dry_run": false,
     "recursive": true,
     "ignore_patterns": [".tmp", "*.log", "*.bak"],
-    "rules_file": null,
-    "styles_file": null,
+    "rules": {
+        "rules": null,
+        "rules_file": null,
+        "combine": false
+    },
+    "styles": {
+        "styles": null,
+        "styles_file": null
+    },
     "logging": {
         "console": {
             "enabled": true,
