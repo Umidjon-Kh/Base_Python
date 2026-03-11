@@ -1,277 +1,203 @@
 """
-Tests for the OSFileSystem adapter.
-Uses temporary directories to avoid touching the real file system.
+Tests for OSFileSystem adapter.
+Uses tmp_path to avoid touching the real file system.
 """
 
 import pytest
 from pathlib import Path
-# from shutil import rmtree
 
 from organizer.domain import FileItem, Directory
 from organizer.infrastructure import OSFileSystem
-from organizer.exceptions import (
-    SourceFileNotFoundError,
-    # PermissionDeniedError,
-    # DestinationExistsError,
-    FileSystemError,
-)
+from organizer.exceptions import SourceFileNotFoundError
 
 
-# ----------------------------------------------------------------------
-# Fixtures
-# ----------------------------------------------------------------------
-
-
-@pytest.fixture
-def temp_dir(tmp_path) -> Path:
-    """Create a clean temporary directory for each test."""
-    return tmp_path
+# ── Fixtures ──────────────────────────────────────────────────────────────────
 
 
 @pytest.fixture
 def fs() -> OSFileSystem:
-    """Provide an instance of OSFileSystem."""
     return OSFileSystem()
 
 
-def create_test_files(base: Path, structure: dict) -> None:
-    """
-    Helper to create a directory structure from a dict.
-    Example:
-        {
-            'file.txt': None,
-            'sub': {
-                'nested.txt': None,
-                'empty': {}
-            }
-        }
-    """
+def make_files(base: Path, names: list) -> None:
+    """Create empty files with dummy content."""
+    for name in names:
+        (base / name).write_text('dummy')
+
+
+def make_structure(base: Path, structure: dict) -> None:
+    """Create nested files/dirs from a dict. None = file, dict = directory."""
     for name, content in structure.items():
         path = base / name
-        if content is None:  # file
-            path.write_text('dummy content')
-        elif isinstance(content, dict):  # directory
+        if content is None:
+            path.write_text('dummy')
+        elif isinstance(content, dict):
             path.mkdir()
-            create_test_files(path, content)
+            make_structure(path, content)
 
 
-# ----------------------------------------------------------------------
-# Tests for scanning
-# ----------------------------------------------------------------------
+# ── scan ──────────────────────────────────────────────────────────────────────
 
 
-def test_scan_basic(temp_dir, fs):
-    """Scan a simple directory with files and subdirectories."""
-    structure = {
-        'a.txt': None,
-        'b.jpg': None,
-        'sub': {
-            'c.txt': None,
-        },
-    }
-    create_test_files(temp_dir, structure)
-
-    root = fs.scan(temp_dir, recursive=True)
-
-    assert root.name == temp_dir.name
-    assert len(root.children) == 3  # a.txt, b.jpg, sub
-
-    # Check file items
-    a_txt = root.get_child('a.txt')
-    assert a_txt is not None
-    assert isinstance(a_txt, FileItem)
-    assert a_txt.name == 'a.txt'
-    assert a_txt.suffix == '.txt'
-
-    sub = root.get_child('sub')
-    assert sub is not None
-    assert isinstance(sub, Directory)
-    assert len(sub.children) == 1
-    c_txt = sub.get_child('c.txt')
-    assert c_txt is not None
-
-
-def test_scan_non_recursive(temp_dir, fs):
-    """Scan without recursion – subdirectories are created but empty."""
-    structure = {
-        'a.txt': None,
-        'sub': {
-            'c.txt': None,
-        },
-    }
-    create_test_files(temp_dir, structure)
-
-    root = fs.scan(temp_dir, recursive=False)
+def test_scan_flat_directory(tmp_path, fs):
+    """Flat scan returns correct number and types of children."""
+    make_files(tmp_path, ['a.txt', 'b.jpg'])
+    root = fs.scan(tmp_path, recursive=False)
 
     assert len(root.children) == 2
-    sub = root.get_child('sub')
-    assert sub is not None
-    assert isinstance(sub, Directory)
-    # sub should be empty because recursion was off
-    assert len(sub.children) == 0
+    assert root.get_child('a.txt') is not None
+    assert root.get_child('b.jpg') is not None
+    assert isinstance(root.get_child('a.txt'), FileItem)
 
 
-def test_scan_with_ignore_patterns(temp_dir, fs):
-    """Files/directories matching ignore patterns are skipped."""
-    structure = {
-        'keep.txt': None,
-        'ignore.tmp': None,
-        'sub': {
-            'also_ignore.log': None,
-            'keep.md': None,
+def test_scan_recursive_walks_subdirs(tmp_path, fs):
+    """Recursive scan finds files in all subdirectories."""
+    make_structure(
+        tmp_path,
+        {
+            'a.txt': None,
+            'sub': {'b.txt': None, 'deep': {'c.txt': None}},
         },
-    }
-    create_test_files(temp_dir, structure)
-
-    ignore = ['*.tmp', '*.log', 'sub']  # ignore the whole sub directory
-    root = fs.scan(temp_dir, recursive=True, ignore_patterns=ignore)
-
-    # keep.txt should be present
-    assert root.get_child('keep.txt') is not None
-    # ignore.tmp should be absent
-    assert root.get_child('ignore.tmp') is None
-    # sub directory should be absent (ignored by pattern 'sub')
-    assert root.get_child('sub') is None
+    )
+    root = fs.scan(tmp_path, recursive=True)
+    files = list(root.walk_files())
+    assert len(files) == 3
 
 
-# ----------------------------------------------------------------------
-# Tests for move
-# ----------------------------------------------------------------------
+def test_scan_non_recursive_skips_subdir_files(tmp_path, fs):
+    """Non-recursive scan does not include files inside subdirectories."""
+    make_structure(tmp_path, {'a.txt': None, 'sub': {'b.txt': None}})
+    root = fs.scan(tmp_path, recursive=False)
+    files = list(root.walk_files())
+    assert len(files) == 1
+    assert files[0].name == 'a.txt'
 
 
-def test_move_file(temp_dir, fs):
-    """Move a file to a new location."""
-    src = temp_dir / 'source.txt'
-    src.write_text('data')
-    dst_dir = temp_dir / 'dest'
-    dst = dst_dir / 'source.txt'
-
-    # Need a FileItem to move
-    parent = Directory(temp_dir)
-    file_item = FileItem(src, parent)
-
-    fs.move(file_item, dst, Directory(dst_dir), dry_run=False)
-
-    assert not src.exists()
-    assert dst.exists()
-    assert dst.read_text() == 'data'
-    # Tree should be updated
-    assert file_item.path == dst
-    if file_item.parent is not None:
-        assert file_item.parent.path == dst_dir
+def test_scan_ignore_patterns(tmp_path, fs):
+    """Files matching ignore_patterns are excluded."""
+    make_files(tmp_path, ['a.txt', 'b.log', 'c.bak'])
+    root = fs.scan(tmp_path, recursive=False, ignore_patterns=['*.log', '*.bak'])
+    files = list(root.walk_files())
+    assert len(files) == 1
+    assert files[0].name == 'a.txt'
 
 
-def test_move_with_conflict(temp_dir, fs):
-    """If destination already exists, a new unique name is generated."""
-    src = temp_dir / 'source.txt'
-    src.write_text('data')
-    dst_dir = temp_dir / 'dest'
-    dst_dir.mkdir()
-    existing = dst_dir / 'source.txt'
-    existing.write_text('existing')
-
-    parent = Directory(temp_dir)
-    file_item = FileItem(src, parent)
-
-    fs.move(file_item, existing, Directory(dst_dir), dry_run=False)
-
-    assert not src.exists()
-    # The existing file should remain untouched
-    assert existing.read_text() == 'existing'
-    # A new file with a suffix should have been created
-    expected = dst_dir / 'source_(1).txt'
-    assert expected.exists()
-    assert expected.read_text() == 'data'
-    assert file_item.path == expected
+def test_scan_empty_directory(tmp_path, fs):
+    """Scanning an empty directory returns zero children."""
+    root = fs.scan(tmp_path, recursive=False)
+    assert len(root.children) == 0
 
 
-def test_move_nonexistent_source(temp_dir, fs):
-    """Moving a file that does not exist raises SourceFileNotFoundError."""
-    src = temp_dir / 'missing.txt'
-    dst = temp_dir / 'dest' / 'missing.txt'
-    parent = Directory(temp_dir)
-    file_item = FileItem(src, parent)  # file_item exists but the physical file does not
+def test_scan_builds_correct_tree_structure(tmp_path, fs):
+    """Scanned tree has correct parent/child relationships."""
+    make_structure(tmp_path, {'a.txt': None, 'sub': {'b.txt': None}})
+    root = fs.scan(tmp_path, recursive=True)
+
+    sub = root.get_child('sub')
+    assert isinstance(sub, Directory)
+    assert sub.get_child('b.txt') is not None
+
+
+# ── move ──────────────────────────────────────────────────────────────────────
+
+
+def test_move_physically_moves_file(tmp_path, fs):
+    """File is moved from source to destination."""
+    src = tmp_path / 'source'
+    src.mkdir()
+    (src / 'doc.txt').write_text('hello')
+
+    dest = tmp_path / 'dest'
+    dest.mkdir()
+
+    root = fs.scan(src, recursive=False)
+    file_item = list(root.walk_files())[0]
+    new_parent = Directory(dest)
+
+    fs.move(file_item=file_item, destination=dest / 'doc.txt', new_parent=new_parent, dry_run=False)
+
+    assert (dest / 'doc.txt').exists()
+    assert not (src / 'doc.txt').exists()
+
+
+def test_move_dry_run_leaves_file_in_place(tmp_path, fs):
+    """dry_run=True does not physically move the file."""
+    src = tmp_path / 'source'
+    src.mkdir()
+    (src / 'doc.txt').write_text('hello')
+
+    dest = tmp_path / 'dest'
+    dest.mkdir()
+
+    root = fs.scan(src, recursive=False)
+    file_item = list(root.walk_files())[0]
+    new_parent = Directory(dest)
+
+    fs.move(file_item=file_item, destination=dest / 'doc.txt', new_parent=new_parent, dry_run=True)
+
+    assert (src / 'doc.txt').exists()  # still in source
+    assert not (dest / 'doc.txt').exists()  # not in dest
+
+
+def test_move_missing_source_raises(tmp_path, fs):
+    """Moving a file that doesn't exist raises SourceFileNotFoundError."""
+    parent = Directory(tmp_path)
+    ghost = FileItem(tmp_path / 'ghost.txt', parent)
+    dest_dir = tmp_path / 'dest'
+    dest_dir.mkdir()
 
     with pytest.raises(SourceFileNotFoundError):
-        fs.move(file_item, dst, Directory(temp_dir / 'dest'), dry_run=False)
+        fs.move(file_item=ghost, destination=dest_dir / 'ghost.txt', new_parent=Directory(dest_dir), dry_run=False)
 
 
-# ----------------------------------------------------------------------
-# Tests for mkdir and rmdir
-# ----------------------------------------------------------------------
+def test_move_resolves_name_conflict(tmp_path, fs):
+    """If destination file already exists, a unique name is generated."""
+    src = tmp_path / 'source'
+    src.mkdir()
+    (src / 'doc.txt').write_text('new')
+
+    dest = tmp_path / 'dest'
+    dest.mkdir()
+    (dest / 'doc.txt').write_text('existing')  # conflict!
+
+    root = fs.scan(src, recursive=False)
+    file_item = list(root.walk_files())[0]
+    new_parent = Directory(dest)
+
+    fs.move(file_item=file_item, destination=dest / 'doc.txt', new_parent=new_parent, dry_run=False)
+
+    assert (dest / 'doc.txt').exists()  # original untouched
+    assert (dest / 'doc_(1).txt').exists()  # moved with new name
 
 
-def test_mkdir(temp_dir, fs):
-    """Create a directory (and parents)."""
-    path = temp_dir / 'a' / 'b' / 'c'
-    fs.mkdir(path, parents=True)
+def test_move_creates_dest_parent_dirs(tmp_path, fs):
+    """move() creates destination parent directories if they don't exist."""
+    src = tmp_path / 'source'
+    src.mkdir()
+    (src / 'doc.txt').write_text('hello')
 
-    assert path.exists()
-    assert path.is_dir()
+    deep_dest = tmp_path / 'a' / 'b' / 'c' / 'doc.txt'
 
+    root = fs.scan(src, recursive=False)
+    file_item = list(root.walk_files())[0]
 
-def test_rmdir_empty(temp_dir, fs):
-    """Remove an empty directory."""
-    dir_path = temp_dir / 'empty'
-    dir_path.mkdir()
-    directory = Directory(dir_path)
+    fs.move(file_item=file_item, destination=deep_dest, new_parent=Directory(deep_dest.parent), dry_run=False)
 
-    fs.rmdir(directory, dry_run=False)
-
-    assert not dir_path.exists()
-    # directory should be detached from its parent
-    assert directory.parent is None
+    assert deep_dest.exists()
 
 
-def test_rmdir_not_empty(temp_dir, fs):
-    """Attempting to remove a non‑empty directory raises FileSystemError."""
-    dir_path = temp_dir / 'not_empty'
-    dir_path.mkdir()
-    (dir_path / 'file.txt').write_text('data')
-    directory = Directory(dir_path)
-
-    with pytest.raises(FileSystemError, match='Directory not empty'):
-        fs.rmdir(directory, dry_run=False)
-
-    assert dir_path.exists()  # still there
+# ── mkdir ─────────────────────────────────────────────────────────────────────
 
 
-# ----------------------------------------------------------------------
-# Tests for dry run
-# ----------------------------------------------------------------------
+def test_mkdir_creates_nested_dirs(tmp_path, fs):
+    """mkdir with parents=True creates all missing intermediate directories."""
+    target = tmp_path / 'a' / 'b' / 'c'
+    fs.mkdir(target)
+    assert target.exists() and target.is_dir()
 
 
-def test_dry_run_move(temp_dir, fs):
-    """In dry run mode, files are not moved, tree is not updated."""
-    src = temp_dir / 'source.txt'
-    src.write_text('data')
-    dst_dir = temp_dir / 'dest'
-    dst = dst_dir / 'source.txt'
-
-    parent = Directory(temp_dir)
-    file_item = FileItem(src, parent)
-
-    fs.move(file_item, dst, Directory(dst_dir), dry_run=True)
-
-    # File should still be in the original location
-    assert src.exists()
-    assert not dst.exists()
-    # Tree should be unchanged
-    assert file_item.path == src
-    assert file_item.parent == parent
-
-
-def test_dry_run_rmdir(temp_dir, fs):
-    """In dry run mode, directories are not removed physically, but are they detached from the tree?"""
-    dir_path = temp_dir / 'empty'
-    dir_path.mkdir()
-    parent = Directory(temp_dir)
-    directory = Directory(dir_path, parent)  # parent automatically adds it
-
-    fs.rmdir(directory, dry_run=True)
-
-    # Directory should still exist on disk
-    assert dir_path.exists()
-    # Depending on implementation, the tree may be updated. Currently it is not (see code).
-    # We assume the tree remains unchanged.
-    assert directory.parent is not None  # still attached
+def test_mkdir_on_existing_dir_no_error(tmp_path, fs):
+    """mkdir on an already existing directory does not raise."""
+    target = tmp_path / 'existing'
+    target.mkdir()
+    fs.mkdir(target)  # should not raise

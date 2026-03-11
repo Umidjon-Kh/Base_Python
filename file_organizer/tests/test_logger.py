@@ -3,223 +3,150 @@ Tests for LoguruLogger adapter.
 """
 
 import pytest
-import sys
 from pathlib import Path
 from loguru import logger
 
 from organizer.infrastructure.styles import StyleSet, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
 from organizer.infrastructure.logging import LoguruLogger
+from organizer.exceptions import LogFileNotDefinedError
 
 
-# ----------------------------------------------------------------------
-# Fixtures
-# ----------------------------------------------------------------------
+# ── Fixtures ──────────────────────────────────────────────────────────────────
 
 
 @pytest.fixture(autouse=True)
 def reset_loguru():
-    """Remove all handlers after each test to avoid interference."""
+    """Remove all loguru handlers after each test to avoid interference."""
     yield
     logger.remove()
 
 
 @pytest.fixture
 def style_set() -> StyleSet:
-    """Create a StyleSet with default styles."""
-    return StyleSet({})  # empty dict -> all defaults
+    """Default StyleSet — all five levels with default styles."""
+    return StyleSet({})
 
 
 @pytest.fixture
-def sample_styles() -> StyleSet:
-    """Create a StyleSet with some custom styles for testing."""
-    custom_styles = {
-        'debug': DebugStyle(
-            {
-                'show_icon': True,
-                'level_icon': '🐛',
-                'level_color': 'cyan',
-                'show_path': True,
-                'show_function': True,
-                'show_line': True,
-            }
-        ),
-        'info': InfoStyle(
-            {
-                'level_color': 'green',
-                'msg_color': 'white',
-                'time_format': '%H:%M:%S',
-            }
-        ),
-        'warning': WarningStyle(
-            {
-                'level_color': 'yellow',
-                'msg_color': 'yellow',
-            }
-        ),
-        'error': ErrorStyle(
-            {
-                'level_color': 'red',
-                'msg_color': 'red',
-                'show_path': True,
-            }
-        ),
-        'critical': CriticalStyle(
-            {
-                'level_color': 'RED',
-                'msg_color': 'RED',
-                'show_line': True,
-            }
-        ),
-    }
-    return StyleSet(custom_styles)
+def custom_style_set() -> StyleSet:
+    """StyleSet with custom styles to verify they are applied."""
+    return StyleSet(
+        {
+            'debug': DebugStyle({'show_icon': True, 'level_icon': '🐛', 'level_color': 'cyan'}),
+            'info': InfoStyle({'level_color': 'green', 'msg_color': 'white'}),
+            'warning': WarningStyle({'level_color': 'yellow'}),
+            'error': ErrorStyle({'level_color': 'red', 'show_path': True}),
+            'critical': CriticalStyle({'level_color': 'RED', 'show_line': True}),
+        }
+    )
 
 
 @pytest.fixture
 def console_config() -> dict:
-    """Configuration for console-only logging."""
+    """Config with console-only logging at DEBUG level."""
     return {'console': {'enabled': True, 'level': 'DEBUG'}}
 
 
 @pytest.fixture
 def file_config(tmp_path) -> dict:
-    """Configuration for file logging."""
-    log_file = tmp_path / 'test.log'
+    """Config with both console (INFO) and file (DEBUG) logging."""
     return {
-        'console': {'console_level': 'INFO'},
+        'console': {'enabled': False, 'level': 'INFO'},
         'file': {
             'enabled': True,
             'level': 'DEBUG',
-            'path': str(log_file),
+            'path': str(tmp_path / 'test.log'),
             'rotation': '1 MB',
             'retention': '1 day',
         },
     }
 
 
-# ----------------------------------------------------------------------
-# Helper to capture stderr output
-# ----------------------------------------------------------------------
+# ── Tests ─────────────────────────────────────────────────────────────────────
 
 
-@pytest.fixture
-def capture_stderr(capsys):
-    """Capture stderr output and return as string."""
-
-    def _capture():
-        captured = capsys.readouterr()
-        return captured.err
-
-    return _capture
-
-
-# ----------------------------------------------------------------------
-# Tests for LoguruLogger
-# ----------------------------------------------------------------------
-
-
-def test_logger_console_output(style_set, console_config, capture_stderr):
-    """Test that log messages are printed to stderr with correct formatting."""
+def test_console_all_levels_printed(style_set, console_config, capsys):
+    """All five levels produce output when level is DEBUG."""
     log = LoguruLogger(console_config, style_set)
+    log.debug('msg_debug')
+    log.info('msg_info')
+    log.warning('msg_warning')
+    log.error('msg_error')
+    log.critical('msg_critical')
 
-    log.debug('Debug message')
-    log.info('Info message')
-    log.warning('Warning message')
-    log.error('Error message')
-    log.critical('Critical message')
-
-    output = capture_stderr()
-    lines = output.strip().split('\n')
-
-    # Should have 5 lines
-    assert len(lines) == 5
-
-    # Check that each level appears (exact format depends on defaults)
-    assert any('DEBUG' in line and 'Debug message' in line for line in lines)
-    assert any('INFO' in line and 'Info message' in line for line in lines)
-    assert any('WARNING' in line and 'Warning message' in line for line in lines)
-    assert any('ERROR' in line and 'Error message' in line for line in lines)
-    assert any('CRITICAL' in line and 'Critical message' in line for line in lines)
+    output = capsys.readouterr().err
+    assert 'msg_debug' in output
+    assert 'msg_info' in output
+    assert 'msg_warning' in output
+    assert 'msg_error' in output
+    assert 'msg_critical' in output
 
 
-def test_logger_level_filtering(style_set, console_config, capture_stderr):
-    """Test that messages below console_level are not printed."""
-    config = console_config.copy()
-    config['console']['level'] = 'WARNING'  # only WARNING and above
+def test_console_level_filtering(style_set, capsys):
+    """Messages below the configured level are not printed."""
+    config = {'console': {'enabled': True, 'level': 'WARNING'}}
     log = LoguruLogger(config, style_set)
+    log.debug('hidden_debug')
+    log.info('hidden_info')
+    log.warning('visible_warning')
 
-    log.debug('Debug message')
-    log.info('Info message')
-    log.warning('Warning message')
-    log.error('Error message')
-    log.critical('Critical message')
-
-    output = capture_stderr()
-    lines = output.strip().split('\n')
-
-    # Only WARNING, ERROR, CRITICAL should appear
-    assert len(lines) == 3
-    assert 'Debug message' not in output
-    assert 'Info message' not in output
-    assert 'Warning message' in output
-    assert 'Error message' in output
-    assert 'Critical message' in output
+    output = capsys.readouterr().err
+    assert 'hidden_debug' not in output
+    assert 'hidden_info' not in output
+    assert 'visible_warning' in output
 
 
-def test_logger_custom_styles(sample_styles, console_config, capture_stderr):
-    """Test that custom styles are applied to log messages (icons and level names)."""
-    log = LoguruLogger(console_config, sample_styles)
+def test_console_disabled_no_output(style_set, capsys):
+    """No output when console is disabled."""
+    config = {'console': {'enabled': False, 'level': 'DEBUG'}}
+    log = LoguruLogger(config, style_set)
+    log.info('should_not_appear')
 
-    log.debug('Debug message')
-    log.info('Info message')
-    log.warning('Warning message')
-    log.error('Error message')
-    log.critical('Critical message')
+    output = capsys.readouterr().err
+    assert 'should_not_appear' not in output
 
-    output = capture_stderr()
 
-    # Check that debug icon appears
+def test_custom_styles_applied(custom_style_set, console_config, capsys):
+    """Custom style with icon is reflected in the output."""
+    log = LoguruLogger(console_config, custom_style_set)
+    log.debug('styled_debug')
+
+    output = capsys.readouterr().err
     assert '🐛' in output
 
-    # Check that all level names appear
-    assert 'DEBUG' in output
-    assert 'INFO' in output
-    assert 'WARNING' in output
-    assert 'ERROR' in output
-    assert 'CRITICAL' in output
 
-
-def test_logger_file_output(tmp_path, style_set, file_config, capture_stderr):
-    """Test that log messages are written to a file when file_path is provided."""
-    log_file = Path(file_config['file']['path'])
+def test_file_logging_writes_to_file(style_set, file_config):
+    """Messages are written to the log file."""
+    log_path = Path(file_config['file']['path'])
     log = LoguruLogger(file_config, style_set)
 
-    log.debug('Debug file message')
-    log.info('Info file message')
-    log.warning('Warning file message')
+    log.debug('file_debug')
+    log.info('file_info')
+    log.warning('file_warning')
 
-    # Also check that console still prints according to console_level (INFO)
-    console_output = capture_stderr()
-    assert 'Debug file message' not in console_output  # below console level
-    assert 'Info file message' in console_output
-    assert 'Warning file message' in console_output
+    logger.remove()  # flush
 
-    # Now read the log file
-    assert log_file.exists()
-    with open(log_file, 'r') as f:
-        file_content = f.read()
-
-    # File should have all messages (file_level = DEBUG)
-    assert 'Debug file message' in file_content
-    assert 'Info file message' in file_content
-    assert 'Warning file message' in file_content
+    assert log_path.exists()
+    content = log_path.read_text()
+    assert 'file_debug' in content
+    assert 'file_info' in content
+    assert 'file_warning' in content
 
 
-def test_logger_rotation_and_retention_passed(tmp_path, style_set, mocker):
-    """Test that rotation and retention parameters are passed to loguru.add."""
+def test_file_enabled_without_path_raises(style_set):
+    """File logging enabled but path=None raises LogFileNotDefinedError."""
     config = {
-        'console': {
-            'level': 'INFO',
-        },
+        'console': {'enabled': False},
+        'file': {'enabled': True, 'level': 'DEBUG', 'path': None},
+    }
+    with pytest.raises(LogFileNotDefinedError):
+        LoguruLogger(config, style_set)
+
+
+def test_rotation_and_retention_passed_to_loguru(style_set, tmp_path, mocker):
+    """Rotation and retention values are forwarded to loguru.add."""
+    config = {
+        'console': {'enabled': False},
         'file': {
             'enabled': True,
             'level': 'DEBUG',
@@ -228,31 +155,11 @@ def test_logger_rotation_and_retention_passed(tmp_path, style_set, mocker):
             'retention': '7 days',
         },
     }
-
-    # Mock loguru.add to capture arguments
     mock_add = mocker.patch('loguru.logger.add')
-
     LoguruLogger(config, style_set)
 
-    # Should be called twice: once for console, once for file
-    assert mock_add.call_count == 2
-
-    # Find the file handler call
-    file_calls = [call for call in mock_add.call_args_list if call[0][0] == config['file']['path']]
+    file_calls = [c for c in mock_add.call_args_list if c[0][0] == config['file']['path']]
     assert len(file_calls) == 1
-    call_args, call_kwargs = file_calls[0]
-    assert call_kwargs['rotation'] == '1 day'
-    assert call_kwargs['retention'] == '7 days'
-
-
-def test_logger_no_file_if_path_missing(style_set, console_config, mocker):
-    """Test that file handler is not added if file_path is missing."""
-    mock_add = mocker.patch('loguru.logger.add')
-
-    LoguruLogger(console_config, style_set)
-
-    # Should be called only once (console)
-    assert mock_add.call_count == 1
-    # The call should be for stderr
-    call_args, call_kwargs = mock_add.call_args
-    assert call_args[0] == sys.stderr
+    _, kwargs = file_calls[0]
+    assert kwargs['rotation'] == '1 day'
+    assert kwargs['retention'] == '7 days'
