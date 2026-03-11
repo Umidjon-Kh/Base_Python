@@ -235,7 +235,7 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
     # Booleans: MUST use `is not None` - False is a valid explicit override
     # `False or base.dry_run` would incorrectly discard an explicit False
     dry_run = overrides.dry_run if overrides.dry_run is not None else base.dry_run
-    recursive = (not overrides.recursive) if overrides.recursive is not None else base.recursive
+    recursive = overrides.recursive if overrides.recursive is not None else base.recursive
     rules_combine = overrides.rules_combine if overrides.rules_combine is not None else base.rules_combine
     styles_combine = overrides.styles_combine if overrides.styles_combine is not None else base.styles_combine
 
