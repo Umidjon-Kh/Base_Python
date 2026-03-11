@@ -12,7 +12,7 @@ class InMemoryRuleRepository(RuleRepository):
     Useful for CLI‑provided rules (--rules) and for combining with default rules.
     """
 
-    __slots__ = ('rules_cfg', 'rules_repo', 'default_repo', 'combine')
+    __slots__ = ('_rules_cfg', '_rules_repo', '_default_repo', '_combine')
 
     def __init__(
         self,
@@ -27,10 +27,10 @@ class InMemoryRuleRepository(RuleRepository):
             default_repo: Repository to load default rules from (if combine=True).
             combine: If True, merge default rules with the provided rules_cfg.
         """
-        self.default_repo = default_repo
-        self.rules_repo = rules_repo
-        self.combine = combine
-        self.rules_cfg = rules_cfg
+        self._default_repo = default_repo
+        self._rules_repo = rules_repo
+        self._combine = combine
+        self._rules_cfg = rules_cfg
 
     def load_rules(self) -> RuleSet:
         """
@@ -44,33 +44,33 @@ class InMemoryRuleRepository(RuleRepository):
         # List of rules: extension, size, composite, ...
         rules_data = []
         # Setting default setter
-        setter = self.default_repo.load_rules()
+        setter = self._default_repo.load_rules()
         # If combine overrides all default setter attributes with user args
-        if self.combine:
+        if self._combine:
             rules_data = setter.rules
             # Adding rules from custom fules repository
-            if self.rules_repo is not None:
-                user_rule_set = self.rules_repo.load_rules()
+            if self._rules_repo is not None:
+                user_rule_set = self._rules_repo.load_rules()
                 rules_data = user_rule_set.rules + rules_data
                 setter = user_rule_set
             # Adding user custom rules if its not None
-            if self.rules_cfg is not None:
-                user_rules = self._build_rules_from_dict(self.rules_cfg.get('rules', []))
+            if self._rules_cfg is not None:
+                user_rules = self._build_rules_from_dict(self._rules_cfg.get('rules', []))
                 rules_data = user_rules + rules_data
         # Otherwise if combine is false only using user rules
         # But if user custom rules cfg and custom rules repo is None
         # Using default rules attributes, without rules list
         else:
-            if self.rules_repo is not None:
-                user_rule_set = self.rules_repo.load_rules()
+            if self._rules_repo is not None:
+                user_rule_set = self._rules_repo.load_rules()
                 rules_data = user_rule_set.rules
                 setter = user_rule_set
-            if self.rules_cfg is not None:
-                user_rules = self._build_rules_from_dict(self.rules_cfg.get('rules', []))
+            if self._rules_cfg is not None:
+                user_rules = self._build_rules_from_dict(self._rules_cfg.get('rules', []))
                 rules_data = user_rules + rules_data
 
         # Building new config from setter and user config params
-        config = self._config_builder(self.rules_cfg or {}, rules_data, setter)
+        config = self._config_builder(self._rules_cfg or {}, rules_data, setter)
         # Returning RuleSet
         return RuleSet(config)
 

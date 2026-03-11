@@ -28,22 +28,26 @@ class AppConfig:
         '_ignore_patterns',
         '_rules_file',
         '_rules_cfg',
+        '_rules_combine',
         '_styles_file',
         '_styles_cfg',
+        '_styles_combine',
         '_logging',
     )
 
     def __init__(
         self,
-        source_dir: Path,
-        dest_dir: Path,
-        dry_run: bool = False,
-        recursive: bool = True,
+        source_dir: Optional[Path] = None,
+        dest_dir: Optional[Path] = None,
+        dry_run: Optional[bool] = None,
+        recursive: Optional[bool] = None,
         ignore_patterns: Optional[List[str]] = None,
         rules_file: Optional[Path] = None,
         rules_cfg: Optional[Dict[str, Any]] = None,
+        rules_combine: Optional[bool] = None,
         styles_file: Optional[Path] = None,
         styles_cfg: Optional[Dict[str, Any]] = None,
+        styles_combine: Optional[bool] = None,
         logging: Optional[Dict[str, Any]] = None,
     ) -> None:
         self._source_dir = source_dir
@@ -53,15 +57,17 @@ class AppConfig:
         self._ignore_patterns = ignore_patterns
         self._rules_file = rules_file
         self._rules_cfg = rules_cfg
+        self._rules_combine = rules_combine
         self._styles_file = styles_file
         self._styles_cfg = styles_cfg
+        self._styles_combine = styles_combine
         self._logging = logging
         self._post_init()
 
     def _post_init(self) -> None:
         """Validate the configuration after initialization."""
         # Path checks
-        if not self._source_dir.is_absolute():
+        if self._source_dir is not None and not self._source_dir.is_absolute():
             raise PathIsNotAbsoluteError(f'source_dir must be absolute, got {self._source_dir}')
         if self._dest_dir is not None and not self._dest_dir.is_absolute():
             raise PathIsNotAbsoluteError(f'dest_dir must be absolute, got {self._dest_dir}')
@@ -70,11 +76,15 @@ class AppConfig:
         if self._styles_file is not None and not self._styles_file.is_absolute():
             raise PathIsNotAbsoluteError(f'styles_file must be absolute, got {self._styles_file}')
 
-        # Type checks
-        if not isinstance(self._dry_run, bool):
+        # Type checks for booleans
+        if self._dry_run is not None and not isinstance(self._dry_run, bool):
             raise ValueError(f'dry_run must be a boolean, got {type(self._dry_run)}')
-        if not isinstance(self._recursive, bool):
+        if self._recursive is not None and not isinstance(self._recursive, bool):
             raise ValueError(f'recursive must be a boolean, got {type(self._recursive)}')
+        if self._rules_combine is not None and not isinstance(self._rules_combine, bool):
+            raise ValueError(f'rules_combine must be a boolean, got({type(self._rules_combine)})')
+        if self._styles_combine is not None and not isinstance(self._styles_combine, bool):
+            raise ValueError(f'styles_combine must be a boolean, got({type(self._styles_combine)})')
 
         # ignore_patterns: None or list of strings
         if self._ignore_patterns is not None:
@@ -93,22 +103,22 @@ class AppConfig:
     # ── Properties ────────────────────────────────────────────────────────────
 
     @property
-    def source_dir(self) -> Path:
+    def source_dir(self) -> Optional[Path]:
         """Absolute path to the source directory."""
         return self._source_dir
 
     @property
-    def dest_dir(self) -> Path:
+    def dest_dir(self) -> Optional[Path]:
         """Absolute path to the destination root directory."""
         return self._dest_dir
 
     @property
-    def dry_run(self) -> bool:
+    def dry_run(self) -> Optional[bool]:
         """If True, simulate moving without actually moving files."""
         return self._dry_run
 
     @property
-    def recursive(self) -> bool:
+    def recursive(self) -> Optional[bool]:
         """If True, scan source directory recursively."""
         return self._recursive
 
@@ -118,14 +128,24 @@ class AppConfig:
         return self._ignore_patterns
 
     @property
+    def rules_cfg(self) -> Optional[Dict[str, Any]]:
+        """Inline rules config dict, or None."""
+        return self._rules_cfg
+
+    @property
     def rules_file(self) -> Optional[Path]:
         """Absolute path to JSON file with sorting rules, or None."""
         return self._rules_file
 
     @property
-    def rules_cfg(self) -> Optional[Dict[str, Any]]:
-        """Inline rules config dict, or None."""
-        return self._rules_cfg
+    def rules_combine(self) -> Optional[bool]:
+        """If True, combines default repo rules with user custom rules"""
+        return self._rules_combine
+
+    @property
+    def styles_cfg(self) -> Optional[Dict[str, Any]]:
+        """Inline styles config dict, or None."""
+        return self._styles_cfg
 
     @property
     def styles_file(self) -> Optional[Path]:
@@ -133,9 +153,9 @@ class AppConfig:
         return self._styles_file
 
     @property
-    def styles_cfg(self) -> Optional[Dict[str, Any]]:
-        """Inline styles config dict, or None."""
-        return self._styles_cfg
+    def styles_combine(self) -> Optional[bool]:
+        """If True, combines default repo styles with user custom styles"""
+        return self._styles_combine
 
     @property
     def logging(self) -> Optional[Dict[str, Any]]:
@@ -150,9 +170,11 @@ class AppConfig:
             f'dry_run={self._dry_run!r}, '
             f'recursive={self._recursive!r}, '
             f'ignore_patterns={self._ignore_patterns!r}, '
-            f'rules_file={self._rules_file!r}, '
             f'rules_cfg={self._rules_cfg!r}, '
-            f'styles_file={self._styles_file!r}, '
+            f'rules_file={self._rules_file!r}, '
+            f'rules_combine={self._rules_combine!r}, '
             f'styles_cfg={self._styles_cfg!r}, '
+            f'styles_file={self._styles_file!r}, '
+            f'styles_combine={self._styles_combine!r}, '
             f'logging={self._logging!r})'
         )

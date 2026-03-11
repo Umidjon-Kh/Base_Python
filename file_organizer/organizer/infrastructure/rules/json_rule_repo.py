@@ -25,17 +25,17 @@ class JsonRuleRepository(RuleRepository):
     Each rule object may contain a "priority" field; if missing, a default priority is assigned.
     """
 
-    __slots__ = ('file_path')
+    __slots__ = ('_file_path')
 
     def __init__(self, file_path: Union[Path, str]):
-        self.file_path = file_path if isinstance(file_path, Path) else Path(file_path)
+        self._file_path = file_path if isinstance(file_path, Path) else Path(file_path)
 
     def load_rules(self) -> RuleSet:
-        if not self.file_path.exists():
-            raise RuleFileNotFoundError(f'Rules file not found: {self.file_path}')
+        if not self._file_path.exists():
+            raise RuleFileNotFoundError(f'Rules file not found: {self._file_path}')
 
         try:
-            with open(self.file_path, 'r', encoding='utf-8') as file:
+            with open(self._file_path, 'r', encoding='utf-8') as file:
                 data = json.load(file)
         except (IOError, json.JSONDecodeError) as exc:
             raise RuleFormatError(f'Invalid JSON in rules file: {exc}')

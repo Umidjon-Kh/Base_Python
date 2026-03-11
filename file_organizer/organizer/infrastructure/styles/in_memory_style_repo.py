@@ -25,7 +25,7 @@ class InMemoryStyleRepository(StyleRepository):
     Unknown level names will raise UnknownStyleType.
     """
 
-    __slots__ = ('styles_data', 'styles_repo', 'default_repo', 'combine')
+    __slots__ = ('_styles_data', '_styles_repo', '_default_repo', '_combine')
 
     def __init__(
         self,
@@ -40,10 +40,10 @@ class InMemoryStyleRepository(StyleRepository):
             default_repo: Repository to load default styles from (if combine=True).
             combine: If True, merge default styles with provided styles cfg
         """
-        self.default_repo = default_repo
-        self.styles_repo = styles_repo
-        self.styles_data = styles_data
-        self.combine = combine
+        self._default_repo = default_repo
+        self._styles_repo = styles_repo
+        self._styles_data = styles_data
+        self._combine = combine
 
     def load_styles(self) -> StyleSet:
         """
@@ -57,16 +57,16 @@ class InMemoryStyleRepository(StyleRepository):
         # Creating styles data for default styles dict
         styles_data = {}
         # If combine loads default repository styles to styles_data
-        if self.combine:
-            styles_data = self.default_repo.load_styles().styles
+        if self._combine:
+            styles_data = self._default_repo.load_styles().styles
         # if user custom styles repo is not None, updates styles_data
-        if self.styles_repo is not None:
-            user_styles = self.styles_repo.load_styles().styles
+        if self._styles_repo is not None:
+            user_styles = self._styles_repo.load_styles().styles
             styles_data.update(user_styles)
         # If user custom styles is not None, updates styles_data
-        if self.styles_data is not None:
+        if self._styles_data is not None:
             # Builds styles from user config
-            user_styles = self._build_styles_from_dict(self.styles_data)
+            user_styles = self._build_styles_from_dict(self._styles_data)
             styles_data.update(user_styles)
         # Returning StyleSetter
         return StyleSet(styles_data)
