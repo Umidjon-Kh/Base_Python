@@ -13,7 +13,7 @@ class FileSystem(ABC):
     """
 
     @abstractmethod
-    def scan(self, path: Path, recursive: bool = True, ignore_patterns: Optional[List[str]] = None) -> Directory:
+    def scan(self, path: Path, recursive: bool = False, ignore_patterns: Optional[List[str]] = None) -> Directory:
         """
         Scan a directory and build an in‑memory tree.
         If recursive=False, only immediate children are scanned.

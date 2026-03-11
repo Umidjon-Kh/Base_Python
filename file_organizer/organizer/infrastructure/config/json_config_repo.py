@@ -67,7 +67,7 @@ class JsonConfigRepository(ConfigRepository):
         if not isinstance(dry_run, bool):
             raise ConfigValidationError('dry_run must be a boolean')
 
-        recursive = data.get('recursive', True)
+        recursive = data.get('recursive', False)
         if not isinstance(recursive, bool):
             raise ConfigValidationError('recursive must be a boolean')
 

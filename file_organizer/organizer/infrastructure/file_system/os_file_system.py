@@ -19,7 +19,7 @@ class OSFileSystem(FileSystem):
     All I/O exceptions are caught and wrapped into custom exceptions.
     """
 
-    def scan(self, path: Path, recursive: bool = True, ignore_patterns: Optional[List[str]] = None) -> Directory:
+    def scan(self, path: Path, recursive: bool = False, ignore_patterns: Optional[List[str]] = None) -> Directory:
         """
         Scan a directory and build an in‑memory tree.
         """
