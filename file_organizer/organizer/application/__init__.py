@@ -9,6 +9,7 @@ from .ports import (
 )
 
 from .dto import OrganizeResult, OrganizeRequest
+from .use_cases import OrganizeFilesUseCase
 
 __all__ = [
     'StyleSetter',
@@ -20,4 +21,5 @@ __all__ = [
     'ConfigRepository',
     'OrganizeRequest',
     'OrganizeResult',
+    'OrganizeFilesUseCase',
 ]
