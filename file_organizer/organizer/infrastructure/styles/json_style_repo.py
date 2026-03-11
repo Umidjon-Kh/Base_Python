@@ -33,7 +33,7 @@ class JsonStyleRepository(StyleRepository):
         Args:
             file_path: Path to the JSON file.
         """
-        self._file_path = file_path if isinstance(file_path, Path) else Path(file_path)
+        self._file_path = Path(file_path)
 
     def load_styles(self) -> StyleSet:
         """

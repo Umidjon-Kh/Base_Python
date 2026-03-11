@@ -28,7 +28,7 @@ class JsonRuleRepository(RuleRepository):
     __slots__ = ('_file_path')
 
     def __init__(self, file_path: Union[Path, str]):
-        self._file_path = file_path if isinstance(file_path, Path) else Path(file_path)
+        self._file_path = Path(file_path)
 
     def load_rules(self) -> RuleSet:
         if not self._file_path.exists():
