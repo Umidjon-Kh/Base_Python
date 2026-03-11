@@ -42,7 +42,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Union
 
 # Application layer - config data class and port interface only
-from .application import AppConfig
+from .application import AppConfig, OrganizeFilesUseCase, OrganizeResult
 
 # Infrastructure layer - concrete adapters that implement the ports
 from .infrastructure import (
@@ -279,7 +279,7 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
 # ----------- Step 2: Wire all dependencies and run the app
 
 
-def bootstrap(overrides: ConfigOverrides) -> None:
+def bootstrap(overrides: ConfigOverrides) -> OrganizeResult:
     """
     Composition Root: create every dependency and launch application
 
@@ -354,3 +354,15 @@ def bootstrap(overrides: ConfigOverrides) -> None:
 
     # 6. FileSystem adapter
     file_system = OSFileSystem()
+
+    # 7. Run Use Case
+    use_case = OrganizeFilesUseCase(
+        file_system=file_system,
+        rule_repo=rule_repo,
+        config_repo=config_repo,
+        logger=logger,
+    )
+
+    result = use_case.execute()
+
+    return result
