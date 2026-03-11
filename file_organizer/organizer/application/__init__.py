@@ -8,6 +8,8 @@ from .ports import (
     ConfigRepository,
 )
 
+from .dto import OrganizeResult, OrganizeRequest
+
 __all__ = [
     'StyleSetter',
     'FileSystem',
@@ -16,4 +18,6 @@ __all__ = [
     'StyleRepository',
     'AppConfig',
     'ConfigRepository',
+    'OrganizeRequest',
+    'OrganizeResult',
 ]
