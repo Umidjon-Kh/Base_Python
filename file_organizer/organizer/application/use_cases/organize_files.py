@@ -82,7 +82,7 @@ class OrganizeFilesUseCase:
 
                 # Build destination path: dest_dir/folder_name
                 base = request.dest_dir if request.dest_dir is not None else request.source_dir
-                dest_path = base / folder_name
+                dest_path = base / folder_name / file_item.name
 
                 # Create Directory object so file_system.move() can update the tree
                 new_parent = Directory(dest_path)

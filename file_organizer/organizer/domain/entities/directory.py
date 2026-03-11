@@ -128,7 +128,8 @@ class Directory:
         """
         Recursively yield all FileItem objects in this directory tree.
         """
-        for child in self._children:
+        # Using copy wrapped to list to not raise MUTATION DURING ITERATION
+        for child in list(self._children):
             if isinstance(child, FileItem):
                 yield child
             elif isinstance(child, Directory):
