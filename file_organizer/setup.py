@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     # Package identification
     # Unique name of file organizer from svedish klat
-    name='klat',
+    name='klart',
     # Version of package
     version='1.0.0',
     # Simple mini description of file organizer
