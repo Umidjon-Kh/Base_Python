@@ -53,7 +53,11 @@ class OrganizeFilesUseCase:
             ignore_patterns=config.ignore_patterns or [],
         )
 
-        result = OrganizeResult(dry_run=request.dry_run)
+        result = OrganizeResult(
+            dry_run=request.dry_run,
+            clean_mode=request.clean_mode,
+            recursive=request.recursive,
+        )
 
         self._logger.info('Starting file organization')
         self._logger.info(f'Source    : {request.source_dir}')

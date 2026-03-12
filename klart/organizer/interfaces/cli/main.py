@@ -1,5 +1,6 @@
 import argparse
 import json
+import re
 
 # Project modules: main runner bootstrap, to push config ConfigOverrides
 # And Organize result for showing result in user friendly output
@@ -198,9 +199,20 @@ def args_to_overrides(args: argparse.Namespace) -> ConfigOverrides:
     )
 
 
-def show_result(result: OrganizeResult) -> None:
+def _visible_len(string: str) -> int:
+    """Returns string length without ANSI codes"""
+    return len(re.sub(r'\033\[[0-9;]*m', '', string))
 
-    # Collecting on modes to shows
+
+def _pad(string: str, width: int) -> str:
+    """Auto puts needed spaces even with ANSI color codes"""
+    return string + ' ' * (width - _visible_len(string))
+
+
+def show_result(result: OrganizeResult) -> None:
+    WIDTH = 40  # width of result bar without(|)
+
+    # Modes
     mode_parts = []
     if result.dry_run:
         mode_parts.append(f'{YELLOW}DRY RUN{RESET}')
@@ -208,34 +220,55 @@ def show_result(result: OrganizeResult) -> None:
         mode_parts.append(f'{CYAN}CLEAN{RESET}')
     if result.recursive:
         mode_parts.append(f'{CYAN}RECURSIVE{RESET}')
+    mode_str = ' · '.join(mode_parts)
 
-    mode_str = f'  [{" | ".join(mode_parts)}]' if mode_parts else ''
+    def row(content: str) -> str:
+        return f'  {BOLD}│{RESET} {_pad(content, WIDTH)} {BOLD}│{RESET}'
+
+    def divider(left='├', mid='─', right='┤') -> str:
+        return f'  {BOLD}{left}{mid * (WIDTH + 2)}{right}{RESET}'
+
+    # Header
+    title = f'{PURPLE}{BOLD}✦ klart{RESET}'
+    modes = f'  {mode_str}' if mode_str else ''
 
     print()
-    print(f'{BOLD}{"-" * 40}{RESET}')
-    print(f'{BOLD} Organizer{RESET}{mode_str}')
-    print(f'{BOLD}{"-" * 40}{RESET}')
+    print(divider('╭', '─', '╮'))
+    print(row(title + modes))
+    print(divider())
 
-    # Errors if erros occured while organizing
+    # Error
     if result.errors:
-        print(f'\n{BOLD}{RED} Errors:{RESET}')
+        print(row(f'{RED}{BOLD}Errors{RESET}'))
+        print(divider())
         for path, message in result.errors:
-            print(f'  {RED}error:{RESET} {DIM}{path}{RESET}')
-            print(f'    {DIM}msg: {message}{RESET}')
+            name = str(path)
+            if len(name) > WIDTH - 2:
+                name = '…' + name[-(WIDTH - 3):]
+            print(row(f'{RED}✗{RESET} {DIM}{name}{RESET}'))
+            msg = message[: WIDTH - 4]
+            print(row(f'  {DIM}↳ {msg}{RESET}'))
+        print(divider())
 
-    # Action summary
-    print()
-    print(f'  {GREEN}-- Moved   {RESET}  {BOLD}{len(result.moved)}{RESET}')
-    print(f'  {YELLOW}-- Skipped {RESET}  {BOLD}{len(result.skipped)}{RESET}')
-    print(f'  {DARKCYAN}--Removed {RESET} {BOLD}{len(result.removed)}{RESET}')
-    print(f'  {RED}-- Errors  {RESET}  {BOLD}{len(result.errors)}{RESET}')
-    print(f'{BOLD}{"-" * 40}{RESET}')
+    # Actions Summary
+    def summary_row(icon: str, color: str, label: str, count: int) -> str:
+        left = f'{color}{icon}{RESET}  {label}'
+        right = f'{color}{BOLD}{count}{RESET}'
+        spaces = WIDTH - _visible_len(left) - _visible_len(right)
+        return f'  {BOLD}│{RESET} {left}{" " * spaces}{right} {BOLD}│{RESET}'
 
-    # ── Итоговый статус ───────────────────────────────────────────────────────
+    print(summary_row('✔', GREEN, 'Moved  ', len(result.moved)))
+    print(summary_row('●', YELLOW, 'Skipped', len(result.skipped)))
+    print(summary_row('◆', DARKCYAN, 'Removed', len(result.removed)))
+    print(summary_row('✗', RED, 'Errors ', len(result.errors)))
+    print(divider())
+
+    # Status of finished procces
     if result.success:
-        print(f'  {GREEN}{BOLD}Done.{RESET}')
+        print(row(f'{GREEN}{BOLD}✦  All done.{RESET}'))
     else:
-        print(f'  {RED}{BOLD}Finished with errors.{RESET}')
+        print(row(f'{RED}{BOLD}✦  Finished with errors.{RESET}'))
+    print(divider('╰', '─', '╯'))
     print()
 
 

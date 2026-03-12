@@ -73,10 +73,10 @@ class OSFileSystem(FileSystem):
             if not file_item.path.exists():
                 raise SourceFileNotFoundError(f'Source file does not exist: {file_item.path}')
 
-            destination.parent.mkdir(parents=True, exist_ok=True)
             final_dest = self._resolve_conflict(destination)
 
             if not dry_run:
+                destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil_move(str(file_item.path), str(final_dest))
                 file_item.update_location(final_dest, new_parent)
             else:
@@ -98,6 +98,7 @@ class OSFileSystem(FileSystem):
         """
         if not path.exists():
             return path
+
         stem = re.sub(r'(_\(\d+\))+$', '', path.stem)
         suffix = path.suffix
         parent = path.parent
@@ -109,7 +110,9 @@ class OSFileSystem(FileSystem):
             if match:
                 max_n = max(max_n, int(match.group(1)))
 
-        return parent / f'{stem}_({max_n + 1}){suffix}'
+        new_path = parent / f'{stem}_({max_n + 1}){suffix}'
+
+        return new_path
 
     def mkdir(self, path: Path, parents: bool = True) -> None:
         try:

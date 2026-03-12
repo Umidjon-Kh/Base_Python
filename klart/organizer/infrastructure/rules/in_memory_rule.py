@@ -72,7 +72,6 @@ class InMemoryRuleRepository(RuleRepository):
 
         # Building new config from setter and user config params
         config = self._config_builder(self._rules_cfg or {}, rules_data, setter)
-        print(config)
         # Returning RuleSet
         return RuleSet(config)
 
