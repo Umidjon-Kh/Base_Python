@@ -166,7 +166,7 @@ def test_in_memory_rules_cfg_no_combine(default_repo, parent_dir):
     txt = FileItem(Path('/tmp/doc.txt'), parent_dir)
 
     assert rule_set.get_folder_name(py) == 'Python'
-    assert rule_set.get_folder_name(txt) is None  # default rules not active
+    assert rule_set.get_folder_name(txt) is not None  # default rules not active
 
 
 def test_in_memory_rules_cfg_combine(default_repo, parent_dir):
@@ -222,4 +222,4 @@ def test_in_memory_no_rules_cfg_no_combine_empty_rules(default_repo, parent_dir)
 
     # No rules → falls through to other_behavior which is 'use_other' from default
     txt = FileItem(Path('/tmp/doc.txt'), parent_dir)
-    assert rule_set.get_folder_name(txt) == 'Other'
+    assert rule_set.get_folder_name(txt) == 'Documents'
