@@ -5,7 +5,7 @@ setup(
     # Unique name of file organizer from svedish klat
     name='klart',
     # Version of package
-    version='1.0.3',
+    version='1.0.4',
     # Simple mini description of file organizer
     description='Organize files into folders based on configurable rules',
     long_description=open('README.md').read(),
