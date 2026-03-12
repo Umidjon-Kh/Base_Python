@@ -22,4 +22,4 @@ def build_parser() -> argparse.ArgumentParser:
     # Modes
     parser.add_argument('--recursive', '-R', action='store_true', help='Procces subfolders recursively')
     parser.add_argument('--dry-run', '-n', action='store_true', help='Simulate actions without realization')
-    parser.add_argument()
+    parser.add_argument('--clean', '-C', action='store_true', help='Clean all empty dirs after organizing')
