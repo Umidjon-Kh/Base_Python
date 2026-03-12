@@ -39,7 +39,7 @@ setup(
     # Cli command script runner
     entry_points={
         'console_scripts': [
-            'klart=klart.interfaces.cli.main:main',
+            'klart=organizer.interfaces.cli.main:main',
         ],
     },
     # Pip creates runner file organizer in system after pip install.
