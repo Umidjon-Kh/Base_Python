@@ -73,10 +73,9 @@ class OSFileSystem(FileSystem):
             if not file_item.path.exists():
                 raise SourceFileNotFoundError(f'Source file does not exist: {file_item.path}')
 
-            final_dest = self._resolve_conflict(destination)
-
             if not dry_run:
                 destination.parent.mkdir(parents=True, exist_ok=True)
+                final_dest = self._resolve_conflict(destination)
                 shutil_move(str(file_item.path), str(final_dest))
                 file_item.update_location(final_dest, new_parent)
             else:
