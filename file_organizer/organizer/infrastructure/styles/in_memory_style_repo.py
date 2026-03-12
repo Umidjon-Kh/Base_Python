@@ -60,14 +60,17 @@ class InMemoryStyleRepository(StyleRepository):
         if self._combine:
             styles_data = self._default_repo.load_styles().styles
         # if user custom styles repo is not None, updates styles_data
-        if self._styles_repo is not None:
-            user_styles = self._styles_repo.load_styles().styles
-            styles_data.update(user_styles)
-        # If user custom styles is not None, updates styles_data
-        if self._styles_data is not None:
-            # Builds styles from user config
-            user_styles = self._build_styles_from_dict(self._styles_data)
-            styles_data.update(user_styles)
+        elif self._styles_data is not None or self._styles_data is not None:
+            if self._styles_repo is not None:
+                user_styles = self._styles_repo.load_styles().styles
+                styles_data.update(user_styles)
+            # If user custom styles is not None, updates styles_data
+            if self._styles_data is not None:
+                # Builds styles from user config
+                user_styles = self._build_styles_from_dict(self._styles_data)
+                styles_data.update(user_styles)
+        else:
+            styles_data = self._default_repo.load_styles().styles
         # Returning StyleSetter
         return StyleSet(styles_data)
 

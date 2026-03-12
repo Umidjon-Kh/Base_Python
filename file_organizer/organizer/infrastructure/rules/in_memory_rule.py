@@ -41,13 +41,13 @@ class InMemoryRuleRepository(RuleRepository):
             1 - custom user config args
         Returns RuleSetter with all combined rules
         """
-        # List of rules: extension, size, composite, ...
-        rules_data = []
         # Setting default setter
         setter = self._default_repo.load_rules()
+        # List of rules: extension, size, composite, ...
+        rules_data = setter.rules
+
         # If combine overrides all default setter attributes with user args
         if self._combine:
-            rules_data = setter.rules
             # Adding rules from custom fules repository
             if self._rules_repo is not None:
                 user_rule_set = self._rules_repo.load_rules()
@@ -60,17 +60,19 @@ class InMemoryRuleRepository(RuleRepository):
         # Otherwise if combine is false only using user rules
         # But if user custom rules cfg and custom rules repo is None
         # Using default rules attributes, without rules list
-        else:
+        elif self._rules_cfg is not None or self._rules_repo is not None:
             if self._rules_repo is not None:
-                user_rule_set = self._rules_repo.load_rules()
-                rules_data = user_rule_set.rules
-                setter = user_rule_set
+                setter = self._rules_repo.load_rules()
+                rules_data = setter.rules
             if self._rules_cfg is not None:
                 user_rules = self._build_rules_from_dict(self._rules_cfg.get('rules', []))
                 rules_data = user_rules + rules_data
 
+        # Otherwise if user custom rules config and rules_repo is None use default
+
         # Building new config from setter and user config params
         config = self._config_builder(self._rules_cfg or {}, rules_data, setter)
+        print(config)
         # Returning RuleSet
         return RuleSet(config)
 

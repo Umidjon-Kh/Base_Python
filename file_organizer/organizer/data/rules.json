@@ -1,6 +1,6 @@
 {
     "other_behavior": "use_other",
-    "ignore_extensions": [".tmp", ".log", ".bak"],
+    "ignore_extensions": [],
     "ignore_size_more_than": null,
     "ignore_size_less_than": null,
     "rules": [
