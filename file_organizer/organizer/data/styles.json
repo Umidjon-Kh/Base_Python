@@ -1,6 +1,6 @@
 {
     "debug": {
-        "show_icon": true,
+        "show_icon": false,
         "level_icon": "🐛",
         "level_color": "cyan",
         "show_level_str": true,
@@ -22,7 +22,7 @@
         }
     },
     "info": {
-        "show_icon": true,
+        "show_icon": false,
         "level_icon": "✅",
         "level_color": "green",
         "show_level_str": true,
@@ -44,7 +44,7 @@
         }
     },
     "warning": {
-        "show_icon": true,
+        "show_icon": false,
         "level_icon": "⚠️",
         "level_color": "yellow",
         "show_level_str": true,
@@ -66,7 +66,7 @@
         }
     },
     "error": {
-        "show_icon": true,
+        "show_icon": false,
         "level_icon": "❌",
         "level_color": "red",
         "show_level_str": true,
@@ -88,7 +88,7 @@
         }
     },
     "critical": {
-        "show_icon": true,
+        "show_icon": false,
         "level_icon": "🔥",
         "level_color": "RED",
         "show_level_str": true,
