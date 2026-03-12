@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from shutil import move as shutil_move
 from typing import List, Optional
 
@@ -97,16 +98,18 @@ class OSFileSystem(FileSystem):
         """
         if not path.exists():
             return path
-        stem = path.stem
+        stem = re.sub(r'(_\(\d+\))+$', '', path.stem)
         suffix = path.suffix
         parent = path.parent
-        counter = 1
-        while True:
-            new_name = f'{stem}_({counter}){suffix}'
-            new_path = parent / new_name
-            if not new_path.exists():
-                return new_path
-            counter += 1
+
+        pattern = re.compile(rf'^{re.escape(stem)}_\((\d+)\){re.escape(suffix)}$')
+        max_n = 0
+        for entry in parent.iterdir():
+            match = pattern.match(entry.name)
+            if match:
+                max_n = max(max_n, int(match.group(1)))
+
+        return parent / f'{stem}_({max_n + 1}){suffix}'
 
     def mkdir(self, path: Path, parents: bool = True) -> None:
         try:
