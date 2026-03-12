@@ -39,7 +39,7 @@ layer only if the higher value is not None
 
 from copy import deepcopy
 from pathlib import Path
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, List
 
 # Application layer - config data class and port interface only
 from .application import AppConfig, OrganizeFilesUseCase, OrganizeResult
@@ -103,6 +103,8 @@ class ConfigOverrides:
         # Config overrides
         rules_cfg: Optional[Dict[str, Any]] = None,
         styles_cfg: Optional[Dict[str, Any]] = None,
+        # Ignore patterns
+        ignore_patterns: Optional[List[str]] = None,
         # Booleans
         dry_run: Optional[bool] = None,
         recursive: Optional[bool] = None,
@@ -123,6 +125,7 @@ class ConfigOverrides:
         self.log_file = log_file
         self.rules_cfg = rules_cfg
         self.styles_cfg = styles_cfg
+        self.ignore_patterns = ignore_patterns
         self.dry_run = dry_run
         self.recursive = recursive
         self.clean_mode = clean_mode
@@ -234,6 +237,8 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
     rules_cfg = overrides.rules_cfg if overrides.rules_cfg is not None else base.rules_cfg
     styles_cfg = overrides.styles_cfg if overrides.styles_cfg is not None else base.styles_cfg
 
+    # Ignore patterns
+    ignore_patterns = overrides.ignore_patterns if overrides.ignore_patterns is not None else base.ignore_patterns
     # Booleans: MUST use `is not None` - False is a valid explicit override
     # `False or base.dry_run` would incorrectly discard an explicit False
     dry_run = overrides.dry_run if overrides.dry_run is not None else base.dry_run
@@ -269,7 +274,7 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
         dry_run=dry_run,
         recursive=recursive,
         clean_mode=clean_mode,
-        ignore_patterns=base.ignore_patterns,
+        ignore_patterns=ignore_patterns,
         rules_file=rules_file,
         rules_cfg=rules_cfg,
         rules_combine=rules_combine,

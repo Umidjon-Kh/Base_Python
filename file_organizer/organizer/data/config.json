@@ -2,8 +2,8 @@
     "source_dir": null,
     "dest_dir": null,
     "dry_run": false,
-    "recursive": true,
-    "ignore_patterns": [".tmp", "*.log", "*.bak"],
+    "recursive": false,
+    "ignore_patterns": [],
     "rules": {
         "rules_cfg": null,
         "rules_repo": null,
@@ -20,7 +20,7 @@
             "level": "INFO"
         },
         "file": {
-            "enabled": true,
+            "enabled": false,
             "level": "DEBUG",
             "path": null,
             "rotation": "1 day",

@@ -1,9 +1,13 @@
 import argparse
+import json
 
 # Project modules: main runner bootstrap, to push config ConfigOverrides
 # And Organize result for showing result in user friendly output
 from ...bootstrap import bootstrap, ConfigOverrides
 from ...application import OrganizeResult
+
+# Other need exteptions
+from organizer.exceptions import ConfigValidationError
 
 # Version
 from ... import __version__
@@ -68,6 +72,9 @@ def build_parser() -> argparse.ArgumentParser:
         metavar='FILE',
         help='Path to custom JSON config file',
     )
+
+    # Ignore patterns
+    parser.add_argument('--ignore', nargs='+', metavar='PATTERN', help='Ignore folders or files with this extension')
 
     # Modes
     parser.add_argument(
@@ -152,19 +159,39 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def args_to_overrides(args: argparse.Namespace) -> ConfigOverrides:
+
+    # --rules и --styles пparse from json
+    rules_cfg = None
+    if args.rules is not None:
+        try:
+            rules_cfg = json.loads(args.rules)
+        except json.JSONDecodeError as exc:
+            raise ConfigValidationError(f'Invalid JSON in --rules: {exc}') from exc
+
+    styles_cfg = None
+    if args.styles is not None:
+        try:
+            styles_cfg = json.loads(args.styles)
+        except json.JSONDecodeError as exc:
+            raise ConfigValidationError(f'Invalid JSON in --styles: {exc}') from exc
+
+    # --ignore can be more than one
+    ignore_patterns = args.ignore if args.ignore else None
+
     return ConfigOverrides(
         source_dir=args.source_dir,
         dest_dir=args.dest_dir,
         config_files=args.config,
-        recursive=args.recursive,
-        dry_run=args.dry_run,
-        clean_mode=args.clean,
-        rules_cfg=args.rules,
+        recursive=args.recursive or None,
+        dry_run=args.dry_run or None,
+        clean_mode=args.clean or None,
+        ignore_patterns=ignore_patterns,
+        rules_cfg=rules_cfg,
         rules_file=args.rules_file,
-        rules_combine=args.combine_rules,
-        styles_cfg=args.styles,
+        rules_combine=args.combine_rules or None,
+        styles_cfg=styles_cfg,
         styles_file=args.styles_file,
-        styles_combine=args.combine_styles,
+        styles_combine=args.combine_styles or None,
         console_level=args.console_level,
         log_file=args.log_file,
         file_level=args.file_level,
