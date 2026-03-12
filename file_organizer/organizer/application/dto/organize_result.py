@@ -19,6 +19,7 @@ class OrganizeResult:
     __slots__ = (
         '_moved',
         '_skipped',
+        '_removed',
         '_errors',
         '_dry_run',
         '_recursive',
@@ -33,12 +34,13 @@ class OrganizeResult:
     ) -> None:
         self._moved: List[Tuple[Path, Path]] = []
         self._skipped: List[Path] = []
+        self._removed: List[Path] = []
         self._errors: List[Tuple[Path, str]] = []
         self._dry_run: bool = dry_run
         self._recursive: bool = recursive
         self._clean_mode: bool = clean_mode
 
-    # ── Mutating methods (use case calls these) ───────────────────────────────
+    # Mutating methods (use case calls these)
 
     def add_moved(self, source: Path, dest: Path) -> None:
         self._moved.append((source, dest))
@@ -49,7 +51,10 @@ class OrganizeResult:
     def add_error(self, source: Path, message: str) -> None:
         self._errors.append((source, message))
 
-    # ── Read-only properties ──────────────────────────────────────────────────
+    def add_removed(self, source: Path) -> None:
+        self._removed.append(source)
+
+    # Read-only properties
 
     @property
     def moved(self) -> List[Tuple[Path, Path]]:
@@ -58,6 +63,10 @@ class OrganizeResult:
     @property
     def skipped(self) -> List[Path]:
         return self._skipped
+
+    @property
+    def removed(self) -> List[Path]:
+        return self._removed
 
     @property
     def errors(self) -> List[Tuple[Path, str]]:
@@ -88,8 +97,9 @@ class OrganizeResult:
             f'OrganizeResult('
             f'moved={len(self._moved)}, '
             f'skipped={len(self._skipped)}, '
+            f'removed={len(self._removed)}, '
             f'errors={len(self._errors)}, '
             f'dry_run={self._dry_run!r}, '
-            f'recursive={self._recursive}, '
+            f'recursive={self._recursive!r}, '
             f'clean_mode={self._clean_mode!r} '
         )

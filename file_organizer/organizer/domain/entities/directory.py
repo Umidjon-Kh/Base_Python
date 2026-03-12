@@ -128,12 +128,22 @@ class Directory:
         """
         Recursively yield all FileItem objects in this directory tree.
         """
-        # Using copy of childrens list not raise MUTATION DURING ITERATION
+        # Using copy of childrens list to not raise MUTATION DURING ITERATION
         for child in self._children.copy():
             if isinstance(child, FileItem):
                 yield child
             elif isinstance(child, Directory):
                 yield from child.walk_files()
+
+    def walk_dirs(self) -> Generator[Directory, None, None]:
+        """
+        Recursively yield all Directory objetcs in this directory tree.
+        Deepest directories come first (post-order) - safe deletion
+        """
+        for child in self._children.copy():
+            if isinstance(child, Directory):
+                yield from child.walk_dirs()
+                yield child
 
     @property
     def size(self) -> Optional[int]:

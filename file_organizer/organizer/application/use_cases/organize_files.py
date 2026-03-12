@@ -86,7 +86,7 @@ class OrganizeFilesUseCase:
                 dest_path = base / folder_name / file_item.name
 
                 # Create Directory object so file_system.move() can update the tree
-                new_parent = Directory(dest_path)
+                new_parent = Directory(dest_path.parent)
 
                 # move() handles dry_run internally - no physical move if dry_run=True
                 # move() also handles mkdir and name collision resolution
@@ -113,10 +113,23 @@ class OrganizeFilesUseCase:
                 self._logger.error(f'Failed: {file_item.path} - {exc}')
                 result.add_error(file_item.path, str(exc))
 
+        if request.clean_mode:
+            self._logger.info('Clean mode: removing empty directories')
+            for directory in source_dir.walk_dirs():
+                if not list(directory.walk_files()):
+                    try:
+                        self._file_system.rmdir(directory, dry_run=request.dry_run)
+                        prefix = '[DRY RUN] ' if request.dry_run else ''
+                        self._logger.info(f'{prefix}Removed empty dir: {directory.path}')
+                        result.add_removed(directory.path)
+                    except Exception as exc:
+                        self._logger.warning(f'Could not remove dir: {directory.path} - {exc}')
+
         # Showing Summary of actions
         self._logger.info(
             f'Done.  Moved: {len(result.moved)} |',
             f'Skipped: {len(result.skipped)} | ',
+            f'Removed: {len(result.removed)} | ',
             f'Errors: {len(result.errors)}',
         )
 
