@@ -1,36 +1,36 @@
 {
     "debug": {
-        "show_icon": false,
+        "show_icon": true,
+        "level_icon": "🐛",
+        "level_color": "cyan",
         "show_level_str": true,
-        "level_icon": null,
         "level_str": null,
-        "level_color": "blue",
         "show_msg": true,
         "msg_color": "white",
         "show_time": true,
-        "time_format": null,
+        "time_format": "%H:%M:%S",
         "time_color": null,
-        "show_path": false,
+        "show_path": true,
         "path_color": null,
-        "show_function": false,
+        "show_function": true,
         "function_color": null,
-        "show_line": false,
+        "show_line": true,
         "line_color": null,
         "styles": {
-            "console": "| level | msg | time",
-            "file": "| level | msg | time"
+            "console": "| time | level | msg | path | function | line",
+            "file":    "| time | level | msg | path | function | line"
         }
     },
     "info": {
-        "show_icon": false,
+        "show_icon": true,
+        "level_icon": "✅",
+        "level_color": "green",
         "show_level_str": true,
-        "level_icon": null,
         "level_str": null,
-        "level_color": "blue",
         "show_msg": true,
         "msg_color": "white",
         "show_time": true,
-        "time_format": null,
+        "time_format": "%H:%M:%S",
         "time_color": null,
         "show_path": false,
         "path_color": null,
@@ -39,64 +39,20 @@
         "show_line": false,
         "line_color": null,
         "styles": {
-            "console": "| level | msg | time",
-            "file": "| level | msg | time"
-        }
-    },
-    "error": {
-        "show_icon": false,
-        "show_level_str": true,
-        "level_icon": null,
-        "level_str": null,
-        "level_color": "blue",
-        "show_msg": true,
-        "msg_color": "white",
-        "show_time": true,
-        "time_format": null,
-        "time_color": null,
-        "show_path": false,
-        "path_color": null,
-        "show_function": false,
-        "function_color": null,
-        "show_line": false,
-        "line_color": null,
-        "styles": {
-            "console": "| level | msg | time",
-            "file": "| level | msg | time"
-        }
-    },
-    "critical": {
-        "show_icon": false,
-        "show_level_str": true,
-        "level_icon": null,
-        "level_str": null,
-        "level_color": "blue",
-        "show_msg": true,
-        "msg_color": "white",
-        "show_time": true,
-        "time_format": null,
-        "time_color": null,
-        "show_path": false,
-        "path_color": null,
-        "show_function": false,
-        "function_color": null,
-        "show_line": false,
-        "line_color": null,
-        "styles": {
-            "console": "| level | msg | time",
-            "file": "| level | msg | time"
+            "console": "| time | level | msg",
+            "file":    "| time | level | msg"
         }
     },
     "warning": {
-        "show_icon": false,
+        "show_icon": true,
+        "level_icon": "⚠️",
+        "level_color": "yellow",
         "show_level_str": true,
-        "level_icon": null,
         "level_str": null,
-        "level_color": "blue",
         "show_msg": true,
-        "msg_color": "white",
+        "msg_color": "yellow",
         "show_time": true,
-        "time_format": null,
+        "time_format": "%H:%M:%S",
         "time_color": null,
         "show_path": false,
         "path_color": null,
@@ -105,8 +61,52 @@
         "show_line": false,
         "line_color": null,
         "styles": {
-            "console": "| level | msg | time",
-            "file": "| level | msg | time"
+            "console": "| time | level | msg",
+            "file":    "| time | level | msg"
+        }
+    },
+    "error": {
+        "show_icon": true,
+        "level_icon": "❌",
+        "level_color": "red",
+        "show_level_str": true,
+        "level_str": null,
+        "show_msg": true,
+        "msg_color": "red",
+        "show_time": true,
+        "time_format": "%H:%M:%S",
+        "time_color": null,
+        "show_path": true,
+        "path_color": null,
+        "show_function": true,
+        "function_color": null,
+        "show_line": true,
+        "line_color": null,
+        "styles": {
+            "console": "| time | level | msg | path | function | line",
+            "file":    "| time | level | msg | path | function | line"
+        }
+    },
+    "critical": {
+        "show_icon": true,
+        "level_icon": "🔥",
+        "level_color": "RED",
+        "show_level_str": true,
+        "level_str": null,
+        "show_msg": true,
+        "msg_color": "RED",
+        "show_time": true,
+        "time_format": "%H:%M:%S",
+        "time_color": null,
+        "show_path": true,
+        "path_color": null,
+        "show_function": true,
+        "function_color": null,
+        "show_line": true,
+        "line_color": null,
+        "styles": {
+            "console": "| time | level | msg | path | function | line",
+            "file":    "| time | level | msg | path | function | line"
         }
     }
 }

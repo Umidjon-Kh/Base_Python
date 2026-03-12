@@ -60,7 +60,7 @@ class InMemoryStyleRepository(StyleRepository):
         if self._combine:
             styles_data = self._default_repo.load_styles().styles
         # if user custom styles repo is not None, updates styles_data
-        elif self._styles_data is not None or self._styles_data is not None:
+        elif self._styles_data is not None or self._styles_repo is not None:
             if self._styles_repo is not None:
                 user_styles = self._styles_repo.load_styles().styles
                 styles_data.update(user_styles)
