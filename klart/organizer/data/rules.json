@@ -4,67 +4,251 @@
     "ignore_size_more_than": 2147483648,
     "ignore_size_less_than": null,
     "rules": [
+
         {
-            "type": "extension",
-            "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tiff", ".heic", ".raw"],
-            "folder": "Images",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tiff", ".heic", ".raw"], "folder": "Images"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpeg", ".3gp"],
-            "folder": "Videos",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpeg", ".3gp"], "folder": "Videos"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a", ".opus"],
-            "folder": "Audio",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a", ".opus"], "folder": "Audio"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".pdf", ".doc", ".docx", ".odt", ".rtf", ".tex", ".md", ".txt", ".epub"],
-            "folder": "Documents",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".pdf", ".doc", ".docx", ".odt", ".rtf", ".tex", ".md", ".txt", ".epub"], "folder": "Documents"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".xls", ".xlsx", ".ods", ".csv"],
-            "folder": "Spreadsheets",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".xls", ".xlsx", ".ods", ".csv"], "folder": "Spreadsheets"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".ppt", ".pptx", ".odp", ".key"],
-            "folder": "Presentations",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".zip", ".tar", ".gz", ".bz2", ".xz", ".rar", ".7z", ".iso", ".dmg"], "folder": "Archives"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".zip", ".tar", ".gz", ".bz2", ".xz", ".rar", ".7z", ".iso", ".dmg"],
-            "folder": "Archives",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".py", ".js", ".ts", ".html", ".css", ".java", ".c", ".cpp", ".h", ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".sh", ".bash", ".json", ".yaml", ".yml", ".toml", ".xml", ".sql"], "folder": "Code"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".py", ".js", ".ts", ".html", ".css", ".java", ".c", ".cpp", ".h",
-                           ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".sh", ".bash",
-                           ".json", ".yaml", ".yml", ".toml", ".xml", ".sql"],
-            "folder": "Code",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".exe", ".msi", ".deb", ".rpm", ".apk", ".bin"], "folder": "Executables"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".exe", ".msi", ".deb", ".rpm", ".apk", ".AppImage", ".bin"],
-            "folder": "Executables",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 0, "max": 1048576, "folder": "Small"},
+                {"type": "extension", "extensions": [".ttf", ".otf", ".woff", ".woff2", ".eot"], "folder": "Fonts"}
+            ]
+        },
+
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tiff", ".heic", ".raw"], "folder": "Images"}
+            ]
         },
         {
-            "type": "extension",
-            "extensions": [".ttf", ".otf", ".woff", ".woff2", ".eot"],
-            "folder": "Fonts",
-            "priority": 0
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpeg", ".3gp"], "folder": "Videos"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a", ".opus"], "folder": "Audio"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".pdf", ".doc", ".docx", ".odt", ".rtf", ".tex", ".md", ".txt", ".epub"], "folder": "Documents"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".xls", ".xlsx", ".ods", ".csv"], "folder": "Spreadsheets"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".zip", ".tar", ".gz", ".bz2", ".xz", ".rar", ".7z", ".iso", ".dmg"], "folder": "Archives"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".py", ".js", ".ts", ".html", ".css", ".java", ".c", ".cpp", ".h", ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".sh", ".bash", ".json", ".yaml", ".yml", ".toml", ".xml", ".sql"], "folder": "Code"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".exe", ".msi", ".deb", ".rpm", ".apk", ".bin"], "folder": "Executables"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 1048576, "max": 52428800, "folder": "Middle"},
+                {"type": "extension", "extensions": [".ttf", ".otf", ".woff", ".woff2", ".eot"], "folder": "Fonts"}
+            ]
+        },
+
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp", ".svg", ".ico", ".tiff", ".heic", ".raw"], "folder": "Images"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm", ".m4v", ".mpeg", ".3gp"], "folder": "Videos"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".mp3", ".wav", ".flac", ".aac", ".ogg", ".wma", ".m4a", ".opus"], "folder": "Audio"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".pdf", ".doc", ".docx", ".odt", ".rtf", ".tex", ".md", ".txt", ".epub"], "folder": "Documents"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".xls", ".xlsx", ".ods", ".csv"], "folder": "Spreadsheets"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".zip", ".tar", ".gz", ".bz2", ".xz", ".rar", ".7z", ".iso", ".dmg"], "folder": "Archives"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".py", ".js", ".ts", ".html", ".css", ".java", ".c", ".cpp", ".h", ".cs", ".go", ".rs", ".rb", ".php", ".swift", ".kt", ".sh", ".bash", ".json", ".yaml", ".yml", ".toml", ".xml", ".sql"], "folder": "Code"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".exe", ".msi", ".deb", ".rpm", ".apk", ".bin"], "folder": "Executables"}
+            ]
+        },
+        {
+            "type": "composite",
+            "operator": "AND",
+            "priority": 100,
+            "rules": [
+                {"type": "size", "min": 52428800, "max": 104857600, "folder": "Large"},
+                {"type": "extension", "extensions": [".ttf", ".otf", ".woff", ".woff2", ".eot"], "folder": "Fonts"}
+            ]
         }
     ]
 }
