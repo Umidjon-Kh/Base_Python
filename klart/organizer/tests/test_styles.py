@@ -6,7 +6,7 @@ import pytest
 import json
 from pathlib import Path
 
-from organizer.infrastructure.styles.level_style import (
+from ..infrastructure.styles.level_style import (
     DebugStyle,
     InfoStyle,
     WarningStyle,
@@ -14,8 +14,8 @@ from organizer.infrastructure.styles.level_style import (
     CriticalStyle,
     StyleSet,
 )
-from organizer.exceptions import UnknownStyleType, StyleFileNotFoundError, StyleFormatError
-from organizer.infrastructure.styles import JsonStyleRepository, InMemoryStyleRepository
+from ..exceptions import UnknownStyleType, StyleFileNotFoundError, StyleFormatError
+from ..infrastructure.styles import JsonStyleRepository, InMemoryStyleRepository
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

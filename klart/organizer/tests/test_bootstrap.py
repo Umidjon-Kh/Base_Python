@@ -9,9 +9,9 @@ import pytest
 from pathlib import Path
 from typing import Optional
 
-from organizer.bootstrap import bootstrap, ConfigOverrides
-from organizer.application import OrganizeResult
-from organizer.exceptions import ConfigValidationError
+from ..bootstrap import bootstrap, ConfigOverrides
+from ..application import OrganizeResult
+from ..exceptions import ConfigValidationError
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-# organizer — Developer Guide
+# Klart — Developer Guide
 
 > This README is for developers who want to understand, extend, or contribute to the codebase.
 

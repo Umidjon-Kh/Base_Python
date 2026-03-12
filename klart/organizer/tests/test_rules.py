@@ -6,14 +6,14 @@ import pytest
 import json
 from pathlib import Path
 
-from organizer.domain import FileItem, Directory
-from organizer.exceptions import (
+from ..domain import FileItem, Directory
+from ..exceptions import (
     RuleNotFoundError,
     RuleFileNotFoundError,
     RuleFormatError,
     # RuleValidationError,
 )
-from organizer.infrastructure.rules import JsonRuleRepository, InMemoryRuleRepository
+from ..infrastructure.rules import JsonRuleRepository, InMemoryRuleRepository
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

@@ -6,9 +6,9 @@ Uses tmp_path to avoid touching the real file system.
 import pytest
 from pathlib import Path
 
-from organizer.domain import FileItem, Directory
-from organizer.infrastructure import OSFileSystem
-from organizer.exceptions import SourceFileNotFoundError
+from ..domain import FileItem, Directory
+from ..infrastructure import OSFileSystem
+from ..exceptions import SourceFileNotFoundError
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

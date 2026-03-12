@@ -7,13 +7,12 @@ Uses fake implementations of all ports — no real filesystem, no real logger.
 from pathlib import Path
 from typing import List, Optional
 
-from organizer.application import AppConfig
-from organizer.application.use_cases import OrganizeFilesUseCase
-from organizer.application.ports import FileSystem, Logger
-from organizer.domain import FileItem, Directory
-from organizer.infrastructure.config import InMemoryConfigRepository
-from organizer.infrastructure.rules import JsonRuleRepository
-# from organizer.exceptions import RuleNotFoundError
+from ..application import AppConfig
+from ..application.use_cases import OrganizeFilesUseCase
+from ..application.ports import FileSystem, Logger
+from ..domain import FileItem, Directory
+from ..infrastructure.config import InMemoryConfigRepository
+from ..infrastructure.rules import JsonRuleRepository
 
 
 # ── Fake port implementations ─────────────────────────────────────────────────

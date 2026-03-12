@@ -6,9 +6,9 @@ import pytest
 from pathlib import Path
 from loguru import logger
 
-from organizer.infrastructure.styles import StyleSet, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
-from organizer.infrastructure.logging import LoguruLogger
-from organizer.exceptions import LogFileNotDefinedError
+from ..infrastructure.styles import StyleSet, DebugStyle, InfoStyle, WarningStyle, ErrorStyle, CriticalStyle
+from ..infrastructure.logging import LoguruLogger
+from ..exceptions import LogFileNotDefinedError
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

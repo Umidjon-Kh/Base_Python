@@ -18,7 +18,7 @@ setup(
     # Licence: type Mit is free
     license='MIT',
     # Url for my github project code
-    url='https://github.com/Umidjon-Kh/Base_Python/tree/main/file_organizer',
+    url='https://github.com/Umidjon-Kh/Base_Python/tree/main/klart',
     # What includes a package
     packages=find_packages(),
     # Reuirements package configs
@@ -39,7 +39,7 @@ setup(
     # Cli command script runner
     entry_points={
         'console_scripts': [
-            'organizer=organizer.interfaces.cli.main:main',
+            'klart=klart.interfaces.cli.main:main',
         ],
     },
     # Pip creates runner file organizer in system after pip install.

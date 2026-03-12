@@ -1,4 +1,4 @@
-# File Organizer
+# klart
 
 A command-line tool that organizes files into folders based on configurable rules.
 
@@ -23,7 +23,7 @@ A command-line tool that organizes files into folders based on configurable rule
 
 ```bash
 git clone https://github.com/your-username/file-organizer.git
-cd file-organizer
+cd klart
 pip install -e .
 ```
 
