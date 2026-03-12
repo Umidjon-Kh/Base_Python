@@ -18,7 +18,7 @@ setup(
     # Licence: type Mit is free
     license='MIT',
     # Url for my github project code
-    url='https://github.com/Umidjon-Kh/Base_Python/file_organizer',
+    url='https://github.com/Umidjon-Kh/Base_Python/tree/main/file_organizer',
     # What includes a package
     packages=find_packages(),
     # Reuirements package configs
@@ -49,7 +49,7 @@ setup(
     python_requires='>=3.12',
     # ── Классификаторы ────────────────────────────────────────────────────────
     classifiers=[
-        'Development Status :: 5 - Stable',
+        'Development Status :: 3 - Alpha',
         # 5 - Stable - stable working or you can write Production
         # 3 - Aplha, 4 - Beta
         'Environment :: Console',
