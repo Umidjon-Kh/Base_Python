@@ -49,6 +49,7 @@ class OrganizeFilesUseCase:
             rule_set=rule_set,
             dry_run=config.dry_run or False,
             recursive=config.recursive or False,
+            clean_mode=config.clean_mode or False,
             ignore_patterns=config.ignore_patterns or [],
         )
 

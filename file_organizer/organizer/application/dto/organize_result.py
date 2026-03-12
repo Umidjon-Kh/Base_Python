@@ -21,13 +21,22 @@ class OrganizeResult:
         '_skipped',
         '_errors',
         '_dry_run',
+        '_recursive',
+        '_clean_mode',
     )
 
-    def __init__(self, dry_run: bool = False) -> None:
+    def __init__(
+        self,
+        dry_run: bool = False,
+        recursive: bool = False,
+        clean_mode: bool = False,
+    ) -> None:
         self._moved: List[Tuple[Path, Path]] = []
         self._skipped: List[Path] = []
         self._errors: List[Tuple[Path, str]] = []
         self._dry_run: bool = dry_run
+        self._recursive: bool = recursive
+        self._clean_mode: bool = clean_mode
 
     # ── Mutating methods (use case calls these) ───────────────────────────────
 
@@ -59,6 +68,14 @@ class OrganizeResult:
         return self._dry_run
 
     @property
+    def recursive(self) -> bool:
+        return self._recursive
+
+    @property
+    def clean_mode(self) -> bool:
+        return self._clean_mode
+
+    @property
     def total_files(self) -> int:
         return len(self._moved) + len(self._skipped) + len(self._errors)
 
@@ -72,5 +89,7 @@ class OrganizeResult:
             f'moved={len(self._moved)}, '
             f'skipped={len(self._skipped)}, '
             f'errors={len(self._errors)}, '
-            f'dry_run={self._dry_run!r})'
+            f'dry_run={self._dry_run!r}, '
+            f'recursive={self._recursive}, '
+            f'clean_mode={self._clean_mode!r} '
         )

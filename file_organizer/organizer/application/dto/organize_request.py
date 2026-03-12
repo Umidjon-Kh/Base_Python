@@ -19,6 +19,7 @@ class OrganizeRequest:
         '_rule_set',
         '_dry_run',
         '_recursive',
+        '_clean_mode',
         '_ignore_patterns',
     )
 
@@ -28,7 +29,8 @@ class OrganizeRequest:
         dest_dir: Optional[Path],
         rule_set: RuleSet,
         dry_run: bool = False,
-        recursive: bool = True,
+        recursive: bool = False,
+        clean_mode: bool = False,
         ignore_patterns: Optional[List[str]] = None,
     ) -> None:
         self._source_dir = source_dir
@@ -36,6 +38,7 @@ class OrganizeRequest:
         self._rule_set = rule_set
         self._dry_run = dry_run
         self._recursive = recursive
+        self._clean_mode = clean_mode
         self._ignore_patterns = ignore_patterns or []
 
     @property
@@ -59,6 +62,10 @@ class OrganizeRequest:
         return self._recursive
 
     @property
+    def clean_mode(self) -> bool:
+        return self._clean_mode
+
+    @property
     def ignore_patterns(self) -> List[str]:
         return self._ignore_patterns
 
@@ -68,5 +75,7 @@ class OrganizeRequest:
             f'source_dir={self._source_dir!r}, '
             f'dest_dir={self._dest_dir!r}, '
             f'dry_run={self._dry_run!r}, '
-            f'recursive={self._recursive!r})'
+            f'recursive={self._recursive!r}, '
+            f'clean_mode={self._clean_mode!r}, '
+            f'ignore_patterns={self._ignore_patterns!r}'
         )

@@ -106,6 +106,7 @@ class ConfigOverrides:
         # Booleans
         dry_run: Optional[bool] = None,
         recursive: Optional[bool] = None,
+        clean_mode: Optional[bool] = None,
         rules_combine: Optional[bool] = None,
         styles_combine: Optional[bool] = None,
         # Logging level overrides
@@ -124,6 +125,7 @@ class ConfigOverrides:
         self.styles_cfg = styles_cfg
         self.dry_run = dry_run
         self.recursive = recursive
+        self.clean_mode = clean_mode
         self.rules_combine = rules_combine
         self.styles_combine = styles_combine
         self.console_level = console_level
@@ -236,6 +238,7 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
     # `False or base.dry_run` would incorrectly discard an explicit False
     dry_run = overrides.dry_run if overrides.dry_run is not None else base.dry_run
     recursive = overrides.recursive if overrides.recursive is not None else base.recursive
+    clean_mode = overrides.clean_mode if overrides.clean_mode is not None else base.clean_mode
     rules_combine = overrides.rules_combine if overrides.rules_combine is not None else base.rules_combine
     styles_combine = overrides.styles_combine if overrides.styles_combine is not None else base.styles_combine
 
@@ -265,6 +268,7 @@ def _build_config(overrides: ConfigOverrides) -> AppConfig:
         dest_dir=dest_dir,
         dry_run=dry_run,
         recursive=recursive,
+        clean_mode=clean_mode,
         ignore_patterns=base.ignore_patterns,
         rules_file=rules_file,
         rules_cfg=rules_cfg,

@@ -25,6 +25,7 @@ class AppConfig:
         '_dest_dir',
         '_dry_run',
         '_recursive',
+        '_clean_mode',
         '_ignore_patterns',
         '_rules_file',
         '_rules_cfg',
@@ -41,6 +42,7 @@ class AppConfig:
         dest_dir: Optional[Path] = None,
         dry_run: Optional[bool] = None,
         recursive: Optional[bool] = None,
+        clean_mode: Optional[bool] = None,
         ignore_patterns: Optional[List[str]] = None,
         rules_file: Optional[Path] = None,
         rules_cfg: Optional[Dict[str, Any]] = None,
@@ -54,6 +56,7 @@ class AppConfig:
         self._dest_dir = dest_dir
         self._dry_run = dry_run
         self._recursive = recursive
+        self._clean_mode = clean_mode
         self._ignore_patterns = ignore_patterns
         self._rules_file = rules_file
         self._rules_cfg = rules_cfg
@@ -81,6 +84,8 @@ class AppConfig:
             raise ValueError(f'dry_run must be a boolean, got {type(self._dry_run)}')
         if self._recursive is not None and not isinstance(self._recursive, bool):
             raise ValueError(f'recursive must be a boolean, got {type(self._recursive)}')
+        if self._clean_mode is not None and not isinstance(self._clean_mode, bool):
+            raise ValueError(f'clean_mode must be a boolean, got {type(self._clean_mode)}')
         if self._rules_combine is not None and not isinstance(self._rules_combine, bool):
             raise ValueError(f'rules_combine must be a boolean, got({type(self._rules_combine)})')
         if self._styles_combine is not None and not isinstance(self._styles_combine, bool):
@@ -121,6 +126,11 @@ class AppConfig:
     def recursive(self) -> Optional[bool]:
         """If True, scan source directory recursively."""
         return self._recursive
+
+    @property
+    def clean_mode(self) -> Optional[bool]:
+        """If True, cleans all empty dirs from source path"""
+        return self._clean_mode
 
     @property
     def ignore_patterns(self) -> Optional[List[str]]:
@@ -169,6 +179,7 @@ class AppConfig:
             f'dest_dir={self._dest_dir!r}, '
             f'dry_run={self._dry_run!r}, '
             f'recursive={self._recursive!r}, '
+            f'clean_mode={self._clean_mode!r}, '
             f'ignore_patterns={self._ignore_patterns!r}, '
             f'rules_cfg={self._rules_cfg!r}, '
             f'rules_file={self._rules_file!r}, '
