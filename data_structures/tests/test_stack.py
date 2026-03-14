@@ -69,8 +69,8 @@ def test_stack_copy_method(filled_stack) -> None:
 
 
 def test_stack_iter_method(filled_stack) -> None:
-    for node in filled_stack:
-        assert node == filled_stack.pop()
+    values = list(filled_stack)
+    assert values == [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 
 def test_stack_contain_method(filled_stack, empty_stack) -> None:

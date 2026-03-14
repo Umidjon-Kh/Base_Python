@@ -59,6 +59,18 @@ class Stack:
             yield current.value
             current = current.next
 
+    def __reversed__(self):
+        temp = Stack()
+
+        current = self._top
+
+        while current:
+            temp.push(current.value)
+            current = current.next
+
+        while temp._top is not None:
+            yield temp.pop()
+
     def __contains__(self, item) -> bool:
         """Checks stack for contains item or not"""
         current = self._top

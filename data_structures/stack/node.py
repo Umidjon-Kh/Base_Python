@@ -17,4 +17,4 @@ class Node:
 
     @next.setter
     def next(self, value: Optional['Node']) -> None:
-        object.__setattr__(self, '_next', value)
+        self._next = value
