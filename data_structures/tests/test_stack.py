@@ -73,6 +73,11 @@ def test_stack_iter_method(filled_stack) -> None:
     assert values == [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 
+def test_stack_reversed_method(filled_stack) -> None:
+    values = list(reversed(filled_stack))
+    assert values == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+
 def test_stack_contain_method(filled_stack, empty_stack) -> None:
     # Checking stack contain method
     assert 7 in filled_stack
