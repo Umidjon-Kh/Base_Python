@@ -1,84 +1,84 @@
 from dataclasses import dataclass, field
-from typing import List, Any, Generator, Iterator
+from typing import Optional, Any, Generator
+from .node import Node
 
 
-# Frozen works cause you dont change storage value
-# You only change only list object not Stack attr, like Tuple "Immutabelity" :)
-@dataclass(frozen=True, slots=True)
+@dataclass
 class Stack:
-    _storage: List[Any] = field(default_factory=list)
+    _top: Optional[Node] = field(default=None, repr=False)
+    _size: int = field(init=False, default=0)
 
-    def push(self, item) -> None:
-        """Appends storage list with item"""
-        self._storage.append(item)
+    def push(self, value: Any) -> None:
+        """Creates new node with any type value"""
+        new_node = Node(value)
+        new_node.next = self._top
+        self._top = new_node
+        self._size += 1
 
     def pop(self) -> Any:
-        """Returns last item from storage and removes"""
-        if not self.is_empty():
-            return self._storage.pop()
-        raise IndexError('Can\'t pop from empty stack')
+        """Removes Last in element from Stack"""
+        if self._top is None:
+            raise IndexError('Stack is empty')
+
+        removed = self._top
+        self._top = self._top.next
+        self._size -= 1
+        return removed.value
 
     def peek(self) -> Any:
-        """Returns last item in storage without removing"""
-        return self._storage[-1] if self._storage else None
+        """Shows last in element in stack"""
+        if self._top is None:
+            raise IndexError('Stack is empty')
+        return self._top.value
 
-    def is_empty(self) -> bool:
-        """Checks storage list empty or not"""
-        return len(self._storage) == 0
+    def copy(self) -> 'Stack':
+        """Returns a copy of stack that not connected to this stack"""
+        temp = Stack()
+        new_stack = Stack()
+
+        current = self._top
+
+        while current:
+            temp.push(current.value)
+            current = current.next
+
+        while temp._top is not None:
+            value = temp.pop()
+            new_stack.push(value)
+
+        return new_stack
 
     def __len__(self) -> int:
-        """How many items in storage list"""
-        return len(self._storage)
-
-    def __bool__(self) -> bool:
-        """
-        Returns true if storage even if have only one item
-        If not returns false
-        """
-        return bool(self._storage)
-
-    def __str__(self) -> str:
-        return f'{self._storage}'
-
-    def copy(self) -> List[Any]:
-        """Retruns copy of storage list"""
-        return self._storage.copy()
-
-    def __setitem__(self, index, value) -> None:
-        """Sets new value for stack storage list item  like stack[0] = value"""
-        if isinstance(index, int):
-            if index >= len(self._storage) or index < -len(self._storage):
-                raise IndexError('Stack index out of range')
-            self._storage[index] = value
-            return
-        raise TypeError(f'Invalid index type {type(index).__name__}')
-
-    def __getitem__(self, index) -> Any:
-        """
-        Method to get item in stack like stack[1]
-        Suppoerts slice method raises IndexError if index out of range
-        """
-        # If index not slice only a index
-        if isinstance(index, int):
-            if index >= len(self._storage) or index < -len(self._storage):
-                raise IndexError('Stack index out of range')
-            return self._storage[index]
-
-        if isinstance(index, slice):
-            # If slice
-            return self._storage[index]
-
-        raise TypeError(f'Invalid index type {type(index).__name__}')
-
-    def __contains__(self, item) -> bool:
-        """Checks storage contains item or not"""
-        return item in self._storage
+        """Returns size for Stack"""
+        return self._size
 
     def __iter__(self) -> Generator[Any, None, None]:
-        """Yields storage objects values one by one"""
-        for item in self._storage.copy():
-            yield item
+        """For iterating object stack"""
+        current = self._top
+        while current:
+            yield current.value
+            current = current.next
 
-    def __reversed__(self) -> Iterator[Any]:
-        """Returns reversed stack storage list lazy_load iterator"""
-        return reversed(self._storage)
+    def __contains__(self, item) -> bool:
+        """Checks stack for contains item or not"""
+        current = self._top
+        while current:
+            if current.value == item:
+                return True
+            current = current.next
+        return False
+
+    def __bool__(self) -> bool:
+        """Returns true if stack is not None"""
+        return self._top is not None
+
+    def __str__(self) -> str:
+        """String method shows all stack values in user frinedly output"""
+        values = []
+        current = self._top
+
+        while current:
+            values.append(current.value)
+            current = current.next
+
+        return 'Stack(top -> ' + ' -> '.join(map(str, values)) + ')'
